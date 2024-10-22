@@ -45,10 +45,6 @@ void ARoomBase::populate()
 {
 	//WIP
 
-	//The nullptrs in neighbors are no longer needed
-	//So they can be removed finally
-	neighbors.Remove(nullptr);
-
 	if (!didPopulate)
 	{
 		didPopulate = true;
