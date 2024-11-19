@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "EnemyBase.h"
 #include "RoomBase.generated.h"
 
 UENUM(BlueprintType) //Different Room Types
@@ -76,6 +77,8 @@ public:
 		void RemoveNeighbor(ARoomBase* neighbor); //Removes neighbor from neighbors
 	UFUNCTION(BlueprintCallable, Category = LevelGen)
 		void populate(); //Fills the room with mobs and/or props
+	UFUNCTION(BlueprintCallable, Category = Room)
+		void SpawnMobs();
 
 	bool IsValidRoom(UWorld* world, ARoomBase* spawner); //Checks if the room overlaps another room
 	void AddNeighbor(ARoomBase* toAdd, int index); //Adds toAdd to neighbors at index
@@ -89,6 +92,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	FActorSpawnParameters spawnParams; //Parameters of props/mobs spawned
+	TArray<AEnemyBase*> mobsToSpawn; //Array of mobs to be spawned
 	bool didPopulate; //Check to see if the room has been populated
 
 public:	

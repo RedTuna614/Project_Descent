@@ -24,7 +24,7 @@ AActor* AEnemyBase::FindCover(bool isFleeing, bool &didFind)
 	FCollisionShape shape = FCollisionShape::MakeSphere(radius);
 	FCollisionQueryParams collisionParams;
 	collisionParams.AddIgnoredActor(this);
-	DrawDebugSphere(GetWorld(), GetActorLocation(), shape.GetSphereRadius(), 32, FColor::Emerald, true);
+	//DrawDebugSphere(GetWorld(), GetActorLocation(), shape.GetSphereRadius(), 32, FColor::Emerald, true);
 	GetWorld()->SweepMultiByChannel(HitActors, actorLoc, actorLoc + radius, FQuat::Identity, ECC_Visibility, shape, collisionParams);
 	if(!HitActors.IsEmpty())
 	{

@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "RoomBase.h"
 #include "LevelGenerator.h"
 #include "Engine/OverlapResult.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 ARoomBase::ARoomBase()
@@ -48,6 +48,15 @@ void ARoomBase::populate()
 	if (!didPopulate)
 	{
 		didPopulate = true;
+		UWorld* world = GetWorld();
+		FHitResult hit;
+		FCollisionQueryParams params;
+		FTransform transform;
+		FVector spawnLoc;
+		int enemyNum;
+
+		params.AddIgnoredComponent(box);
+		spawnParams.Owner = this;
 
 		switch (size)
 		{
@@ -55,8 +64,26 @@ void ARoomBase::populate()
 			//Spawn Props
 			break;
 		case(Med):
-			//Spawn Props
 			//Spawn Enemies
+			if (room == Chamber)
+			{
+				enemyNum = FMath::RandRange(3, 5);
+				for (int i = 0; i < enemyNum; i++)
+				{
+					spawnLoc = UKismetMathLibrary::RandomPointInBoundingBox(roomCenter, boxExtents);
+					world->LineTraceSingleByChannel(hit, spawnLoc, { spawnLoc.X, spawnLoc.Y, spawnLoc.Z - 1500 }, ECC_WorldStatic, params);
+					if (hit.GetActor() != nullptr)
+					{
+						if (hit.GetComponent()->GetName().Contains("Floor"))
+						{
+							//transform.SetComponents({ 0,0,0,0 }, spawnLoc, { 1,1,1 });
+							//world->SpawnActor<AEnemyBase>(enemies[FMath::RandRange(0, enemies.Num() - 1)], spawnLoc, {0,0,0}, spawnParams);
+							//mobsToSpawn.Add(world->SpawnActorDeferred<AEnemyBase>(enemies[FMath::RandRange(0, enemies.Num() - 1)], transform, this));
+						}
+					}
+				}
+			}
+			//Spawn Props
 			break;
 		case(Large):
 			//Spawn Props
@@ -65,6 +92,33 @@ void ARoomBase::populate()
 		}
 
 		return;
+	}
+}
+
+void ARoomBase::SpawnMobs()
+{
+	UWorld* world = GetWorld();
+	FVector spawnLoc;
+	FCollisionQueryParams params;
+	FHitResult hit;
+	int enemyNum = FMath::RandRange(3, 5);
+	int i = 0;
+
+	params.AddIgnoredComponent(box);
+	spawnParams.Owner = this;
+
+	while (i != enemyNum)
+	{
+		spawnLoc = UKismetMathLibrary::RandomPointInBoundingBox(roomCenter, boxExtents);
+		world->LineTraceSingleByChannel(hit, spawnLoc, { spawnLoc.X, spawnLoc.Y, spawnLoc.Z - 1500 }, ECC_WorldStatic, params);
+		if (hit.GetActor() != nullptr)
+		{
+			if (hit.GetComponent()->GetName().Contains("Floor"))
+			{
+				world->SpawnActor<AEnemyBase>(enemies[FMath::RandRange(0, enemies.Num() - 1)], spawnLoc, { 0,0,0 }, spawnParams);
+				i++;
+			}
+		}
 	}
 }
 
@@ -93,7 +147,7 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 	* I'm not sure if AddIgnoredActor works in 5.4, but I don't want to check if a room is overlapping the 
 	* one that caused it to be spawned, because if it is, it's by an extremely small amount that is ignorable
 	*/
-
+	
 	//Checks if the room spawning this one still exists, Start can't be deleted so it can be ignored
 	//Due to the change in z level this realy can't be checked with stairs
 	if (room != Stair && spawner->room != Stair && spawner->room != Start)
