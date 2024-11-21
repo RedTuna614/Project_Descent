@@ -5,12 +5,23 @@
 #include "EnemyWeapon.h"
 #include "CoverBase.h"
 #include <Kismet/KismetSystemLibrary.h>
+#include <Kismet/GameplayStatics.h>
+#include <GameFramework/CharacterMovementComponent.h>
 
 AEnemyBase::AEnemyBase() 
 {
 	state = Wake;
 	weapon = NewObject<UEnemyWeapon>();
-	GetActorForwardVector();
+	GetCharacterMovement()->MaxWalkSpeed = movementSpeed;
+}
+
+void AEnemyBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UpdateEnemyState(Idle);
+	SetEnemyStats(enemy);
+	Player = Cast<ACharacterBase>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 }
 
 AActor* AEnemyBase::FindCover(bool isFleeing, bool &didFind)
@@ -154,8 +165,3 @@ void AEnemyBase::DamageEnemy(float damage)
 		Destroy();
 }
 */
-void AEnemyBase::BeginPlay()
-{
-	Super::BeginPlay();
-
-}

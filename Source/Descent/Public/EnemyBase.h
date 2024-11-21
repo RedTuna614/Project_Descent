@@ -64,8 +64,9 @@ public:
 		AActor* FindCover(bool isFleeing, bool &didFind);
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		void SetEnemyStats(EnemyType newEnemy);
-	/*UFUNCTION(BlueprintCallable, Category = Enemy)
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = Enemy)
 		void UpdateEnemyState(EnemyState newState);
+	/*
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		void DamageEnemy(float damage);*/
 protected:
