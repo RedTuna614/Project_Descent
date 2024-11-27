@@ -108,7 +108,7 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 			break;
 		case(Bomber):
 			movementSpeed = 500;
-			health = 25;
+			health = 1;
 			break;
 		case(Mortar):
 			movementSpeed = 200;
@@ -128,6 +128,15 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 
 	weapon->SetEnemyWeaponStats(this);
 
+}
+
+void AEnemyBase::TakeDmg(float damage)
+{
+	health -= damage;
+	if (health <= 0)
+		UpdateEnemyState(Death);
+	else
+		UpdateEnemyState(Damage);
 }
 
 /*

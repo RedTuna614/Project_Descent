@@ -25,7 +25,6 @@ enum SubRoomType : int
 	ShortHall UMETA(DisplayName = "ShortHall"),
 	MidHall UMETA(DisplayName = "MidHall"),
 	LongHall UMETA(DisplayName = "LongHall")
-
 };
 
 UENUM(BlueprintType) //Different Room Sizes
@@ -34,10 +33,9 @@ enum RoomSize : int
 	Small UMETA(DisplayName = "Small"),
 	Med UMETA(DisplayName = "Medium"),
 	Large UMETA(DisplayName = "Large")
-
 };
 
-UCLASS()
+
 class DESCENT_API ARoomBase : public AActor
 {
 	GENERATED_BODY()
@@ -55,7 +53,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
 		TEnumAsByte<RoomSize> size; //Size of the room
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-		TArray<FTransform> doorTransforms; //Transforms where rooms connect and door/deadEnd spawn
+		TArray<FTransform> doorTransforms; //This is how the generator knows where to spawn new rooms and doors
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
 		UPrimitiveComponent* box; //Internal box collider in the room (Helps with overlap testing by making the room not hollow)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
@@ -67,9 +65,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		TArray<UClass*> props; //Array of prop UClasses that can be spawned
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
+		TArray<UStaticMesh*> propMeshes;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		bool beingDestroyed; //Checks if the room is being destroyed
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		bool isSpawning; //Checks if the room is still spawning
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
+		bool hasEnemies; //Is needed to know if the room should be counted in kill missions
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
+		bool hasTreasure; 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		int spawnBias; //Bias to infulence level generation (Might implement later with more testing)
 

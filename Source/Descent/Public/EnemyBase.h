@@ -66,6 +66,8 @@ public:
 		void SetEnemyStats(EnemyType newEnemy);
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = Enemy)
 		void UpdateEnemyState(EnemyState newState);
+
+		void TakeDmg(float damage);
 	/*
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		void DamageEnemy(float damage);*/

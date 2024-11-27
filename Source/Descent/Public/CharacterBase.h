@@ -24,7 +24,7 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadWrite = Category = )
 
 	UFUNCTION(BlueprintCallable, Category = Stats)
-		void TakeDmg(float damage);
+		virtual void TakeDmg(float damage);
 	UFUNCTION(BlueprintCallable, Category = Stats)
 		float GetHealthPercent();
 

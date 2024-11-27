@@ -4,6 +4,7 @@
 #include "LevelGenerator.h"
 #include "Engine/OverlapResult.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Engine/StaticMeshActor.h"
 
 // Sets default values
 ARoomBase::ARoomBase()
@@ -53,7 +54,8 @@ void ARoomBase::populate()
 		FCollisionQueryParams params;
 		FTransform transform;
 		FVector spawnLoc;
-		int enemyNum;
+		int spawnNum;
+		AStaticMeshActor* prop;
 
 		params.AddIgnoredComponent(box);
 		spawnParams.Owner = this;
@@ -65,25 +67,23 @@ void ARoomBase::populate()
 			break;
 		case(Med):
 			//Spawn Enemies
-			if (room == Chamber)
+			//Spawn Props
+			spawnNum = FMath::RandRange(1, 5);
+			for (int i = 0; i < spawnNum; i++)
 			{
-				enemyNum = FMath::RandRange(3, 5);
-				for (int i = 0; i < enemyNum; i++)
+				spawnLoc = UKismetMathLibrary::RandomPointInBoundingBox(roomCenter, boxExtents);
+				world->LineTraceSingleByChannel(hit, spawnLoc, { spawnLoc.X, spawnLoc.Y, spawnLoc.Z - 1500 }, ECC_WorldStatic, params);
+				if (hit.GetActor() != nullptr)
 				{
-					spawnLoc = UKismetMathLibrary::RandomPointInBoundingBox(roomCenter, boxExtents);
-					world->LineTraceSingleByChannel(hit, spawnLoc, { spawnLoc.X, spawnLoc.Y, spawnLoc.Z - 1500 }, ECC_WorldStatic, params);
-					if (hit.GetActor() != nullptr)
+					if (hit.GetComponent()->GetName().Contains("Floor"))
 					{
-						if (hit.GetComponent()->GetName().Contains("Floor"))
-						{
-							//transform.SetComponents({ 0,0,0,0 }, spawnLoc, { 1,1,1 });
-							//world->SpawnActor<AEnemyBase>(enemies[FMath::RandRange(0, enemies.Num() - 1)], spawnLoc, {0,0,0}, spawnParams);
-							//mobsToSpawn.Add(world->SpawnActorDeferred<AEnemyBase>(enemies[FMath::RandRange(0, enemies.Num() - 1)], transform, this));
-						}
+						prop = world->SpawnActor<AStaticMeshActor>(spawnLoc, { 0,0,0 }, spawnParams);
+						prop->GetStaticMeshComponent()->SetStaticMesh(propMeshes[FMath::RandRange(0, propMeshes.Num() - 1)]);
+						prop->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);
+						prop->GetStaticMeshComponent()->SetSimulatePhysics(true);
 					}
 				}
 			}
-			//Spawn Props
 			break;
 		case(Large):
 			//Spawn Props
@@ -268,4 +268,5 @@ void ARoomBase::DestroyValidator()
 {
 	//box->DestroyComponent();
 	box->SetCollisionResponseToAllChannels(ECR_Overlap);
+	box->SetCollisionObjectType(ECC_WorldDynamic);
 }
