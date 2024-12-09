@@ -1,5 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+//Master
+
 #pragma once
 
 #include "CoreMinimal.h"
@@ -35,54 +37,54 @@ enum RoomSize : int
 	Large UMETA(DisplayName = "Large")
 };
 
-
+UCLASS()
 class DESCENT_API ARoomBase : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+
+public:
 	// Sets default values for this actor's properties
 	ARoomBase();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-		TArray<ARoomBase*> neighbors; //ARoomBase connected to this Room
+	TArray<ARoomBase*> neighbors; //ARoomBase connected to this Room
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-		TEnumAsByte<RoomType> room; //The type of room
+	TEnumAsByte<RoomType> room; //The type of room
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-		TEnumAsByte<SubRoomType> subRoom; //The subType of the room
+	TEnumAsByte<SubRoomType> subRoom; //The subType of the room
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-		TEnumAsByte<RoomSize> size; //Size of the room
+	TEnumAsByte<RoomSize> size; //Size of the room
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-		TArray<FTransform> doorTransforms; //This is how the generator knows where to spawn new rooms and doors
+	TArray<FTransform> doorTransforms; //This is how the generator knows where to spawn new rooms and doors
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-		UPrimitiveComponent* box; //Internal box collider in the room (Helps with overlap testing by making the room not hollow)
+	UPrimitiveComponent* box; //Internal box collider in the room (Helps with overlap testing by making the room not hollow)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-		FVector boxExtents; //Scaled extents of box, and the exntents used when checking for room overlap
+	FVector boxExtents; //Scaled extents of box, and the exntents used when checking for room overlap
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-		FVector roomCenter; //Center World Coordinate of the room
+	FVector roomCenter; //Center World Coordinate of the room
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
-		TArray<UClass*> enemies; //Array of mob UClasses that can be spawned
+	TArray<UClass*> enemies; //Array of mob UClasses that can be spawned
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
-		TArray<UClass*> props; //Array of prop UClasses that can be spawned
+	TArray<UClass*> props; //Array of prop UClasses that can be spawned
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
-		TArray<UStaticMesh*> propMeshes;
+	TArray<UStaticMesh*> propMeshes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
-		bool beingDestroyed; //Checks if the room is being destroyed
+	bool beingDestroyed; //Checks if the room is being destroyed
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
-		bool isSpawning; //Checks if the room is still spawning
+	bool isSpawning; //Checks if the room is still spawning
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-		bool hasEnemies; //Is needed to know if the room should be counted in kill missions
+	bool hasEnemies; //Is needed to know if the room should be counted in kill missions
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-		bool hasTreasure; 
+	bool hasTreasure;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
-		int spawnBias; //Bias to infulence level generation (Might implement later with more testing)
+	int spawnBias; //Bias to infulence level generation (Might implement later with more testing)
 
 	UFUNCTION(BlueprintCallable, Category = LevelGen)
-		void RemoveNeighbor(ARoomBase* neighbor); //Removes neighbor from neighbors
+	void RemoveNeighbor(ARoomBase* neighbor); //Removes neighbor from neighbors
 	UFUNCTION(BlueprintCallable, Category = LevelGen)
-		void populate(); //Fills the room with mobs and/or props
+	void populate(); //Fills the room with mobs and/or props
 	UFUNCTION(BlueprintCallable, Category = Room)
-		void SpawnMobs();
+	void SpawnMobs();
 
 	bool IsValidRoom(UWorld* world, ARoomBase* spawner); //Checks if the room overlaps another room
 	void AddNeighbor(ARoomBase* toAdd, int index); //Adds toAdd to neighbors at index
@@ -99,7 +101,7 @@ protected:
 	TArray<AEnemyBase*> mobsToSpawn; //Array of mobs to be spawned
 	bool didPopulate; //Check to see if the room has been populated
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

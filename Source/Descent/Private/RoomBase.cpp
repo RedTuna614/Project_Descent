@@ -1,5 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+//Master
+
 #include "RoomBase.h"
 #include "LevelGenerator.h"
 #include "Engine/OverlapResult.h"
@@ -9,7 +11,7 @@
 // Sets default values
 ARoomBase::ARoomBase()
 {
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	spawnBias = 0;
@@ -130,7 +132,7 @@ void ARoomBase::RemoveNeighbor(ARoomBase* neighbor)
 		{
 			neighbors[i] = nullptr;
 			break;
-		}	
+		}
 	}
 }
 
@@ -144,10 +146,10 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 	collisionParams.AddIgnoredActor(this); //While testing I'm not sure if this actually works in 5.4
 	collisionParams.AddIgnoredActor(spawner);
 	/*
-	* I'm not sure if AddIgnoredActor works in 5.4, but I don't want to check if a room is overlapping the 
+	* I'm not sure if AddIgnoredActor works in 5.4, but I don't want to check if a room is overlapping the
 	* one that caused it to be spawned, because if it is, it's by an extremely small amount that is ignorable
 	*/
-	
+
 	//Checks if the room spawning this one still exists, Start can't be deleted so it can be ignored
 	//Due to the change in z level this realy can't be checked with stairs
 	if (room != Stair && spawner->room != Stair && spawner->room != Start)
@@ -191,7 +193,7 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 			}
 		}
 	}
-	
+
 	TArray<FHitResult>hits;
 	world->SweepMultiByChannel(hits, roomCenter, shape.GetBox(), roomQuat, ECC_Visibility, shape);
 
@@ -222,12 +224,12 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 			}
 		}
 	}
-	
+
 	//DrawDebugBox(world, roomCenter, boxExtents, roomQuat, FColor::Green, false, 10);
 	//At this point the room is valid and has finished spawning
 	isSpawning = false;
 	return true;
-	
+
 }
 
 void ARoomBase::AddNeighbor(ARoomBase* toAdd, int index)
