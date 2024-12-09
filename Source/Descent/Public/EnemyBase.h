@@ -6,9 +6,6 @@
 #include "CharacterBase.h"
 #include "EnemyBase.generated.h"
 
-/**
- * 
- */
 
 class UEnemyWeapon;
 
@@ -64,10 +61,7 @@ public:
 		AActor* FindCover(bool isFleeing, bool &didFind);
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		void SetEnemyStats(EnemyType newEnemy);
-	/*UFUNCTION(BlueprintCallable, Category = Enemy)
-		void UpdateEnemyState(EnemyState newState);
-	UFUNCTION(BlueprintCallable, Category = Enemy)
-		void DamageEnemy(float damage);*/
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

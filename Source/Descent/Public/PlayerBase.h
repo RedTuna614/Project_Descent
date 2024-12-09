@@ -7,9 +7,7 @@
 #include "WeaponBase.h"
 #include "PlayerBase.generated.h"
 
-/**
- * 
- */
+
 UENUM(BlueprintType) //Different Player ingame Classes: Detetermines stats, starting weapons, and abilties
 enum PlayerClasses : int
 {

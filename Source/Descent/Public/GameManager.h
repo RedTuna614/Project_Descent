@@ -6,9 +6,7 @@
 #include "Engine/GameInstance.h"
 #include "GameManager.generated.h"
 
-/**
- * 
- */
+
 
 UENUM(BlueprintType) //Different Room Types
 enum MissionType : int

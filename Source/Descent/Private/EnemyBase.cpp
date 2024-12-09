@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "EnemyBase.h"
 #include "EnemyWeapon.h"
 #include "CoverBase.h"
@@ -118,33 +117,7 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 	weapon->SetEnemyWeaponStats(this);
 
 }
-
 /*
-void AEnemyBase::UpdateEnemyState(EnemyState newState)
-{
-	if (state != newState)
-	{
-		switch (state)
-		{
-			case(Idle):
-				//Do Stuff
-				break;
-			case(Attacking):
-				//Do Stuff
-				break;
-			case(Moving):
-				//Do Stuff
-				break;
-			case(Crouching):
-				//Do Stuff
-				break;
-			case(Damage):
-				//Do Stuff
-				break;
-		}
-	}
-}
-
 void AEnemyBase::DamageEnemy(float damage)
 {
 	health -= damage;

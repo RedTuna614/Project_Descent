@@ -33,7 +33,7 @@ public:
 		UClass* deadEnd; //UClass for the deadEnd AActor
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		UClass* door; //UClass for the door AActor
-		
+
 	UFUNCTION(BlueprintCallable, Category = LevelGen)
 		void ValidateLevel(); //Checks and removes ARoomBase that are null or can't be reached
 	UFUNCTION(BlueprintCallable, Category = LevelGen)
@@ -44,10 +44,11 @@ public:
 	void RemoveRoom(ARoomBase* room); //Destroys and removes ARoomBase from the level
 	void GenLevel(); //Generates the level
 	int ValidateRoom(ARoomBase* room, ARoomBase* spawner); //Returns the valid level of the given ARoomBase
-	TArray<ARoomBase*> toSpawn; //Array of ARoomBase that can have neighbors spawned
-	int currentLevelSize; //Size the currently generated level (number of ARoomBase spawned)
-	int levelGenSize; //Size the level should be generated to
 
+
+		TArray<ARoomBase*> toSpawn; //Array of ARoomBase that can have neighbors spawned
+		int currentLevelSize; //Size the currently generated level (number of ARoomBase spawned)
+		int levelGenSize; //Size the level should be generated to
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

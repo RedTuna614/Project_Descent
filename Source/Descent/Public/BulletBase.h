@@ -36,3 +36,4 @@ protected:
 private:
 	const int maxRange = 5000;
 };
+

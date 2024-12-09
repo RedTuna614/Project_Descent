@@ -7,9 +7,6 @@
 #include "EnemyBase.h"
 #include "EnemyWeapon.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class DESCENT_API UEnemyWeapon : public UWeaponBase
 {

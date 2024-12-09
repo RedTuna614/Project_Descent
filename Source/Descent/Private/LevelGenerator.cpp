@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "LevelGenerator.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
@@ -34,7 +33,7 @@ void ALevelGenerator::BeginPlay()
 	numChamberClasses = chamberClasses.Num() - 1;
 	numHallClasses = hallWays.Num() - 1;
 
-	CreateSpawnRoom();
+	//CreateSpawnRoom();
 }
 
 void ALevelGenerator::ValidateLevel()
