@@ -1,7 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "PlayerBase.h"
+#include "GameManager.h"
+#include <Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 
 APlayerBase::APlayerBase() 
 {
@@ -79,5 +80,8 @@ void APlayerBase::DamagePlayer(float damage)
 	UpdateState(Damaged);
 
 	if (health <= 0)
-		Destroy();
+	{
+		//DisableInput(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		UGameplayStatics::OpenLevel(GetWorld(), "Main");
+	}
 }

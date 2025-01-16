@@ -24,7 +24,8 @@ enum PlayerStates : int
 	Idle UMETA(DisplayName = "Idle"),
 	Running UMETA(DisplayName = "Running"),
 	Sprinting UMETA(DisplayName = "Sprinting"),
-	Damaged UMETA(DisplayName = "Damaged")
+	Damaged UMETA(DisplayName = "Damaged"),
+	Death UMETA(DisplayName = "Death")
 };
 
 UCLASS()

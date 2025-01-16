@@ -19,9 +19,9 @@ void AEnemyBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UpdateEnemyState(Idle);
-	SetEnemyStats(enemy);
 	Player = Cast<ACharacterBase>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	SetEnemyStats(enemy);
+	UpdateEnemyState(Idle);
 }
 
 AActor* AEnemyBase::FindCover(bool isFleeing, bool &didFind)
@@ -39,7 +39,7 @@ AActor* AEnemyBase::FindCover(bool isFleeing, bool &didFind)
 	GetWorld()->SweepMultiByChannel(HitActors, actorLoc, actorLoc + radius, FQuat::Identity, ECC_Visibility, shape, collisionParams);
 	if(!HitActors.IsEmpty())
 	{
-		for (FHitResult hit : HitActors)
+		for (FHitResult& hit : HitActors)
 		{
 			if (hit.GetActor()->ActorHasTag("Cover"))
 			{
@@ -138,39 +138,3 @@ void AEnemyBase::TakeDmg(float damage)
 	else
 		UpdateEnemyState(Damage);
 }
-
-/*
-void AEnemyBase::UpdateEnemyState(EnemyState newState)
-{
-	if (state != newState)
-	{
-		switch (state)
-		{
-			case(Idle):
-				//Do Stuff
-				break;
-			case(Attacking):
-				//Do Stuff
-				break;
-			case(Moving):
-				//Do Stuff
-				break;
-			case(Crouching):
-				//Do Stuff
-				break;
-			case(Damage):
-				//Do Stuff
-				break;
-		}
-	}
-}
-
-void AEnemyBase::DamageEnemy(float damage)
-{
-	health -= damage;
-	UpdateEnemyState(Damage);
-
-	if (health <= 0)
-		Destroy();
-}
-*/

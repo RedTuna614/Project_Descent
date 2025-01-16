@@ -30,4 +30,7 @@ public:
 		TEnumAsByte<MissionType> objective;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		int levelSize;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = Game)
+		void ResetGame();
 };

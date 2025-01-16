@@ -6,10 +6,6 @@
 #include "CharacterBase.h"
 #include "EnemyBase.generated.h"
 
-/**
- * 
- */
-
 class UEnemyWeapon;
 
 UENUM(BlueprintType) //Different Weapon Types

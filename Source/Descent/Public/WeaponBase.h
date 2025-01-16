@@ -6,10 +6,6 @@
 #include "UObject/NoExportTypes.h"
 #include "WeaponBase.generated.h"
 
-/**
- * 
- */
-
 UENUM(BlueprintType) //Different Weapon Types
 enum WeaponType : int
 {
