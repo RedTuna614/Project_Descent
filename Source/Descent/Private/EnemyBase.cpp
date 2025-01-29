@@ -115,7 +115,7 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 			health = 75;
 			break;
 		case(Grunt):
-			movementSpeed = 550;
+			movementSpeed = 400;
 			health = 90;
 			attackDelay = .3;
 			break;
