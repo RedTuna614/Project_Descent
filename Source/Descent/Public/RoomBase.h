@@ -76,8 +76,6 @@ public:
 	bool hasEnemies; //Is needed to know if the room should be counted in kill missions
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
 	bool hasTreasure;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
-	int spawnBias; //Bias to infulence level generation (Might implement later with more testing)
 
 	UFUNCTION(BlueprintCallable, Category = LevelGen)
 	void RemoveNeighbor(ARoomBase* neighbor); //Removes neighbor from neighbors
@@ -85,6 +83,8 @@ public:
 	void populate(); //Fills the room with mobs and/or props
 	UFUNCTION(BlueprintCallable, Category = Room)
 	void SpawnMobs();
+	UFUNCTION(BlueprintCallable, Category = Room)
+	void SpawnTreasure();
 
 	bool IsValidRoom(UWorld* world, ARoomBase* spawner); //Checks if the room overlaps another room
 	void AddNeighbor(ARoomBase* toAdd, int index); //Adds toAdd to neighbors at index
@@ -92,13 +92,13 @@ public:
 	void ReplaceNeighbor(ARoomBase* toReplace, ARoomBase* newRoom); //Replaces toReplace with newRoom in neighbors
 	void DestroyRoom(); //Destroys the room
 	void DestroyValidator(); //Changes the collision type of box to overlap
+	void DestroyIsland(); //Destroys this room and all neighbors that are discnonnected from the dungeon
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	FActorSpawnParameters spawnParams; //Parameters of props/mobs spawned
-	TArray<AEnemyBase*> mobsToSpawn; //Array of mobs to be spawned
 	bool didPopulate; //Check to see if the room has been populated
 
 public:

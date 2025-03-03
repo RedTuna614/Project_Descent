@@ -14,10 +14,11 @@ ARoomBase::ARoomBase()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	spawnBias = 0;
 	isSpawning = true;
 	beingDestroyed = false;
 	didPopulate = false;
+	hasEnemies = false;
+	hasTreasure = false;
 }
 
 // Called when the game starts or when spawned
@@ -103,8 +104,17 @@ void ARoomBase::SpawnMobs()
 	FVector spawnLoc;
 	FCollisionQueryParams params;
 	FHitResult hit;
-	int enemyNum = FMath::RandRange(3, 5);
+	int enemyNum = FMath::RandRange(3, 7);
 	int i = 0;
+
+	switch (size)
+	{
+	case(Med):
+		enemyNum *= 1;
+		break;
+	case(Large):
+		enemyNum *= 4;
+	}
 
 	params.AddIgnoredComponent(box);
 	spawnParams.Owner = this;
@@ -122,6 +132,11 @@ void ARoomBase::SpawnMobs()
 			}
 		}
 	}
+}
+
+void ARoomBase::SpawnTreasure()
+{
+	return;
 }
 
 void ARoomBase::RemoveNeighbor(ARoomBase* neighbor)
@@ -271,4 +286,18 @@ void ARoomBase::DestroyValidator()
 	//box->DestroyComponent();
 	box->SetCollisionResponseToAllChannels(ECR_Overlap);
 	box->SetCollisionObjectType(ECC_WorldDynamic);
+}
+
+void ARoomBase::DestroyIsland()
+{
+	ALevelGenerator* levelGen = Cast<ALevelGenerator>(Owner);
+	for (ARoomBase* neighbor : neighbors)
+	{
+		if (neighbor != nullptr)
+		{
+			neighbor->RemoveNeighbor(this);
+			neighbor->DestroyIsland();
+		}
+	}
+	levelGen->RemoveRoom(this);
 }

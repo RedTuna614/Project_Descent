@@ -9,6 +9,7 @@ APlayerBase::APlayerBase()
 	activeWeapon = 0;
 	EquippedWeapons.SetNum(2);
 	EquippedWeapons = { NewObject<UWeaponBase>(), NewObject<UWeaponBase>() };
+	inCombat = false;
 }
 
 void APlayerBase::SetStats(PlayerClasses newPlayerClass)
@@ -76,6 +77,7 @@ void APlayerBase::UpdateState(PlayerStates newState)
 void APlayerBase::DamagePlayer(float damage)
 {
 	health -= damage;
+	HUD->UpdateDamageMat(health, maxHealth);
 	GEngine->AddOnScreenDebugMessage(10, 20, FColor::Emerald, FString::SanitizeFloat(health));
 	UpdateState(Damaged);
 

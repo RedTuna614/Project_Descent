@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "CharacterBase.h"
+#include "NavigationSystem.h"
 #include "EnemyBase.generated.h"
 
 class UEnemyWeapon;
@@ -15,7 +16,9 @@ enum EnemyType : int
 	Bomber UMETA(DisplayName = "Bomber"),
 	Mortar UMETA(DisplayName = "Mortar"),
 	Grunt UMETA(DisplayName = "Grunt"),
-	Elite UMETA(DisplayName = "Elite")
+	Elite UMETA(DisplayName = "Elite"),
+	Sniper UMETA(DisplayName = "Sniper"),
+	Brute UMETA(DisplayName = "Brute")
 };
 
 UENUM(BlueprintType)
@@ -58,6 +61,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		AActor* FindCover(bool isFleeing, bool &didFind);
+	UFUNCTION(BlueprintCallable, Category = Enemy)
+		FVector FindFleeToLoc(UNavigationSystemV1* navSystem, bool &Success);
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		void SetEnemyStats(EnemyType newEnemy);
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = Enemy)

@@ -38,6 +38,8 @@ void ABulletBase::SetBullet()
 			baseRange = 1500;
 			baseDamage = 10;
 			break;
+		case(Sniper):
+			baseDamage = 25;
 	}
 }
 

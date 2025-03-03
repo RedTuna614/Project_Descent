@@ -57,7 +57,7 @@ public:
 	UWorld* World;
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
-		AActor* Shoot(FVector muzzleLoc, FVector dir, float &damageDealt);
+		void Shoot(FVector muzzleLoc, FVector dir);
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 		void SetWeaponStats(float newDamage, float newRange, int newAccuracy, bool newFullAuto);
 	UFUNCTION(BlueprintCallable, Category = Weapon)

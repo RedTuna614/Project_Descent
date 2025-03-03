@@ -39,6 +39,14 @@ void UEnemyWeapon::SetEnemyWeaponStats(AEnemyBase* owner)
 			damage = 5;
 			meleeDelay = 1;
 			break;
+		case Sniper:
+			shotDelay = 1;
+			damage = 15;
+			break;
+		case Brute:
+			meleeDelay = .2;
+			damage = 15;
+			break;
 	}
 }
 
@@ -62,18 +70,18 @@ AActor* UEnemyWeapon::MeleeAttack(ACharacterBase* Attacker, FVector targetLoc, f
 		if (hit.GetActor()->ActorHasTag("Player"))
 		{
 			damageDealt = damage;
-			collisionParams.ClearIgnoredActors();
+			//collisionParams.ClearIgnoredActors();
 			return hit.GetActor();
 		}
 		else
 		{
-			collisionParams.ClearIgnoredActors();
+			//collisionParams.ClearIgnoredActors();
 			return nullptr;
 		}
 	}
 	else
 	{
-		collisionParams.ClearIgnoredActors();
+		//collisionParams.ClearIgnoredActors();
 		return nullptr;
 	}
 }

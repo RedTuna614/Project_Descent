@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "CharacterBase.h"
 #include "WeaponBase.h"
+#include "PlayerHud.h"
 #include "PlayerBase.generated.h"
 
 /**
@@ -44,6 +45,10 @@ public:
 		TArray<UWeaponBase*> EquippedWeapons;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon) //Index of the weapon being held 
 		int activeWeapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
+		bool inCombat;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
+		UPlayerHud* HUD;
 
 	UFUNCTION(BlueprintCallable, Category = State)
 		void UpdateState(PlayerStates newState);

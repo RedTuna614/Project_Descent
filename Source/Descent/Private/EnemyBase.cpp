@@ -89,6 +89,43 @@ AActor* AEnemyBase::FindCover(bool isFleeing, bool &didFind)
 		
 }
 
+FVector AEnemyBase::FindFleeToLoc(UNavigationSystemV1* navSystem, bool &Success)
+{
+	TArray<FVector> points;
+	FNavLocation navPoint;
+	FVector actorLoc = GetActorLocation();
+	FVector strtLoc = { actorLoc.X - 1500, actorLoc.Y - 1500, actorLoc.Z };
+	FVector endLoc = { actorLoc.X + 1500, actorLoc.Y + 1500, actorLoc.Z };
+	FVector point = strtLoc;
+	int pointAcc = 50;
+
+	for (int y = 0; y < (1500 * 2) / pointAcc; y++)
+	{
+		for (int x = 0; x < (1500 * 2) / pointAcc; x++)
+		{
+			point = { strtLoc.X + (pointAcc * x), strtLoc.Y + (pointAcc * y), strtLoc.Z };
+			if (navSystem->ProjectPointToNavigation(point, navPoint, { 34, 34, 88 }))
+			{
+				points.Add(point);
+			}
+		}
+	}
+
+	if (!points.IsEmpty())
+	{
+		points.Sort([actorLoc](const FVector& x, const FVector& y)
+		{	return FVector::Dist(x, actorLoc) < FVector::Dist(y, actorLoc); });
+	}
+	else
+	{
+		Success = false;
+		return actorLoc;
+	}
+
+	Success = true;
+	return points.Top();
+}
+
 void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 {
 	if (enemy != newEnemy || enemy == NULL)
@@ -120,9 +157,19 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 			attackDelay = .3;
 			break;
 		case(Elite):
-			movementSpeed = 650;
+			movementSpeed = 600;
 			health = 125;
 			attackDelay = .15;
+			break;
+		case(Sniper):
+			movementSpeed = 650;
+			health = 50;
+			attackDelay = .4;
+			break;
+		case(Brute):
+			movementSpeed = 75;
+			health = 200;
+			attackDelay = .5;
 			break;
 	}
 

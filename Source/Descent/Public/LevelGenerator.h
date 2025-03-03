@@ -57,6 +57,7 @@ protected:
 	FActorSpawnParameters spawnParams; //Parameters for all actors spawned by this
 	
 	int genIteration;
+	int roomBias; //Used to control the randomness when choosing room contents
 	int numChamberClasses; //Size of chamberClasses array
 	int numHallClasses; //Size of hallWays array
 	bool spawnedGoalRoom; //Bool checking if the goal room was spawned

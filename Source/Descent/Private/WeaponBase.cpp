@@ -14,12 +14,12 @@ UWeaponBase::UWeaponBase(WeaponType weapon)
 	gunType = weapon;
 }
 
-AActor* UWeaponBase::Shoot(FVector muzzleLoc, FVector dir, float &damageDealt)
+void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
 {
 	if (currentAmmo > 0)
 	{
 		//float damageDealt;
-		damageDealt = 0;
+		float damageDealt = 0;
 
 		currentAmmo--;
 
@@ -41,16 +41,10 @@ AActor* UWeaponBase::Shoot(FVector muzzleLoc, FVector dir, float &damageDealt)
 				{
 					damageDealt = damage;
 				}
-				return hit.GetActor();
+				Cast<ACharacterBase>(hit.GetActor())->TakeDmg(damageDealt);
 			}
-			else
-				return nullptr;
 		}
-		else
-			return nullptr;
 	}
-	else
-		return nullptr;
 }
 
 void UWeaponBase::SetWeaponStats(float newDamage, float newRange, int newAccuracy, bool newFullAuto)

@@ -2,6 +2,7 @@
 
 
 #include "LevelGenerator.h"
+#include "DescentGameBase.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -16,6 +17,7 @@ ALevelGenerator::ALevelGenerator()
 	numHallClasses = 0;
 	spawnedGoalRoom = false;
 	genIteration = 0;
+	roomBias = 7;
 }
 
 // Called when the game starts or when spawned
@@ -51,7 +53,7 @@ void ALevelGenerator::ValidateLevel()
 		{
 			toRemove.Add(Room);
 		}
-		else if (Room->neighbors[0] == nullptr)
+		else if (Room->neighbors[0] == nullptr && Room->room != Start)
 		{
 			//neighbors[0] is the ARoomBase that caused Room to spawn
 			//If neighbors[0] is null than the Room can't be reached
@@ -69,7 +71,6 @@ void ALevelGenerator::ValidateLevel()
 	//Removes invalid rooms from the level and decreases the currentLevelSize
 	for (ARoomBase* Room : toRemove)
 	{
-		currentLevelSize--;
 		RemoveRoom(Room);
 	}
 	
@@ -117,7 +118,7 @@ void ALevelGenerator::ValidateLevel()
 	}
 	else //Complete's the ARoomBase gen cycle and starts the level popluation cycle
 	{
-		//GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, FString::SanitizeFloat(roomsSpawned.Num()), false);
+		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, FString::SanitizeFloat(genIteration), false);
 		SpawnDeadEnds();
 	}
 }
@@ -142,22 +143,9 @@ ARoomBase* ALevelGenerator::MakeDeadEnd(ARoomBase* toReplace)
 
 void ALevelGenerator::RemoveRoom(ARoomBase* room)
 {
-	for (ARoomBase* isRoom : toSpawn)
-	{
-		if (isRoom == room)
-		{
-			toSpawn.Remove(room);
-			break;
-		}
-	}
-	for (ARoomBase* isRoom : roomsSpawned)
-	{
-		if (isRoom == room)
-		{
-			roomsSpawned.Remove(room);
-			break;
-		}
-	}
+	currentLevelSize--;
+	toSpawn.Remove(room);
+	roomsSpawned.Remove(room);
 	room->DestroyRoom();
 }
 
@@ -199,7 +187,7 @@ void ALevelGenerator::GenLevel()
 			if (currentLevelSize >= levelGenSize)
 				break;
 
-			if (IsValid(currRoom))
+			if ((IsValid(currRoom) && currRoom->neighbors[0] != nullptr) || currRoom->room == Start)
 			{
 				for (const FTransform& transform : currRoom->doorTransforms)
 				{
@@ -261,7 +249,6 @@ void ALevelGenerator::GenLevel()
 						*/
 						if (currRoom->room == Hall && currRoom->subRoom == ShortHall)
 						{
-							currentLevelSize--;
 							spawnIndex = FMath::RandRange(0, stairWays.Num() - 1);
 							newRoom = world->SpawnActor<ARoomBase>(stairWays[spawnIndex], currRoom->GetTransform(), spawnParams);
 							//Checks if the Stairs overlap another ARoomBase
@@ -279,7 +266,7 @@ void ALevelGenerator::GenLevel()
 
 					case(0):
 						//The newRoom is completly Invalid and was Destroyed
-						currentLevelSize--;
+						RemoveRoom(newRoom);
 						break;
 					}
 
@@ -293,6 +280,18 @@ void ALevelGenerator::GenLevel()
 				if (!didReplace)
 				{
 					toSpawn.Remove(currRoom);
+				}
+			}
+			else
+			{
+				if (currRoom->neighbors[0] == nullptr)
+				{
+					currRoom->DestroyIsland();
+				}
+				else
+				{
+					currRoom->neighbors[0]->RemoveNeighbor(currRoom);
+					RemoveRoom(currRoom);
 				}
 			}
 		}
@@ -330,6 +329,7 @@ int ALevelGenerator::ValidateRoom(ARoomBase* Room, ARoomBase* spawner)
 
 void ALevelGenerator::SpawnDeadEnds()
 {	
+	ADescentGameBase* gameMode = Cast<ADescentGameBase>(UGameplayStatics::GetGameMode(world));
 	/*
 	* Spawns deadEnd if the ARoomBase neighbor is null
 	* Spawns door if the roomType is Chamber and neighbor is not null
@@ -349,10 +349,27 @@ void ALevelGenerator::SpawnDeadEnds()
 				if (Room->neighbors[i] != nullptr && Room->room == Chamber)
 				{
 					world->SpawnActor<AActor>(door, Room->doorTransforms[i - 1], spawnParams);
+					//Define Room Content (KillRoom, Treasure, )
+					if (FMath::RandRange(0, 10) < roomBias)
+					{
+						Room->hasEnemies = true;
+						gameMode->numKillRooms++;
+						roomBias--;
+					}
+					else
+					{
+						Room->hasTreasure = true;
+						gameMode->numTreasureRooms++;
+						roomBias++;
+					}
 				}
 			}
 		}
 		Room->DestroyValidator();
 		Room->populate();
 	}
+
+	if(gameManager->objective == Kill || gameManager->objective == Find)
+		gameMode->SetGoal(gameManager->objective);
+
 }
