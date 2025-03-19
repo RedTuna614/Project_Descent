@@ -30,6 +30,8 @@ public:
 		TEnumAsByte<MissionType> objective;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		int levelSize;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+		bool useInputSize;
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Game)
 		void ResetGame();

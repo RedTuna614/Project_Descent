@@ -6,4 +6,5 @@
 UGameManager::UGameManager()
 {
 	levelSize = 0;
+	useInputSize = false;
 }

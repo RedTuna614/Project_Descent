@@ -10,6 +10,7 @@ APlayerBase::APlayerBase()
 	EquippedWeapons.SetNum(2);
 	EquippedWeapons = { NewObject<UWeaponBase>(), NewObject<UWeaponBase>() };
 	inCombat = false;
+	isInteracting = false;
 }
 
 void APlayerBase::SetStats(PlayerClasses newPlayerClass)

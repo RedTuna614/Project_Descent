@@ -47,6 +47,8 @@ public:
 		int activeWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		bool inCombat;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interaction)
+		bool isInteracting;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		UPlayerHud* HUD;
 
