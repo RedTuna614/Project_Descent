@@ -6,6 +6,7 @@
 
 APlayerBase::APlayerBase() 
 {
+	shields = 0;
 	activeWeapon = 0;
 	EquippedWeapons.SetNum(2);
 	EquippedWeapons = { NewObject<UWeaponBase>(), NewObject<UWeaponBase>() };
@@ -28,6 +29,7 @@ void APlayerBase::SetStats(PlayerClasses newPlayerClass)
 		switch (playerType)
 		{
 			case(Scout):
+				shields = 200;
 				health = 150;
 				movementSpeed = 600;
 				EquippedWeapons[0]->ResetWeapon(Pistol, this);
@@ -36,6 +38,7 @@ void APlayerBase::SetStats(PlayerClasses newPlayerClass)
 				EquippedWeapons[1]->World = GetWorld();
 				break;
 			case(Engineer):
+				shields = 200;
 				health = 200;
 				movementSpeed = 100;
 				EquippedWeapons[0]->ResetWeapon(Revolver, this);
@@ -44,11 +47,13 @@ void APlayerBase::SetStats(PlayerClasses newPlayerClass)
 				EquippedWeapons[1]->World = GetWorld();
 				break;
 			case(Arcist):
+				shields = 200;
 				health = 100;
 				movementSpeed = 150;
 				break;
 		}
 		maxHealth = health;
+		maxShields = shields;
 	}
 }
 
@@ -77,14 +82,28 @@ void APlayerBase::UpdateState(PlayerStates newState)
 
 void APlayerBase::DamagePlayer(float damage)
 {
-	health -= damage;
-	HUD->UpdateDamageMat(health, maxHealth);
-	GEngine->AddOnScreenDebugMessage(10, 20, FColor::Emerald, FString::SanitizeFloat(health));
 	UpdateState(Damaged);
+	RegenShields(false);
 
-	if (health <= 0)
+	if (shields <= 0)
 	{
-		//DisableInput(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-		UGameplayStatics::OpenLevel(GetWorld(), "Main");
+		health -= damage;
+		HUD->HideDamageMat(false);
+		HUD->HideShieldMat(true);
+		HUD->UpdateDamageMat(health, maxHealth);
+		GEngine->AddOnScreenDebugMessage(10, 20, FColor::Emerald, FString::SanitizeFloat(health));
+
+		if (health <= 0)
+		{
+			//DisableInput(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+			UGameplayStatics::OpenLevel(GetWorld(), "Main");
+		}
+	}
+	else
+	{
+
+		shields -= damage;
+		HUD->HideShieldMat(false);
+		HUD->UpdateShieldMat(shields, maxShields);
 	}
 }

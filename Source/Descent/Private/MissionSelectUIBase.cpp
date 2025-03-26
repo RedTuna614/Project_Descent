@@ -42,11 +42,6 @@ void UMissionSelectUIBase::SetMissions(TArray<UPanelWidget*> missionContainers, 
 			Cast<UImage>(children[i])->SetColorAndOpacity(FColor::Orange);
 		}
 	}
-
-	for (UPanelWidget* container : missionContainers)
-	{
-	
-	}
 }
 
 void UMissionSelectUIBase::SelectMisison(int missionIndex)
@@ -63,5 +58,4 @@ void UMissionSelectUIBase::SelectMisison(int missionIndex)
 	}
 
 	UGameplayStatics::OpenLevel(GetWorld(), "LevelGenTest");
-	  
 }

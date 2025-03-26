@@ -20,8 +20,17 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = UI)
 	UMaterialInstanceDynamic* damageMat;
+	UPROPERTY(BlueprintReadWrite, Category = UI)
+	UMaterialInstanceDynamic* shieldMat;
 
 	UFUNCTION(BlueprintCallable, Category = UI)
 	void UpdateDamageMat(float hp, float maxHP);
+	UFUNCTION(BlueprintCallable, Category = UI)
+	void UpdateShieldMat(float shield, float maxShield);
+	UFUNCTION(BlueprintCallable, Category = UI)
+	void HideDamageMat(bool shouldHide);
+	UFUNCTION(BlueprintCallable, Category = UI)
+	void HideShieldMat(bool shouldHide);
+
 
 };

@@ -43,6 +43,10 @@ public:
 		TEnumAsByte<PlayerStates> state;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon) //Currently Equipped Weapons
 		TArray<UWeaponBase*> EquippedWeapons;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat) //Stores the player's current shields
+		float shields;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat) //Needed to ensure player's shield don't recharge past max
+		float maxShields;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon) //Index of the weapon being held 
 		int activeWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
@@ -60,6 +64,8 @@ public:
 protected:
 	UFUNCTION(BlueprintCallable, Category = Stats)
 		void SetStats(PlayerClasses newPlayerType);
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = Combat)
+		void RegenShields(bool shouldRegen);
 private:
 	
 };
