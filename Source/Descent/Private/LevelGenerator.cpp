@@ -337,7 +337,23 @@ void ALevelGenerator::SpawnDeadEnds()
 	for (ARoomBase* Room : roomsSpawned)
 	{
 		if (Room->room == Chamber)
+		{
 			world->SpawnActor<AActor>(door, Room->GetTransform(), spawnParams);
+			//Define Room Content (KillRoom, Treasure, )
+			if (FMath::RandRange(0, 10) < roomBias)
+			{
+				Room->hasEnemies = true;
+				gameMode->numKillRooms++;
+				roomBias--;
+			}
+			else
+			{
+				Room->hasTreasure = true;
+				gameMode->numTreasureRooms++;
+				roomBias++;
+			}
+		}
+			
 		if (Room->room != Start)
 		{
 			for (int i = 1; i < Room->neighbors.Num(); i++)
@@ -349,19 +365,6 @@ void ALevelGenerator::SpawnDeadEnds()
 				if (Room->neighbors[i] != nullptr && Room->room == Chamber)
 				{
 					world->SpawnActor<AActor>(door, Room->doorTransforms[i - 1], spawnParams);
-					//Define Room Content (KillRoom, Treasure, )
-					if (FMath::RandRange(0, 10) < roomBias)
-					{
-						Room->hasEnemies = true;
-						gameMode->numKillRooms++;
-						roomBias--;
-					}
-					else
-					{
-						Room->hasTreasure = true;
-						gameMode->numTreasureRooms++;
-						roomBias++;
-					}
 				}
 			}
 		}
