@@ -39,7 +39,7 @@ void ALevelGenerator::BeginPlay()
 	CreateSpawnRoom();
 }
 
-void ALevelGenerator::ValidateLevel()
+void ALevelGenerator::ValidateLevel(bool sizeChange)
 {
 	genIteration++;
 
@@ -93,12 +93,12 @@ void ALevelGenerator::ValidateLevel()
 	}
 
 	//Forces the level to continue generating if the number of ARoomBase is less than the levelGenSize
-	if (roomsSpawned.Num() < levelGenSize && !toSpawn.IsEmpty())
+	if (roomsSpawned.Num() < levelGenSize && !toSpawn.IsEmpty() && sizeChange)
 	{
 		currentLevelSize = roomsSpawned.Num();
 		GenLevel();
 	}
-	else if (toSpawn.IsEmpty() && roomsSpawned.Num() < levelGenSize)
+	else if (toSpawn.IsEmpty() && roomsSpawned.Num() < levelGenSize && sizeChange)
 	{
 		//GEngine->AddOnScreenDebugMessage(4, 10, FColor::Cyan, "Empty", false);
 
@@ -160,6 +160,8 @@ void ALevelGenerator::GenLevel()
 	int index = 0; //Index of currRoom's doorTransforms
 	int maxGens = 10000; //Total number of allowed iterations(Prevents an infinite loop if nothing can spawn)
 
+	int size = currentLevelSize;
+
 	//For Levels larger than size 5000, ensures the loop doesn't end early
 	//Mostly here for generator stress testing
 	if (levelGenSize >= (maxGens / 2))
@@ -169,16 +171,17 @@ void ALevelGenerator::GenLevel()
 	{ 
 		i++;
 		//Ends the loop early
+		
 		if (i == maxGens)
 		{
 			for (ARoomBase* Room : needNeighbors)
 			{
 				toSpawn.Add(Room);
 			}
-			ValidateLevel();
+			ValidateLevel(currentLevelSize != size);
 			return;
 		}
-
+		
 		for (ARoomBase* currRoom : toSpawn)
 		{
 			//currRoom is the room being given neighbors
@@ -304,7 +307,7 @@ void ALevelGenerator::GenLevel()
 		toSpawn.Add(Room);
 	}
 
-	ValidateLevel();
+	ValidateLevel(currentLevelSize != size);
 }
 
 int ALevelGenerator::ValidateRoom(ARoomBase* Room, ARoomBase* spawner)

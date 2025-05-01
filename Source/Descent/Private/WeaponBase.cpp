@@ -6,12 +6,27 @@
 
 UWeaponBase::UWeaponBase()
 {
-
+	luckyMag = 0;
+	luckyRnd = 0;
+	dmgMult = 1;
+	multShot = 1;
+	shock = false;
+	freeze = false;
+	explosive = false;
+	rage = false;
 }
 
 UWeaponBase::UWeaponBase(WeaponType weapon)
 {
 	gunType = weapon;
+	luckyMag = 0;
+	luckyRnd = 0;
+	dmgMult = 1;
+	multShot = 1;
+	shock = false;
+	freeze = false;
+	explosive = false;
+	rage = false;
 }
 
 void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
@@ -19,29 +34,24 @@ void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
 	if (currentAmmo > 0)
 	{
 		//float damageDealt;
-		float damageDealt = 0;
+		float damageDealt;
 
-		currentAmmo--;
+		if(FMath::RandRange(0, 100) > luckyMag)
+			currentAmmo--;
 
-		World->LineTraceSingleByChannel(hit, muzzleLoc, ((dir * maxRange) + muzzleLoc), ECC_Pawn, collisionParams);
-		DrawDebugLine(World, muzzleLoc, ((dir * maxRange) + muzzleLoc), FColor::Emerald, true, -1, 0, 1);
-
-		if (hit.GetActor() != nullptr && hit.GetActor()->IsValidLowLevel())
+		for (int i = 0; i < multShot; i++)
 		{
-			if (hit.GetActor()->ActorHasTag("Enemy"))
+			World->LineTraceSingleByChannel(hit, muzzleLoc, ((dir * maxRange) + muzzleLoc), ECC_Pawn, collisionParams);
+			DrawDebugLine(World, muzzleLoc, ((dir * maxRange) + muzzleLoc), FColor::Emerald, true, -1, 0, 1);
+
+			if (hit.GetActor() != nullptr && hit.GetActor()->IsValidLowLevel())
 			{
-				if (FVector::Dist(hit.Location, muzzleLoc) > range)
+				if (hit.GetActor()->ActorHasTag("Enemy"))
 				{
-					if (dmgFallOff != 0)
-						damageDealt = (1 - ((FVector::Dist(hit.Location, muzzleLoc) - range) / dmgFallOff)) * damage;
-					else
-						damageDealt = damage;
+					damageDealt = CalculateDamage(FVector::Dist(hit.Location, muzzleLoc));
+
+					Cast<ACharacterBase>(hit.GetActor())->TakeDmg(damageDealt);
 				}
-				else
-				{
-					damageDealt = damage;
-				}
-				Cast<ACharacterBase>(hit.GetActor())->TakeDmg(damageDealt);
 			}
 		}
 	}
@@ -160,4 +170,19 @@ void UWeaponBase::SetAccuracy(int newAccuracy)
 float UWeaponBase::GetDamage()
 {
 	return damage;
+}
+
+float UWeaponBase::CalculateDamage(float dist)
+{
+	float finalDamage = damage;
+
+	if (dmgFallOff != 0 && dist > range)
+	{
+		finalDamage = (1 - ((dist - range) / dmgFallOff)) * damage;
+	}
+
+	if (FMath::RandRange(0, 100) < luckyRnd)
+		finalDamage *= 2; 
+
+	return finalDamage * dmgMult;
 }

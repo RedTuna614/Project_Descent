@@ -70,15 +70,27 @@ public:
 	void SetAccuracy(int newAccuracy);
 
 	float GetDamage();
+	//Finds the actual damage being dealt after falloff and mods 
+	float CalculateDamage(float dist);
 
 protected: 
-	float damage;
-	float range;
-	float dmgFallOff;
-	int accuracy;
+	float damage; //Weapons Based Damage
+	float range; //Distance until damage falloff
+	float dmgFallOff; //Rate the damage fallsoff
+	int accuracy; 
 
 	float const maxRange = 5000;
 
 	FCollisionQueryParams collisionParams;
 	FHitResult hit;
+
+	//Modifiers
+	float luckyRnd; //Chance the final damage is doubled after calculating
+	float luckyMag; //Chance ammo is not consumed when shooting
+	float dmgMult; //Multiplies the final damage when calculating damage
+	int multShot; //Increases shots fired without lowering ammo
+	bool shock; //Temporarily applies Damage over time effect to enemies hit
+	bool freeze; //Temporarily slows down enemies hit
+	bool rage; //Increases final damage if under %50 hp
+	bool explosive; //Bullets explode dealing splash damage
 };

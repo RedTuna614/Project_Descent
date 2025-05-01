@@ -35,7 +35,7 @@ public:
 		UClass* door; //UClass for the door AActor
 		
 	UFUNCTION(BlueprintCallable, Category = LevelGen)
-		void ValidateLevel(); //Checks and removes ARoomBase that are null or can't be reached
+		void ValidateLevel(bool sizeChange); //Checks and removes ARoomBase that are null or can't be reached
 	UFUNCTION(BlueprintCallable, Category = LevelGen)
 		void CreateSpawnRoom(); //Spawns the Start ARoomBase in the level and starts the level gen process
 
