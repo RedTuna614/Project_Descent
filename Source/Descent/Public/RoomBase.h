@@ -87,6 +87,7 @@ public:
 	void SpawnTreasure();
 
 	bool IsValidRoom(UWorld* world, ARoomBase* spawner); //Checks if the room overlaps another room
+	bool CanSpawnNeighbor(UWorld* world);
 	void AddNeighbor(ARoomBase* toAdd, int index); //Adds toAdd to neighbors at index
 	void AddNeighbor(ARoomBase* toAdd); //Replaces the first found nullptr with toAdd in niehgbors
 	void ReplaceNeighbor(ARoomBase* toReplace, ARoomBase* newRoom); //Replaces toReplace with newRoom in neighbors

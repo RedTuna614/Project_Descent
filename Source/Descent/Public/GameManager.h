@@ -35,4 +35,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, Category = Game)
 		void ResetGame();
+	UFUNCTION(BlueprintImplementableEvent, Category = Game)
+		void ResetLevel();
+
 };

@@ -91,36 +91,39 @@ void ALevelGenerator::ValidateLevel(bool sizeChange)
 			}
 		}
 	}
-
-	//Forces the level to continue generating if the number of ARoomBase is less than the levelGenSize
-	if (roomsSpawned.Num() < levelGenSize && !toSpawn.IsEmpty() && sizeChange)
+	currentLevelSize = roomsSpawned.Num();
+	//Complete's the ARoomBase gen cycle and starts the level popluation cycle
+	if (currentLevelSize >= levelGenSize)
 	{
-		currentLevelSize = roomsSpawned.Num();
-		GenLevel();
+		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, "Success", false);
+		SpawnDeadEnds();
+		return;
 	}
-	else if (toSpawn.IsEmpty() && roomsSpawned.Num() < levelGenSize && sizeChange)
+	/*
+	* Adds rooms that have space for neighbors
+	* to the array if no new rooms were spawned this gen cycle
+	*/
+	if (!sizeChange)
 	{
-		//GEngine->AddOnScreenDebugMessage(4, 10, FColor::Cyan, "Empty", false);
-
-		currentLevelSize = roomsSpawned.Num();
+		//GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, "Loop", false);
 		for (ARoomBase* Room : roomsSpawned)
 		{
-			for (ARoomBase* neighbor : Room->neighbors)
+			if (Room->CanSpawnNeighbor(world))
 			{
-				if (neighbor == nullptr)
-				{
-					toSpawn.Add(Room);
-				}
+				//toSpawn.Add(Room);
+				toSpawn.AddUnique(Room);
 			}
 		}
-
-		GenLevel();
 	}
-	else //Complete's the ARoomBase gen cycle and starts the level popluation cycle
+	//Should only be true if no new rooms can be spawned
+	if (toSpawn.IsEmpty())
 	{
-		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, FString::SanitizeFloat(genIteration), false);
-		SpawnDeadEnds();
+		//Temporary fix that sends the player back to HUB world
+		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, "Fail", false);
+		gameManager->ResetLevel();
 	}
+
+	GenLevel();
 }
 
 void ALevelGenerator::CreateSpawnRoom()
@@ -154,51 +157,25 @@ void ALevelGenerator::GenLevel()
 	ARoomBase* newRoom;
 	TArray<ARoomBase*> needNeighbors;
 	int spawnIndex; //Index of the Chamber, Hall, or Stair being spawned
+	bool didSpawn = false; //Checks if a room was spawned during the gen cycle
 	bool didReplace = false; //Checks if ARoomBase was replaced with Stairs
-	int i = 0; //Iteration of the levelGen process where ARoomBase wasn't spawned
 	bool isGoalAttempt = false; //Checks if the generator is trying to spawn the goalRoom
 	int index = 0; //Index of currRoom's doorTransforms
-	int maxGens = 10000; //Total number of allowed iterations(Prevents an infinite loop if nothing can spawn)
-
-	int size = currentLevelSize;
-
-	//For Levels larger than size 5000, ensures the loop doesn't end early
-	//Mostly here for generator stress testing
-	if (levelGenSize >= (maxGens / 2))
-		maxGens *= 20;
 
 	while (currentLevelSize < levelGenSize)
-	{ 
-		i++;
-		//Ends the loop early
-		
-		if (i == maxGens)
-		{
-			for (ARoomBase* Room : needNeighbors)
-			{
-				toSpawn.Add(Room);
-			}
-			ValidateLevel(currentLevelSize != size);
-			return;
-		}
-		
+	{
+		didSpawn = false;
 		for (ARoomBase* currRoom : toSpawn)
 		{
 			//currRoom is the room being given neighbors
 			didReplace = false;
 			index = 0;
-			if (currentLevelSize >= levelGenSize)
-				break;
 
-			if ((IsValid(currRoom) && currRoom->neighbors[0] != nullptr) || currRoom->room == Start)
+			if (currRoom->room == Start || (currRoom->neighbors[0] != nullptr && IsValid(currRoom)))
 			{
 				for (const FTransform& transform : currRoom->doorTransforms)
 				{
 					index++;
-					if (currentLevelSize >= levelGenSize)
-						break;
-
-					currentLevelSize++;
 					isGoalAttempt = false;
 
 					//Kill mission is the kill a number of mobs, and Find requires exploration so no goalRoom is needed
@@ -224,8 +201,8 @@ void ALevelGenerator::GenLevel()
 							newRoom = world->SpawnActor<ARoomBase>(chamberClasses[spawnIndex], transform, spawnParams);
 						}
 					}
-					newRoom->AddNeighbor(currRoom);
 
+					newRoom->AddNeighbor(currRoom);
 					//Checks if newRoom is valid or Overlaps another ARoomBase
 					switch (ValidateRoom(newRoom, currRoom))
 					{
@@ -242,9 +219,8 @@ void ALevelGenerator::GenLevel()
 							currRoom->AddNeighbor(newRoom);
 						roomsSpawned.Add(newRoom);
 						needNeighbors.Add(newRoom);
-						i = 0;
+						didSpawn = true;
 						break;
-
 					case(1):
 						/*
 						* If newRoom overlaps it should try to spawn Stair instead to change the Z level
@@ -262,19 +238,21 @@ void ALevelGenerator::GenLevel()
 								roomsSpawned.Add(newRoom);
 								needNeighbors.Add(newRoom);
 								didReplace = true;
-								i = 0;
 							}
 						}
 						break;
-
 					case(0):
 						//The newRoom is completly Invalid and was Destroyed
 						RemoveRoom(newRoom);
 						break;
 					}
-
 					if (didReplace)
 					{
+						for (int i = 1; i < currRoom->neighbors.Num(); i++)
+						{
+							if(currRoom->neighbors[i] != nullptr)
+								RemoveRoom(currRoom->neighbors[i]);
+						}
 						RemoveRoom(currRoom);
 						break;
 					}
@@ -300,6 +278,13 @@ void ALevelGenerator::GenLevel()
 		}
 		toSpawn = needNeighbors;
 		needNeighbors.Empty();
+		currentLevelSize = roomsSpawned.Num();
+
+		if (!didSpawn && toSpawn.IsEmpty())
+		{
+			ValidateLevel(false);
+			return;
+		}
 	}
 
 	for (ARoomBase* Room : needNeighbors)
@@ -307,7 +292,7 @@ void ALevelGenerator::GenLevel()
 		toSpawn.Add(Room);
 	}
 
-	ValidateLevel(currentLevelSize != size);
+	ValidateLevel(true);
 }
 
 int ALevelGenerator::ValidateRoom(ARoomBase* Room, ARoomBase* spawner)

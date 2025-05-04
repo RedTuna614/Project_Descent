@@ -247,6 +247,32 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 
 }
 
+bool ARoomBase::CanSpawnNeighbor(UWorld* world)
+{
+	FHitResult outHit;
+	FVector dir, endPos, startPos;
+	FCollisionQueryParams collisionParams;
+	collisionParams.AddIgnoredActor(this);
+
+	for (int i = 1; i < neighbors.Num(); i++)
+	{
+		if (neighbors[i] == nullptr)
+		{
+			dir = UKismetMathLibrary::GetForwardVector(doorTransforms[i - 1].Rotator());
+			startPos = doorTransforms[i - 1].GetLocation();
+			endPos = ((dir * 500) + startPos);
+			world->LineTraceSingleByChannel(outHit, startPos, endPos, ECC_WorldStatic, collisionParams);
+
+			if (outHit.GetActor() == nullptr || !outHit.GetActor()->ActorHasTag("Room"))
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 void ARoomBase::AddNeighbor(ARoomBase* toAdd, int index)
 {
 	neighbors[index] = toAdd;
