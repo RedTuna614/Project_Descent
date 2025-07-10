@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "GameManager.h"
+#include "RoomBase.h"
 #include "DescentGameBase.generated.h"
 
 /**
@@ -26,9 +27,15 @@ public:
 	int goalNum;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
 	bool didWin;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
+	TArray<ARoomBase*>ExitRooms;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
+	TArray<ARoomBase*>roomsSpawned;
 
 	UFUNCTION(BlueprintCallable, Category = Game)
 	void ProgressGoal();
+	UFUNCTION(BlueprintCallable, Category = Map)
+	void ChangeToMapView(bool inMap);
 
 	void SetGoal(MissionType mission);
 

@@ -6,11 +6,13 @@
 #include "CharacterBase.h"
 #include "WeaponBase.h"
 #include "PlayerHud.h"
+#include "RoomBase.h"
 #include "PlayerBase.generated.h"
 
 /**
  * 
  */
+
 UENUM(BlueprintType) //Different Player ingame Classes: Detetermines stats, starting weapons, and abilties
 enum PlayerClasses : int
 {
@@ -19,14 +21,16 @@ enum PlayerClasses : int
 	Arcist UMETA(DisplayName = "Arcist")
 };
 
+//Unreal randomly started complaining that the playerstate and enemystate have enums with the same name
+//It's been fine and working with same names way for a year
 UENUM(BlueprintType)
 enum PlayerStates : int
 {
-	Idle UMETA(DisplayName = "Idle"),
+	Idl UMETA(DisplayName = "Idle"),
 	Running UMETA(DisplayName = "Running"),
 	Sprinting UMETA(DisplayName = "Sprinting"),
 	Damaged UMETA(DisplayName = "Damaged"),
-	Death UMETA(DisplayName = "Death")
+	Deth UMETA(DisplayName = "Death")
 };
 
 UCLASS()
@@ -55,6 +59,8 @@ public:
 		bool isInteracting;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI)
 		UPlayerHud* HUD;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
+		ARoomBase* inRoom;
 
 	UFUNCTION(BlueprintCallable, Category = State)
 		void UpdateState(PlayerStates newState);

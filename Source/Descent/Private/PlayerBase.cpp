@@ -59,12 +59,13 @@ void APlayerBase::SetStats(PlayerClasses newPlayerClass)
 
 void APlayerBase::UpdateState(PlayerStates newState)
 {
+	
 	if (state != newState)
 	{
 		state = newState;
 		switch (state) 
 		{
-			case(Idle):
+			case(Idl):
 				//Do Stuff
 				break;
 			case(Running):
@@ -78,6 +79,7 @@ void APlayerBase::UpdateState(PlayerStates newState)
 				break;
 		}
 	}
+	
 }
 
 void APlayerBase::DamagePlayer(float damage)

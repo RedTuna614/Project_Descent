@@ -7,6 +7,7 @@
 #include "Engine/OverlapResult.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Engine/StaticMeshActor.h"
+#include "Interactible_Base.h"
 
 // Sets default values
 ARoomBase::ARoomBase()
@@ -19,6 +20,7 @@ ARoomBase::ARoomBase()
 	didPopulate = false;
 	hasEnemies = false;
 	hasTreasure = false;
+	playerInside = false;
 }
 
 // Called when the game starts or when spawned
@@ -45,7 +47,7 @@ void ARoomBase::Tick(float DeltaTime)
 
 }
 
-void ARoomBase::populate()
+void ARoomBase::populate_Implementation()
 {
 	//WIP
 
@@ -70,6 +72,11 @@ void ARoomBase::populate()
 			break;
 		case(Med):
 			//Spawn Enemies
+			if (hasExit)
+			{
+				spawnLoc = { roomCenter.X, roomCenter.Y, roomCenter.Z - 470};
+				world->SpawnActor<AInteractible_Base>(exitRoom, spawnLoc, {0,0,0}, spawnParams);
+			}
 			//Spawn Props
 			spawnNum = FMath::RandRange(1, 5);
 			for (int i = 0; i < spawnNum; i++)
@@ -148,6 +155,17 @@ void ARoomBase::RemoveNeighbor(ARoomBase* neighbor)
 			neighbors[i] = nullptr;
 			break;
 		}
+	}
+}
+
+void ARoomBase::ChangeMapColor(bool inMap)
+{
+	for (UMaterialInstanceDynamic* mat : roomMats)
+	{
+		mat->SetScalarParameterValue("Opacity", inMap);
+		mat->SetScalarParameterValue("isEmissive", inMap);
+		mat->SetScalarParameterValue("isEmpty", playerInside);
+		mat->SetScalarParameterValue("isExit", hasExit);
 	}
 }
 

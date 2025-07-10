@@ -26,7 +26,8 @@ enum SubRoomType : int
 	TriHall UMETA(DisplayName = "TriHall"),
 	ShortHall UMETA(DisplayName = "ShortHall"),
 	MidHall UMETA(DisplayName = "MidHall"),
-	LongHall UMETA(DisplayName = "LongHall")
+	LongHall UMETA(DisplayName = "LongHall"),
+	Exit UMETA(DisplayName = "Exit")
 };
 
 UENUM(BlueprintType) //Different Room Sizes
@@ -59,15 +60,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
 	UPrimitiveComponent* box; //Internal box collider in the room (Helps with overlap testing by making the room not hollow)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
-	FVector boxExtents; //Scaled extents of box, and the exntents used when checking for room overlap
+	FVector boxExtents; //Scaled extents of box, and the extents used when checking for room overlap
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
 	FVector roomCenter; //Center World Coordinate of the room
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 	TArray<UClass*> enemies; //Array of mob UClasses that can be spawned
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
-	TArray<UClass*> props; //Array of prop UClasses that can be spawned
+	UClass* exitRoom; //Array of prop UClasses that can be spawned
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 	TArray<UStaticMesh*> propMeshes;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Material)
+	TArray<UMaterialInstanceDynamic*> roomMats;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 	bool beingDestroyed; //Checks if the room is being destroyed
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
@@ -76,15 +79,23 @@ public:
 	bool hasEnemies; //Is needed to know if the room should be counted in kill missions
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
 	bool hasTreasure;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
+	bool hasExit; //Need to if the room contains an exit to the next level
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Map)
+	bool playerInside; 
+
+
 
 	UFUNCTION(BlueprintCallable, Category = LevelGen)
 	void RemoveNeighbor(ARoomBase* neighbor); //Removes neighbor from neighbors
-	UFUNCTION(BlueprintCallable, Category = LevelGen)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = LevelGen)
 	void populate(); //Fills the room with mobs and/or props
 	UFUNCTION(BlueprintCallable, Category = Room)
 	void SpawnMobs();
 	UFUNCTION(BlueprintCallable, Category = Room)
 	void SpawnTreasure();
+	UFUNCTION(BlueprintCallable, Category = Room)
+	void ChangeMapColor(bool inMap); //Changes color of the room the player is in when opening the map
 
 	bool IsValidRoom(UWorld* world, ARoomBase* spawner); //Checks if the room overlaps another room
 	bool CanSpawnNeighbor(UWorld* world);

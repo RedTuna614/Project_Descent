@@ -30,10 +30,18 @@ void ADescentGameBase::SetGoal(MissionType mission)
 	switch (mission)
 	{
 	case(Kill):
-		goalNum = 7 * (numKillRooms * .5);
+		goalNum = 3 * numKillRooms;
 		break;
 	case(Find):
 		goalNum = numTreasureRooms * .5;
 		break;
+	}
+}
+
+void ADescentGameBase::ChangeToMapView(bool inMap)
+{
+	for (ARoomBase* room : roomsSpawned)
+	{
+		room->ChangeMapColor(inMap);
 	}
 }

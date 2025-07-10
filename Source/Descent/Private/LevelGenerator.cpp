@@ -3,6 +3,7 @@
 
 #include "LevelGenerator.h"
 #include "DescentGameBase.h"
+#include "PlayerBase.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -18,6 +19,7 @@ ALevelGenerator::ALevelGenerator()
 	spawnedGoalRoom = false;
 	genIteration = 0;
 	roomBias = 7;
+	numExits = 0;
 }
 
 // Called when the game starts or when spawned
@@ -134,6 +136,7 @@ void ALevelGenerator::CreateSpawnRoom()
 	roomsSpawned.Add(spawnRoom);
 	toSpawn.Add(spawnRoom);
 	currentLevelSize++;
+	spawnRoom->playerInside = true;
 	GenLevel();
 }
 
@@ -318,6 +321,8 @@ int ALevelGenerator::ValidateRoom(ARoomBase* Room, ARoomBase* spawner)
 void ALevelGenerator::SpawnDeadEnds()
 {	
 	ADescentGameBase* gameMode = Cast<ADescentGameBase>(UGameplayStatics::GetGameMode(world));
+	//The spawn room should alsways be the first index in roomsSpawned
+	roomsSpawned[0]->playerInside = true;
 	/*
 	* Spawns deadEnd if the ARoomBase neighbor is null
 	* Spawns door if the roomType is Chamber and neighbor is not null
@@ -328,17 +333,26 @@ void ALevelGenerator::SpawnDeadEnds()
 		{
 			world->SpawnActor<AActor>(door, Room->GetTransform(), spawnParams);
 			//Define Room Content (KillRoom, Treasure, )
-			if (FMath::RandRange(0, 10) < roomBias)
+			if (numExits < 3 && FMath::RandBool())
 			{
-				Room->hasEnemies = true;
-				gameMode->numKillRooms++;
-				roomBias--;
+				Room->hasExit = true;
+				gameMode->ExitRooms.Add(Room);
+				numExits++;
 			}
 			else
 			{
-				Room->hasTreasure = true;
-				gameMode->numTreasureRooms++;
-				roomBias++;
+				if (FMath::RandRange(0, 10) < roomBias)
+				{
+					Room->hasEnemies = true;
+					gameMode->numKillRooms++;
+					roomBias--;
+				}
+				else
+				{
+					Room->hasTreasure = true;
+					gameMode->numTreasureRooms++;
+					roomBias++;
+				}
 			}
 		}
 			
@@ -359,6 +373,8 @@ void ALevelGenerator::SpawnDeadEnds()
 		Room->DestroyValidator();
 		Room->populate();
 	}
+
+	gameMode->roomsSpawned = roomsSpawned;
 
 	if(gameManager->objective == Kill || gameManager->objective == Find)
 		gameMode->SetGoal(gameManager->objective);

@@ -46,7 +46,7 @@ void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
 
 			if (hit.GetActor() != nullptr && hit.GetActor()->IsValidLowLevel())
 			{
-				if (hit.GetActor()->ActorHasTag("Enemy"))
+				if (hit.GetActor()->ActorHasTag("Enemy") || hit.GetActor()->ActorHasTag("Mob"))
 				{
 					damageDealt = CalculateDamage(FVector::Dist(hit.Location, muzzleLoc));
 

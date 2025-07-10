@@ -21,7 +21,7 @@ public:
 		TArray<UClass*> chamberClasses; //Array containing the UClasses for Chamber ARoomBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		TArray<UClass*> hallWays; //Array containing the UClasses for Hall ARoomBase
-		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		TArray<UClass*> stairWays; //Array containing the UClasses for Stair ARoomBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		TArray<UClass*> goalRooms; //Array containing the UClasses for GoalRoom ARoomBase
@@ -60,6 +60,7 @@ protected:
 	int roomBias; //Used to control the randomness when choosing room contents
 	int numChamberClasses; //Size of chamberClasses array
 	int numHallClasses; //Size of hallWays array
+	int numExits; //Number of exits leading to the next floor
 	bool spawnedGoalRoom; //Bool checking if the goal room was spawned
 
 };
