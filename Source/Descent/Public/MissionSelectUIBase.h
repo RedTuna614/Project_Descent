@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "GameManager.h"
+#include "Interactible_Base.h"
 #include "MissionSelectUIBase.generated.h"
 
 /**
@@ -21,6 +22,8 @@ public:
 		TArray<int> missionRank;
 	UPROPERTY(BlueprintReadWrite, Category = Mission)
 		int missionsAvailable;
+	UPROPERTY(BlueprintReadWrite, Category = Mission, meta = (ExposeOnSpawn = "true"))
+		AInteractible_Base* Owner;
 
 	UFUNCTION(BlueprintCallable, Category = Mission)
 		void SetMissions(TArray<UPanelWidget*> missionContainers, TArray<UTextBlock*> objText);

@@ -24,7 +24,7 @@ public:
 		UPrimitiveComponent* collider;
 
 	UFUNCTION(BlueprintCallable, Category = Interaction)
-		void BeginOverlap(UPrimitiveComponent* OverlappedComponent,
+		virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 			AActor* OtherActor,
 			UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex,

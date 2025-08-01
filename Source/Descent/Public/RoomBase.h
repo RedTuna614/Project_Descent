@@ -66,6 +66,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 	TArray<UClass*> enemies; //Array of mob UClasses that can be spawned
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
+	UClass* treasure; //UClass for treasure that can be spawned
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 	UClass* exitRoom; //Array of prop UClasses that can be spawned
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 	TArray<UStaticMesh*> propMeshes;
@@ -93,7 +95,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Room)
 	void SpawnMobs();
 	UFUNCTION(BlueprintCallable, Category = Room)
-	void SpawnTreasure();
+	void SpawnTreasure(AActor* player);
 	UFUNCTION(BlueprintCallable, Category = Room)
 	void ChangeMapColor(bool inMap); //Changes color of the room the player is in when opening the map
 

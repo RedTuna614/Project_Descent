@@ -14,47 +14,42 @@ APlayerBase::APlayerBase()
 	isInteracting = false;
 }
 
-void APlayerBase::SetStats(PlayerClasses newPlayerClass)
+void APlayerBase::SetStats()
 {
-	//EquippedWeapons = { NewObject<UWeaponBase>(), NewObject<UWeaponBase>() };
+	UGameManager* gameManager = Cast<UGameManager>(GetGameInstance());
+	GEngine->AddOnScreenDebugMessage(5, 2, FColor::Red, GetWorld()->GetName());
+	Inventory = gameManager->playerInventory;
+
+	if (gameManager->playerWeapons.IsEmpty())
+	{
+		//EquippedWeapons = { NewObject<UWeaponBase>(), NewObject<UWeaponBase>() };
+		for (int i = 0; i < EquippedWeapons.Num(); i++)
+		{
+			if (EquippedWeapons[i] == nullptr)
+			{
+				EquippedWeapons[i] = NewObject<UWeaponBase>();
+				//GEngine->AddOnScreenDebugMessage(3, 2, FColor::Emerald, "Bob");
+			}
+		}
+		EquippedWeapons[0]->ResetWeapon(Pistol, this);
+		EquippedWeapons[1]->ResetWeapon(AssaultRifle, this);
+		gameManager->playerWeapons = EquippedWeapons;
+	}
+	else
+		EquippedWeapons = gameManager->playerWeapons;
+
 	for (int i = 0; i < EquippedWeapons.Num(); i++)
 	{
-		if (EquippedWeapons[i] == nullptr)
-			EquippedWeapons[i] = NewObject<UWeaponBase>();
+		EquippedWeapons[i]->World = GetWorld();
+		EquippedWeapons[i]->SetOwner(this);
 	}
 
-	if (playerType != newPlayerClass || playerType == NULL)
-	{
-		playerType = newPlayerClass;
-		switch (playerType)
-		{
-			case(Scout):
-				shields = 200;
-				health = 150;
-				movementSpeed = 600;
-				EquippedWeapons[0]->ResetWeapon(Pistol, this);
-				EquippedWeapons[0]->World = GetWorld();
-				EquippedWeapons[1]->ResetWeapon(AssaultRifle, this);
-				EquippedWeapons[1]->World = GetWorld();
-				break;
-			case(Engineer):
-				shields = 200;
-				health = 200;
-				movementSpeed = 100;
-				EquippedWeapons[0]->ResetWeapon(Revolver, this);
-				EquippedWeapons[0]->World = GetWorld();
-				EquippedWeapons[1]->ResetWeapon(Shotgun, this);
-				EquippedWeapons[1]->World = GetWorld();
-				break;
-			case(Arcist):
-				shields = 200;
-				health = 100;
-				movementSpeed = 150;
-				break;
-		}
-		maxHealth = health;
-		maxShields = shields;
-	}
+	shields = 200;
+	health = 150;
+	movementSpeed = 600;
+	maxHealth = health;
+	maxShields = shields;
+	
 }
 
 void APlayerBase::UpdateState(PlayerStates newState)
@@ -103,7 +98,6 @@ void APlayerBase::DamagePlayer(float damage)
 	}
 	else
 	{
-
 		shields -= damage;
 		HUD->HideShieldMat(false);
 		HUD->UpdateShieldMat(shields, maxShields);

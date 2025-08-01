@@ -2,6 +2,7 @@
 
 
 #include "GameManager.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 UGameManager::UGameManager()
 {

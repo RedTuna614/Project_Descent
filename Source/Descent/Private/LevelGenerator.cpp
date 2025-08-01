@@ -333,7 +333,7 @@ void ALevelGenerator::SpawnDeadEnds()
 		{
 			world->SpawnActor<AActor>(door, Room->GetTransform(), spawnParams);
 			//Define Room Content (KillRoom, Treasure, )
-			if (numExits < 3 && FMath::RandBool())
+			if (numExits < 3 && FMath::RandBool() && Room->subRoom == Exit)
 			{
 				Room->hasExit = true;
 				gameMode->ExitRooms.Add(Room);

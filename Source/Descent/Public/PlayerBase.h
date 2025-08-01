@@ -7,6 +7,7 @@
 #include "WeaponBase.h"
 #include "PlayerHud.h"
 #include "RoomBase.h"
+#include "InventoryBase.h"
 #include "PlayerBase.generated.h"
 
 /**
@@ -47,6 +48,8 @@ public:
 		TEnumAsByte<PlayerStates> state;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon) //Currently Equipped Weapons
 		TArray<UWeaponBase*> EquippedWeapons;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game) 
+		TArray<UWeaponBase*> Inventory;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat) //Stores the player's current shields
 		float shields;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat) //Needed to ensure player's shield don't recharge past max
@@ -61,17 +64,22 @@ public:
 		UPlayerHud* HUD;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
 		ARoomBase* inRoom;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
+		UInventoryBase* inventoryUI;
 
 	UFUNCTION(BlueprintCallable, Category = State)
 		void UpdateState(PlayerStates newState);
 	UFUNCTION(BlueprintCallable, Category = Stats)
 		void DamagePlayer(float damage);
 
+	const int maxInventorySize = 15;
+
 protected:
 	UFUNCTION(BlueprintCallable, Category = Stats)
-		void SetStats(PlayerClasses newPlayerType);
+		void SetStats();
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = Combat)
 		void RegenShields(bool shouldRegen);
+
 private:
 	
 };

@@ -4,6 +4,7 @@
 
 #include "RoomBase.h"
 #include "LevelGenerator.h"
+#include "Loot_Chest.h"
 #include "Engine/OverlapResult.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Engine/StaticMeshActor.h"
@@ -141,9 +142,23 @@ void ARoomBase::SpawnMobs()
 	}
 }
 
-void ARoomBase::SpawnTreasure()
+void ARoomBase::SpawnTreasure(AActor* player)
 {
-	return;
+	UWorld* world = GetWorld();
+	FVector spawnLoc;
+	FRotator spawnRot;
+	FCollisionQueryParams params;
+	FHitResult hit;
+
+	params.AddIgnoredComponent(box);
+	spawnParams.Owner = this;
+
+	//Sets the chest's spawn location to 500 units infront of the player when entering the room
+	spawnLoc = (player->GetActorForwardVector() * 500) + player->GetActorLocation();
+	//Forces the chest to face the player when spawned
+	spawnRot = { 0,0,player->GetActorRotation().Yaw * -1 };
+
+	world->SpawnActor<ALoot_Chest>(treasure, spawnLoc, spawnRot, spawnParams);
 }
 
 void ARoomBase::RemoveNeighbor(ARoomBase* neighbor)

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "CharacterBase.h"
 #include "WeaponBase.generated.h"
 
 UENUM(BlueprintType) //Different Weapon Types
@@ -31,6 +32,7 @@ class DESCENT_API UWeaponBase : public UObject
 public:
 	// Sets default values for this actor's properties
 	UWeaponBase();
+	UWeaponBase(ACharacterBase* newOwner);
 	UWeaponBase(WeaponType weapon);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
@@ -55,6 +57,7 @@ public:
 		bool isFullAuto;
 
 	UWorld* World;
+	int numMods;
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 		void Shoot(FVector muzzleLoc, FVector dir);
@@ -62,16 +65,27 @@ public:
 		void SetWeaponStats(float newDamage, float newRange, int newAccuracy, bool newFullAuto);
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 		void ReloadGun();
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+		TArray<float>GetStats();
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+		TArray<float>GetModifiers();
+	UFUNCTION(BlueprintCallable, Category = Weapon) //Returns a weapon's Stats or Modifiers as a String
+		FString ToString(bool isModifier);
 
-	void ResetWeapon(WeaponType newType, AActor* owner);
+	void ResetWeapon(WeaponType newType, ACharacterBase* newOwner);
+	void ResetModifiers();
+	void SetBaseStats(WeaponType newType);
 	void SetDamage(float newDamage);
 	void SetRange(float newRange);
 	void SetFallOff(float newFallOff);
 	void SetAccuracy(int newAccuracy);
+	void SetModifier(int modId);
+	void SetOwner(ACharacterBase* newOwner);
 
 	float GetDamage();
 	//Finds the actual damage being dealt after falloff and mods 
 	float CalculateDamage(float dist);
+
 
 protected: 
 	float damage; //Weapons Based Damage
@@ -81,16 +95,17 @@ protected:
 
 	float const maxRange = 5000;
 
+	ACharacterBase* Owner;
 	FCollisionQueryParams collisionParams;
 	FHitResult hit;
 
 	//Modifiers
-	float luckyRnd; //Chance the final damage is doubled after calculating
-	float luckyMag; //Chance ammo is not consumed when shooting
-	float dmgMult; //Multiplies the final damage when calculating damage
-	int multShot; //Increases shots fired without lowering ammo
-	bool shock; //Temporarily applies Damage over time effect to enemies hit
-	bool freeze; //Temporarily slows down enemies hit
-	bool rage; //Increases final damage if under %50 hp
-	bool explosive; //Bullets explode dealing splash damage
+	int luckyRnd;	// [0] Chance the final damage is doubled after calculating
+	float luckyMag; // [1] Chance ammo is not consumed when shooting
+	float dmgMult;	// [2] Multiplies the final damage when calculating damage
+	int multShot;	// [3] Increases shots fired without lowering ammo
+	int shock;		// [4] Temporarily applies Damage over time effect to enemies hit
+	int freeze;		// [5] Temporarily slows down enemies hit
+	int rage;		// [6] Increases final damage if under %35 hp
+	int explosive;	// [7] Bullets explode dealing splash damage
 };

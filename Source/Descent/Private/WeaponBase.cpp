@@ -2,7 +2,7 @@
 
 
 #include "WeaponBase.h"
-#include "CharacterBase.h"
+#include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 UWeaponBase::UWeaponBase()
 {
@@ -10,10 +10,26 @@ UWeaponBase::UWeaponBase()
 	luckyRnd = 0;
 	dmgMult = 1;
 	multShot = 1;
-	shock = false;
-	freeze = false;
-	explosive = false;
-	rage = false;
+	shock = 0;
+	freeze = 0;
+	explosive = 0;
+	rage = 0;
+	numMods = 0;
+}
+
+UWeaponBase::UWeaponBase(ACharacterBase* newOwner)
+{
+	Owner = newOwner;
+	GEngine->AddOnScreenDebugMessage(3, 20, FColor::Emerald, "Revolver");
+	luckyMag = 0;
+	luckyRnd = 0;
+	dmgMult = 1;
+	multShot = 1;
+	shock = 0;
+	freeze = 0;
+	explosive = 0;
+	rage = 0;
+	numMods = 0;
 }
 
 UWeaponBase::UWeaponBase(WeaponType weapon)
@@ -23,10 +39,11 @@ UWeaponBase::UWeaponBase(WeaponType weapon)
 	luckyRnd = 0;
 	dmgMult = 1;
 	multShot = 1;
-	shock = false;
-	freeze = false;
-	explosive = false;
-	rage = false;
+	shock = 0;
+	freeze = 0;
+	explosive = 0;
+	rage = 0;
+	numMods = 0;
 }
 
 void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
@@ -48,8 +65,8 @@ void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
 			{
 				if (hit.GetActor()->ActorHasTag("Enemy") || hit.GetActor()->ActorHasTag("Mob"))
 				{
+					//GEngine->AddOnScreenDebugMessage(3, 2, FColor::Emerald, World->GetName());
 					damageDealt = CalculateDamage(FVector::Dist(hit.Location, muzzleLoc));
-
 					Cast<ACharacterBase>(hit.GetActor())->TakeDmg(damageDealt);
 				}
 			}
@@ -86,59 +103,142 @@ void UWeaponBase::ReloadGun()
 	}
 }
 
-void UWeaponBase::ResetWeapon(WeaponType newType, AActor* owner)
+TArray<float> UWeaponBase::GetStats()
+{
+	TArray<float>stats;
+	stats.SetNum(5);
+	//float stats[5];
+
+	stats[0] = damage;
+	stats[1] = range;
+	stats[2] = dmgFallOff;
+	stats[3] = accuracy;
+	stats[4] = maxAmmo;
+
+	return stats;
+}
+
+TArray<float> UWeaponBase::GetModifiers()
+{
+	TArray<float> mods;
+
+	mods.Add(luckyMag);		// [0] Chance the final damage is doubled after calculating
+	mods.Add(luckyRnd);		// [1] Chance ammo is not consumed when shooting
+	mods.Add(dmgMult);		// [2] Multiplies the final damage when calculating damage
+	mods.Add(multShot);		// [3] Increases shots fired without lowering ammo
+	mods.Add(shock);		// [4] Temporarily applies Damage over time effect to enemies hit
+	mods.Add(freeze);		// [5] Temporarily slows down enemies hit
+	mods.Add(rage);			// [6] Increases final damage if under %35 hp
+	mods.Add(explosive);	// [7] Bullets explode dealing splash damage
+
+	return mods;
+}
+
+FString UWeaponBase::ToString(bool isModifer)
+{
+	FString newString;
+
+	if (isModifer)
+	{
+		newString =
+			"LuckyMag: " + FString::SanitizeFloat(luckyMag) + "\n" +
+			"LuckyRnd: " + FString::SanitizeFloat(luckyRnd) + "\n" +
+			"DmgMult: " + FString::SanitizeFloat(dmgMult) + "\n" +
+			"MultiShot: " + FString::SanitizeFloat(multShot) + "\n" +
+			"Shock: " + FString::SanitizeFloat(shock) + "\n" +
+			"Freeze: " + FString::SanitizeFloat(freeze) + "\n" +
+			"Rage: " + FString::SanitizeFloat(rage) + "\n" +
+			"Explosive: " + FString::SanitizeFloat(explosive);
+	}
+	else
+	{
+		newString =
+			"Damage: " + FString::SanitizeFloat(damage) + "\n" +
+			"Range: " + FString::SanitizeFloat(range) + "\n" +
+			"Falloff: " + FString::SanitizeFloat(dmgFallOff) + "\n" +
+			"Accuracy: " + FString::SanitizeFloat(accuracy) + "\n" +
+			"MaxAmmo: " + FString::SanitizeFloat(maxAmmo);
+	}
+
+	return newString;
+}
+
+void UWeaponBase::ResetWeapon(WeaponType newType, ACharacterBase* newOwner)
+{
+	Owner = newOwner;
+	collisionParams.AddIgnoredActor(Owner);
+
+	SetBaseStats(newType);
+	ResetModifiers();
+}
+
+void UWeaponBase::ResetModifiers()
+{
+	//Resets Modifiers to default values
+	luckyMag = 0;
+	luckyRnd = 0;
+	dmgMult = 1;
+	multShot = 1;
+	shock = 0;
+	freeze = 0;
+	explosive = 0;
+	rage = 0;
+	numMods = 0;
+}
+
+void UWeaponBase::SetBaseStats(WeaponType newType)
 {
 	gunType = newType;
+
 	//The shotdelay and damage has been set so each gun does on around 75 dmg a second
 	//Dps = damage * (100 / (shotDelay * 100))
+	//Base value stats for weapons
 	switch (gunType)
 	{
-		case(Shotgun):
-			damage = 25;
-			range = 1500;
-			accuracy = 0;
-			maxAmmo = 8;
-			isFullAuto = false;
-			shotDelay = 0.3;
-			//GEngine->AddOnScreenDebugMessage(0, 20, FColor::Emerald, "Shotgun");
-			//Set Starting Stats
-			break;
-		case(Pistol):
-			damage = 15;
-			range = 1500;
-			accuracy = 0;
-			maxAmmo = 12;
-			isFullAuto = false;
-			shotDelay = 0.2;
-			//GEngine->AddOnScreenDebugMessage(1, 20, FColor::Emerald, "Pistol");
-			//Set Starting Stats
-			break;
-		case(AssaultRifle):
-			damage = 7.5;
-			range = 1500;
-			accuracy = 0;
-			maxAmmo = 25;
-			isFullAuto = true;
-			shotDelay = 0.1;
-			GEngine->AddOnScreenDebugMessage(2, 20, FColor::Emerald, "AssaultRifle");
-			//Set Starting Stats
-			break;
-		case(Revolver):
-			damage = 18.75;
-			range = 1500;
-			accuracy = 0;
-			maxAmmo = 6;
-			isFullAuto = false;
-			shotDelay = 0.25;
-			GEngine->AddOnScreenDebugMessage(3, 20, FColor::Emerald, "Revolver");
-			//Set Starting Stats
-			break;
+	case(Shotgun):
+		damage = 25;
+		range = 1500;
+		accuracy = 0;
+		maxAmmo = 8;
+		isFullAuto = false;
+		shotDelay = 0.3;
+		//GEngine->AddOnScreenDebugMessage(0, 20, FColor::Emerald, "Shotgun");
+		//Set Starting Stats
+		break;
+	case(Pistol):
+		damage = 15;
+		range = 1500;
+		accuracy = 0;
+		maxAmmo = 12;
+		isFullAuto = false;
+		shotDelay = 0.2;
+		//GEngine->AddOnScreenDebugMessage(1, 20, FColor::Emerald, "Pistol");
+		//Set Starting Stats
+		break;
+	case(AssaultRifle):
+		damage = 7.5;
+		range = 1500;
+		accuracy = 0;
+		maxAmmo = 25;
+		isFullAuto = true;
+		shotDelay = 0.1;
+		GEngine->AddOnScreenDebugMessage(2, 20, FColor::Emerald, "AssaultRifle");
+		//Set Starting Stats
+		break;
+	case(Revolver):
+		damage = 18.75;
+		range = 1500;
+		accuracy = 0;
+		maxAmmo = 6;
+		isFullAuto = false;
+		shotDelay = 0.25;
+		//GEngine->AddOnScreenDebugMessage(3, 20, FColor::Emerald, "Revolver");
+		//Set Starting Stats
+		break;
 	}
 	dmgFallOff = maxRange - range;
 	currentAmmo = maxAmmo;
 	reserveAmmo = maxAmmo * 2;
-	
-	collisionParams.AddIgnoredActor(owner);
 
 }
 
@@ -167,6 +267,45 @@ void UWeaponBase::SetAccuracy(int newAccuracy)
 	accuracy = newAccuracy;
 }
 
+void UWeaponBase::SetModifier(int modId)
+{
+	numMods++;
+
+	switch (modId)
+	{
+		case(0):
+			luckyRnd++;
+			break;
+		case(1):
+			luckyMag += 2;
+			break;
+		case(2):
+			dmgMult += 0.05;
+			break;
+		case(3):
+			multShot += 2;
+			break;
+		case(4):
+			shock += 4;
+			break;
+		case(5):
+			freeze += 10;
+			break;
+		case(6):
+			rage += 5;
+			break;
+		case(7):
+			explosive = 25;
+			break;
+	}
+}
+
+void UWeaponBase::SetOwner(ACharacterBase* newOwner)
+{
+	Owner = newOwner;
+	collisionParams.AddIgnoredActor(Owner);
+}
+
 float UWeaponBase::GetDamage()
 {
 	return damage;
@@ -180,6 +319,9 @@ float UWeaponBase::CalculateDamage(float dist)
 	{
 		finalDamage = (1 - ((dist - range) / dmgFallOff)) * damage;
 	}
+
+	if ((Owner->maxHealth / Owner->health) <= (Owner->maxHealth * 0.35))
+		finalDamage += rage;
 
 	if (FMath::RandRange(0, 100) < luckyRnd)
 		finalDamage *= 2; 

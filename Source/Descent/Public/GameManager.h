@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "WeaponBase.h"
 #include "GameManager.generated.h"
 
 /**
@@ -28,6 +29,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
 		TEnumAsByte<MissionType> objective;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
+		TArray<UWeaponBase*> playerWeapons;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
+		TArray<UWeaponBase*> playerInventory;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		int levelSize;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
@@ -37,5 +42,4 @@ public:
 		void ResetGame();
 	UFUNCTION(BlueprintImplementableEvent, Category = Game)
 		void ResetLevel();
-
 };
