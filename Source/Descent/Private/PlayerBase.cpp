@@ -17,8 +17,14 @@ APlayerBase::APlayerBase()
 void APlayerBase::SetStats()
 {
 	UGameManager* gameManager = Cast<UGameManager>(GetGameInstance());
-	GEngine->AddOnScreenDebugMessage(5, 2, FColor::Red, GetWorld()->GetName());
+	//GEngine->AddOnScreenDebugMessage(5, 2, FColor::Red, GetWorld()->GetName());
+	UWorld* world = GetWorld();
 	Inventory = gameManager->playerInventory;
+	for (UWeaponBase* weapon : Inventory)
+	{
+		weapon->World = world;
+		weapon->SetOwner(this);
+	}
 
 	if (gameManager->playerWeapons.IsEmpty())
 	{
@@ -40,8 +46,9 @@ void APlayerBase::SetStats()
 
 	for (int i = 0; i < EquippedWeapons.Num(); i++)
 	{
-		EquippedWeapons[i]->World = GetWorld();
+		EquippedWeapons[i]->World = world;
 		EquippedWeapons[i]->SetOwner(this);
+		EquippedWeapons[i]->ResetAmmo();
 	}
 
 	shields = 200;
@@ -54,7 +61,6 @@ void APlayerBase::SetStats()
 
 void APlayerBase::UpdateState(PlayerStates newState)
 {
-	
 	if (state != newState)
 	{
 		state = newState;

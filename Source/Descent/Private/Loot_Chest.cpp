@@ -34,6 +34,7 @@ UWeaponBase* ALoot_Chest::CreateWeapon()
 	*/
 	UWeaponBase* playerWeapon = player->EquippedWeapons[FMath::RandRange(0,1)];
 	UWeaponBase* weapon = NewObject<UWeaponBase>();
+	UWorld* world = GetWorld();
 	int currMods = playerWeapon->numMods;
 	int numNewMods = FMath::RandRange(1, currMods + 2);
 	int weaponId = FMath::RandRange(0, 3);
@@ -45,6 +46,8 @@ UWeaponBase* ALoot_Chest::CreateWeapon()
 	{
 		modId = FMath::RandRange(0, 7);
 		weapon->SetModifier(modId);
+		weapon->World = world;
+		weapon->SetOwner(player);
 	}
 	GEngine->AddOnScreenDebugMessage(21, 20, FColor::Emerald, "WeaponMade");
 

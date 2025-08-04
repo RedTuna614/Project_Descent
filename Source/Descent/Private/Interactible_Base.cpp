@@ -41,14 +41,22 @@ void AInteractible_Base::BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor->ActorHasTag("Player"))
+	{
 		playerOverlapped = true;
+		player->HUD->SetShowInteractText(false, GetName());
+	}
+		
 }
 
 void AInteractible_Base::EndOverlap(UPrimitiveComponent* OverlappedComponent, 
 	AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if (OtherActor->ActorHasTag("Player"))
+	{
 		playerOverlapped = false;
+		player->HUD->SetShowInteractText(true, GetName());
+	}
+		
 }
 
 void AInteractible_Base::Interaction_Implementation()

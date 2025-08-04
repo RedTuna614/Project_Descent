@@ -23,7 +23,7 @@ void UInventoryBase::SetInvUI(TArray<UTextBlock*> invText, UVerticalBox* invCont
 	if (playerInventory.IsEmpty())
 	{
 		for (UTextBlock* text : invText)
-			text->SetText(FText::FromString(""));
+			text->SetText(FText::FromString("--------------"));
 		invContainer->SetRenderOpacity(35);
 		invContainer->SetIsEnabled(false);
 		GEngine->AddOnScreenDebugMessage(24, 5, FColor::Blue, "Empty Inventory");
@@ -63,7 +63,7 @@ void UInventoryBase::SetInvUI(TArray<UTextBlock*> invText, UVerticalBox* invCont
 		{
 			for (i = invText.Num() - 1; i >= len; i--)
 			{
-				invText[i]->SetText(FText::FromString(""));
+				invText[i]->SetText(FText::FromString("--------------"));
 				invSlot[i]->SetIsEnabled(false);
 				invSlot[i]->SetRenderOpacity(35);
 			}

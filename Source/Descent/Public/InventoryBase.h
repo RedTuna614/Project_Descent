@@ -23,6 +23,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
 		bool viewShiftProperty;
 
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = Inventory)
+		void RemoveUI();
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		void SetInvUI(TArray<UTextBlock*> invText, UVerticalBox* invContainer);
 	UFUNCTION(BlueprintCallable, Category = Inventory)

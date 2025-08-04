@@ -66,6 +66,12 @@ void ARoomBase::populate_Implementation()
 		params.AddIgnoredComponent(box);
 		spawnParams.Owner = this;
 
+		if (hasExit)
+		{
+			spawnLoc = { roomCenter.X, roomCenter.Y, roomCenter.Z - 470 };
+			world->SpawnActor<AInteractible_Base>(exitRoom, spawnLoc, { 0,0,0 }, spawnParams);
+		}
+
 		switch (size)
 		{
 		case(Small):
@@ -73,11 +79,6 @@ void ARoomBase::populate_Implementation()
 			break;
 		case(Med):
 			//Spawn Enemies
-			if (hasExit)
-			{
-				spawnLoc = { roomCenter.X, roomCenter.Y, roomCenter.Z - 470};
-				world->SpawnActor<AInteractible_Base>(exitRoom, spawnLoc, {0,0,0}, spawnParams);
-			}
 			//Spawn Props
 			spawnNum = FMath::RandRange(1, 5);
 			for (int i = 0; i < spawnNum; i++)

@@ -56,8 +56,13 @@ void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
 		if(FMath::RandRange(0, 100) > luckyMag)
 			currentAmmo--;
 
-		for (int i = 0; i < multShot; i++)
+		for (int i = 0; i < numProjectiles * multShot; i++)
 		{
+			//GEngine->AddOnScreenDebugMessage(3, 2, FColor::Emerald, dir.ToCompactString());
+			dir.X += FMath::FRandRange((accuracy * -1), accuracy);
+			dir.Y += FMath::FRandRange((accuracy * -1), accuracy);
+			dir.Z += FMath::FRandRange((accuracy * -1), accuracy);
+
 			World->LineTraceSingleByChannel(hit, muzzleLoc, ((dir * maxRange) + muzzleLoc), ECC_Pawn, collisionParams);
 			DrawDebugLine(World, muzzleLoc, ((dir * maxRange) + muzzleLoc), FColor::Emerald, true, -1, 0, 1);
 
@@ -157,7 +162,7 @@ FString UWeaponBase::ToString(bool isModifer)
 			"Range: " + FString::SanitizeFloat(range) + "\n" +
 			"Falloff: " + FString::SanitizeFloat(dmgFallOff) + "\n" +
 			"Accuracy: " + FString::SanitizeFloat(accuracy) + "\n" +
-			"MaxAmmo: " + FString::SanitizeFloat(maxAmmo);
+			"Ammo: " + FString::SanitizeFloat(currentAmmo + reserveAmmo);
 	}
 
 	return newString;
@@ -186,31 +191,39 @@ void UWeaponBase::ResetModifiers()
 	numMods = 0;
 }
 
+void UWeaponBase::ResetAmmo()
+{
+	currentAmmo = maxAmmo;
+	reserveAmmo = maxAmmo * 2;
+}
+
 void UWeaponBase::SetBaseStats(WeaponType newType)
 {
 	gunType = newType;
 
 	//The shotdelay and damage has been set so each gun does on around 75 dmg a second
-	//Dps = damage * (100 / (shotDelay * 100))
+	//Dps = (damage * (100 / (shotDelay * 100)) * numProjectiles)
 	//Base value stats for weapons
 	switch (gunType)
 	{
 	case(Shotgun):
-		damage = 25;
+		damage = 5;
 		range = 1500;
-		accuracy = 0;
+		accuracy = 0.1;
 		maxAmmo = 8;
 		isFullAuto = false;
-		shotDelay = 0.3;
+		numProjectiles = 5;
+		shotDelay = (1.0/3.0);
 		//GEngine->AddOnScreenDebugMessage(0, 20, FColor::Emerald, "Shotgun");
 		//Set Starting Stats
 		break;
 	case(Pistol):
 		damage = 15;
 		range = 1500;
-		accuracy = 0;
+		accuracy = 0.02;
 		maxAmmo = 12;
 		isFullAuto = false;
+		numProjectiles = 1;
 		shotDelay = 0.2;
 		//GEngine->AddOnScreenDebugMessage(1, 20, FColor::Emerald, "Pistol");
 		//Set Starting Stats
@@ -218,19 +231,21 @@ void UWeaponBase::SetBaseStats(WeaponType newType)
 	case(AssaultRifle):
 		damage = 7.5;
 		range = 1500;
-		accuracy = 0;
+		accuracy = 0.03;
 		maxAmmo = 25;
 		isFullAuto = true;
+		numProjectiles = 1;
 		shotDelay = 0.1;
-		GEngine->AddOnScreenDebugMessage(2, 20, FColor::Emerald, "AssaultRifle");
+		//GEngine->AddOnScreenDebugMessage(2, 20, FColor::Emerald, "AssaultRifle");
 		//Set Starting Stats
 		break;
 	case(Revolver):
 		damage = 18.75;
 		range = 1500;
-		accuracy = 0;
+		accuracy = 0.01;
 		maxAmmo = 6;
 		isFullAuto = false;
+		numProjectiles = 1;
 		shotDelay = 0.25;
 		//GEngine->AddOnScreenDebugMessage(3, 20, FColor::Emerald, "Revolver");
 		//Set Starting Stats
@@ -239,7 +254,6 @@ void UWeaponBase::SetBaseStats(WeaponType newType)
 	dmgFallOff = maxRange - range;
 	currentAmmo = maxAmmo;
 	reserveAmmo = maxAmmo * 2;
-
 }
 
 void UWeaponBase::SetDamage(float newDamage)

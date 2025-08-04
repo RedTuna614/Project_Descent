@@ -74,6 +74,7 @@ public:
 
 	void ResetWeapon(WeaponType newType, ACharacterBase* newOwner);
 	void ResetModifiers();
+	void ResetAmmo();
 	void SetBaseStats(WeaponType newType);
 	void SetDamage(float newDamage);
 	void SetRange(float newRange);
@@ -91,7 +92,9 @@ protected:
 	float damage; //Weapons Based Damage
 	float range; //Distance until damage falloff
 	float dmgFallOff; //Rate the damage fallsoff
-	int accuracy; 
+	float accuracy; //Slight offset when firing to mimic accuracy/recoil
+
+	int numProjectiles; //Number of projects fired in single shot
 
 	float const maxRange = 5000;
 

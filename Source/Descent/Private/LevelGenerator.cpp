@@ -379,4 +379,10 @@ void ALevelGenerator::SpawnDeadEnds()
 	if(gameManager->objective == Kill || gameManager->objective == Find)
 		gameMode->SetGoal(gameManager->objective);
 
+	//Allows the SpawnRoom to function as an exit room if none spawned
+	if (numExits == 0)
+	{
+		roomsSpawned[0]->hasExit = true;
+		roomsSpawned[0]->populate();
+	}
 }
