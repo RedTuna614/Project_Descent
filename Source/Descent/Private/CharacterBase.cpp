@@ -2,6 +2,7 @@
 
 
 #include "CharacterBase.h"
+#include "StatusBase.h"
 
 // Sets default values
 ACharacterBase::ACharacterBase()
@@ -32,7 +33,7 @@ void ACharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
-void ACharacterBase::TakeDmg(float damage)
+void ACharacterBase::TakeDmg(float damage, bool isStatus)
 {
 	health -= damage;
 	if (health <= 0)
@@ -42,4 +43,12 @@ void ACharacterBase::TakeDmg(float damage)
 float ACharacterBase::GetHealthPercent()
 {
 	return health / maxHealth;
+}
+
+void ACharacterBase::ApplyStatusEffect(int statusType, int strength)
+{
+	UStatusBase* status =
+		Cast<UStatusBase>(AddComponentByClass(statuses[statusType], false, GetActorTransform(), false));
+
+	status->StatusEffect(strength, this);
 }

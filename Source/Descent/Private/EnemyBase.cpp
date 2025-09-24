@@ -177,11 +177,11 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 
 }
 
-void AEnemyBase::TakeDmg(float damage)
+void AEnemyBase::TakeDmg(float damage, bool isStatus)
 {
 	health -= damage;
-	if (health <= 0)
-		UpdateEnemyState(Death);
-	else
+	if(health >= 0 && !isStatus)
 		UpdateEnemyState(Damage);
+	else
+		UpdateEnemyState(Death);
 }

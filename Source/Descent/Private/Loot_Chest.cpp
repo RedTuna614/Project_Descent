@@ -49,7 +49,9 @@ UWeaponBase* ALoot_Chest::CreateWeapon()
 		weapon->World = world;
 		weapon->SetOwner(player);
 	}
-	GEngine->AddOnScreenDebugMessage(21, 20, FColor::Emerald, "WeaponMade");
+	if (weapon->GetModifier(7) != 0)
+		weapon->explosionClass = explosive;
+	//GEngine->AddOnScreenDebugMessage(21, 20, FColor::Emerald, "WeaponMade");
 
 	return weapon;
 }

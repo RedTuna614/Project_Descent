@@ -72,6 +72,8 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Stats)
 		void DamagePlayer(float damage);
 
+		virtual void TakeDmg(float damage, bool isStatus);
+
 	const int maxInventorySize = 15;
 
 protected:

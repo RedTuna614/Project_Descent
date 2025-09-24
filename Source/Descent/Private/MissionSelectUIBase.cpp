@@ -44,16 +44,18 @@ void UMissionSelectUIBase::SetMissions(TArray<UPanelWidget*> missionContainers, 
 	}
 }
 
-void UMissionSelectUIBase::SelectMisison(int missionIndex)
+void UMissionSelectUIBase::SelectMisison()
 {
 	UGameManager* gameManager = Cast<UGameManager>(GetGameInstance());
 	APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	gameManager->objective = nextMission;
 	controller->SetInputMode(FInputModeGameOnly());
 	controller->SetShowMouseCursor(false);
 
+
 	if (!gameManager->useInputSize)
 	{
-		gameManager->levelSize = 20 * missionRank[missionIndex];
+		//gameManager->levelSize = 20 * missionRank[missionIndex];
 		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, FString::SanitizeFloat(gameManager->levelSize), true);
 	}
 

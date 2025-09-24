@@ -17,6 +17,9 @@ class DESCENT_API ALoot_Chest : public AInteractible_Base
 public:
 	ALoot_Chest();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Loot)
+	UClass* explosive;
+
 	UWeaponBase* newWeapon;
 
 	UFUNCTION(BlueprintCallable, Category = Loot)

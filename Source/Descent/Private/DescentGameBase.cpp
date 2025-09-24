@@ -6,7 +6,7 @@
 ADescentGameBase::ADescentGameBase()
 {
 	numKillRooms = 0;
-	numTreasureRooms = 0;
+	numChambers = 0;
 	didWin = false;
 }
 
@@ -33,7 +33,7 @@ void ADescentGameBase::SetGoal(MissionType mission)
 		goalNum = 3 * numKillRooms;
 		break;
 	case(Find):
-		goalNum = numTreasureRooms * .5;
+		goalNum = numChambers * .5;
 		break;
 	}
 }

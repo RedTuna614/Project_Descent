@@ -332,8 +332,9 @@ void ALevelGenerator::SpawnDeadEnds()
 		if (Room->room == Chamber)
 		{
 			world->SpawnActor<AActor>(door, Room->GetTransform(), spawnParams);
+			gameMode->numChambers++;
 			//Define Room Content (KillRoom, Treasure, )
-			if (numExits < 3 && FMath::RandBool() && Room->subRoom == Exit)
+			if (((numExits < 3 && FMath::RandBool()) || numExits == 0) && Room->subRoom == Exit)
 			{
 				Room->hasExit = true;
 				gameMode->ExitRooms.Add(Room);
@@ -350,7 +351,6 @@ void ALevelGenerator::SpawnDeadEnds()
 				else
 				{
 					Room->hasTreasure = true;
-					gameMode->numTreasureRooms++;
 					roomBias++;
 				}
 			}

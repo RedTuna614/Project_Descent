@@ -24,11 +24,13 @@ public:
 		int missionsAvailable;
 	UPROPERTY(BlueprintReadWrite, Category = Mission, meta = (ExposeOnSpawn = "true"))
 		AInteractible_Base* Owner;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (ExposeOnSpawn = "true"))
+		TEnumAsByte<MissionType> nextMission;
 
 	UFUNCTION(BlueprintCallable, Category = Mission)
 		void SetMissions(TArray<UPanelWidget*> missionContainers, TArray<UTextBlock*> objText);
 	UFUNCTION(BlueprintCallable, Category = Mission)
-		void SelectMisison(int missionIndex);
+		void SelectMisison();
 	
 protected:
 

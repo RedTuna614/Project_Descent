@@ -109,3 +109,8 @@ void APlayerBase::DamagePlayer(float damage)
 		HUD->UpdateShieldMat(shields, maxShields);
 	}
 }
+
+void APlayerBase::TakeDmg(float damage, bool isStatus)
+{
+	DamagePlayer(damage);
+}

@@ -21,12 +21,15 @@ public:
 		float health;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 		float movementSpeed;
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite = Category = )
+	UPROPERTY(EditAnywhere, BlueprintReadWrite = Category = Status)
+		TArray<UClass*>statuses;
 
 	UFUNCTION(BlueprintCallable, Category = Stats)
-		virtual void TakeDmg(float damage);
+		virtual void TakeDmg(float damage, bool isStatus);
 	UFUNCTION(BlueprintCallable, Category = Stats)
 		float GetHealthPercent();
+
+		void ApplyStatusEffect(int statusType, int strength);
 
 protected:
 	// Called when the game starts or when spawned

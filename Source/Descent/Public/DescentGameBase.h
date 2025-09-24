@@ -22,7 +22,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
 	int numKillRooms;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
-	int numTreasureRooms;
+	int numChambers;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
 	int goalNum;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)

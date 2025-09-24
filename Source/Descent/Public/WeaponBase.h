@@ -57,6 +57,7 @@ public:
 		bool isFullAuto;
 
 	UWorld* World;
+	UClass* explosionClass;
 	int numMods;
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
@@ -86,7 +87,7 @@ public:
 	float GetDamage();
 	//Finds the actual damage being dealt after falloff and mods 
 	float CalculateDamage(float dist);
-
+	float GetModifier(int modId);
 
 protected: 
 	float damage; //Weapons Based Damage

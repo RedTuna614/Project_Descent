@@ -2,6 +2,8 @@
 
 
 #include "WeaponBase.h"
+#include "StatusBase.h"
+#include "Engine/OverlapResult.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
 UWeaponBase::UWeaponBase()
@@ -48,6 +50,11 @@ UWeaponBase::UWeaponBase(WeaponType weapon)
 
 void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
 {
+	ACharacterBase* hitCharacter;
+	TArray<FOverlapResult> outOverlaps;
+	FCollisionShape shape = FCollisionShape::MakeSphere(150);
+	FCollisionQueryParams queryParams;
+
 	if (currentAmmo > 0)
 	{
 		//float damageDealt;
@@ -63,16 +70,44 @@ void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
 			dir.Y += FMath::FRandRange((accuracy * -1), accuracy);
 			dir.Z += FMath::FRandRange((accuracy * -1), accuracy);
 
-			World->LineTraceSingleByChannel(hit, muzzleLoc, ((dir * maxRange) + muzzleLoc), ECC_Pawn, collisionParams);
+			World->LineTraceSingleByChannel(hit, muzzleLoc, ((dir * maxRange) + muzzleLoc), ECC_Camera, collisionParams);
 			DrawDebugLine(World, muzzleLoc, ((dir * maxRange) + muzzleLoc), FColor::Emerald, true, -1, 0, 1);
 
 			if (hit.GetActor() != nullptr && hit.GetActor()->IsValidLowLevel())
 			{
 				if (hit.GetActor()->ActorHasTag("Enemy") || hit.GetActor()->ActorHasTag("Mob"))
 				{
+					hitCharacter = Cast<ACharacterBase>(hit.GetActor());
 					//GEngine->AddOnScreenDebugMessage(3, 2, FColor::Emerald, World->GetName());
+					if (shock != 0)
+						hitCharacter->ApplyStatusEffect(0, shock);
+					if (freeze != 0)
+						hitCharacter->ApplyStatusEffect(1, freeze);
+
 					damageDealt = CalculateDamage(FVector::Dist(hit.Location, muzzleLoc));
-					Cast<ACharacterBase>(hit.GetActor())->TakeDmg(damageDealt);
+					hitCharacter->TakeDmg(damageDealt, false);
+				}
+			}
+
+			if (explosive != 0)
+			{
+				FVector spawnLoc = hit.Location;
+				World->OverlapMultiByChannel(outOverlaps, hit.Location, FQuat::Identity, ECC_Camera, shape);
+				DrawDebugSphere(World, hit.Location, 150, 32, FColor::Red, false, 2);
+				for (FOverlapResult& result : outOverlaps)
+				{
+					if (result.GetActor()->IsValidLowLevel() && result.GetActor() != nullptr)
+					{
+						if (result.GetActor()->GetClass()->IsChildOf(ACharacterBase::StaticClass()))
+						{
+							//GEngine->AddOnScreenDebugMessage(3, 2, FColor::Emerald, World->GetName());
+							hitCharacter = Cast<ACharacterBase>(result.GetActor());
+							/*damageDealt =
+								((FVector::Dist(hit.Location, hitCharacter->GetActorLocation()) / 150) - 1) * explosive;
+							*/
+							hitCharacter->TakeDmg(explosive, false);
+						}
+					}
 				}
 			}
 		}
@@ -303,7 +338,7 @@ void UWeaponBase::SetModifier(int modId)
 			shock += 4;
 			break;
 		case(5):
-			freeze += 10;
+			freeze += 25;
 			break;
 		case(6):
 			rage += 5;
@@ -341,4 +376,29 @@ float UWeaponBase::CalculateDamage(float dist)
 		finalDamage *= 2; 
 
 	return finalDamage * dmgMult;
+}
+
+float UWeaponBase::GetModifier(int modId)
+{
+	switch (modId)
+	{
+	case(0):
+		return luckyRnd;
+	case(1):
+		return luckyMag;
+	case(2):
+		return dmgMult;
+	case(3):
+		return multShot;
+	case(4):
+		return shock;
+	case(5):
+		return freeze;
+	case(6):
+		return rage;
+	case(7):
+		return explosive;
+	}
+
+	return -1;
 }
