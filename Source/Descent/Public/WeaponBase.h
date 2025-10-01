@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "CharacterBase.h"
+#include "WeaponPart.h"
 #include "WeaponBase.generated.h"
 
 UENUM(BlueprintType) //Different Weapon Types
@@ -27,7 +28,6 @@ UCLASS(Blueprintable, BlueprintType)
 class DESCENT_API UWeaponBase : public UObject
 {
 	GENERATED_BODY()
-	
 
 public:
 	// Sets default values for this actor's properties
@@ -40,11 +40,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 		TEnumAsByte<GunDamageType> dmgType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-		USkeletalMesh* body;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-		USkeletalMesh* stock;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-		USkeletalMesh* barrel;
+		TArray<UWeaponPart*> weaponParts;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon) //Max ammo allowed per mag
 		int maxAmmo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon) //Remaining Ammo not loaded in the gun
