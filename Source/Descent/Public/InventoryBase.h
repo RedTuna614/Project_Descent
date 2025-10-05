@@ -30,7 +30,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		void SetWeaponUI(TArray<UTextBlock*> gunText);
 	UFUNCTION(BlueprintCallable, Category = Inventory)
-		void SwapWeapons(UWeaponBase* invWeapon, UWeaponBase* equipWeapon);
+		bool SwapWeapons(UWeaponBase* invWeapon, UWeaponBase* equipWeapon);
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		int GetHoveredWeaponIndex(UVerticalBox* wpnContainer, UVerticalBox* invContainer, bool &inInventory);
 

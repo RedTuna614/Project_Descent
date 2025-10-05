@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "WeaponBase.h"
+#include "WeaponAssembler.h"
 #include "GameManager.generated.h"
 
 /**
@@ -33,6 +34,8 @@ public:
 		TArray<UWeaponBase*> playerWeapons;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
 		TArray<UWeaponBase*> playerInventory;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+		UWeaponAssembler* weaponAssembler;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		int levelSize;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)

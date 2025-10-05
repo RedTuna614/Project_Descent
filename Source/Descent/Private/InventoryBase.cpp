@@ -95,9 +95,10 @@ void UInventoryBase::SetWeaponUI(TArray<UTextBlock*> gunText)
 	}
 }
 
-void UInventoryBase::SwapWeapons(UWeaponBase* invWeapon, UWeaponBase* equipWeapon)
+bool UInventoryBase::SwapWeapons(UWeaponBase* invWeapon, UWeaponBase* equipWeapon)
 {
 	APlayerBase* player = Cast<APlayerBase>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	bool isActiveWeapon = player->EquippedWeapons[player->activeWeapon] == equipWeapon;
 	int index;
 
 	playerInventory.Find(invWeapon, index);
@@ -106,6 +107,8 @@ void UInventoryBase::SwapWeapons(UWeaponBase* invWeapon, UWeaponBase* equipWeapo
 	playerWeapons.Find(equipWeapon, index);
 	GEngine->AddOnScreenDebugMessage(14, 5, FColor::Red, FString::SanitizeFloat(index));
 	player->EquippedWeapons[index] = invWeapon;
+
+	return isActiveWeapon;
 }
 
 int UInventoryBase::GetHoveredWeaponIndex(UVerticalBox* wpnContainer, UVerticalBox* invContainer, bool &inInventory)

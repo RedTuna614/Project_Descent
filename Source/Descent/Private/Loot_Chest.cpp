@@ -40,7 +40,8 @@ UWeaponBase* ALoot_Chest::CreateWeapon()
 	int weaponId = FMath::RandRange(0, 3);
 	int modId;
 
-	weapon->SetBaseStats(StaticCast<WeaponType>(weaponId));
+	//weapon->SetBaseStats(StaticCast<WeaponType>(weaponId));
+	weapon->GenWeaponParts(world);
 
 	for (int i = 0; i < numNewMods; i++)
 	{

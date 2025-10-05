@@ -5,16 +5,17 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "CharacterBase.h"
-#include "WeaponPart.h"
+#include "WeaponAssembler.h"
 #include "WeaponBase.generated.h"
 
 UENUM(BlueprintType) //Different Weapon Types
 enum WeaponType : int
 {
-	Shotgun UMETA(DisplayName = "Shotgun"),
 	Pistol UMETA(DisplayName = "Pistol"),
-	AssaultRifle UMETA(DisplayName = "Assault Rifle"),
-	Revolver UMETA(DisplayName = "Revolver")
+	Revolver UMETA(DisplayName = "Revolver"),
+	Shotgun UMETA(DisplayName = "Shotgun"),
+	AssaultRifle UMETA(DisplayName = "Assault Rifle")
+	
 };
 
 UENUM(BlueprintType) //Different Damage types
@@ -40,7 +41,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 		TEnumAsByte<GunDamageType> dmgType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-		TArray<UWeaponPart*> weaponParts;
+		TArray<FWeaponPart> weaponParts;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon) //Max ammo allowed per mag
 		int maxAmmo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon) //Remaining Ammo not loaded in the gun
@@ -51,6 +52,8 @@ public:
 		float shotDelay; //Replace later with recoil anim (Move to Enemy Weapon when replacing)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 		bool isFullAuto;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+		bool isBarrelMag;
 
 	UWorld* World;
 	UClass* explosionClass;
@@ -79,6 +82,8 @@ public:
 	void SetAccuracy(int newAccuracy);
 	void SetModifier(int modId);
 	void SetOwner(ACharacterBase* newOwner);
+
+	void GenWeaponParts(UWorld* world);
 
 	float GetDamage();
 	//Finds the actual damage being dealt after falloff and mods 

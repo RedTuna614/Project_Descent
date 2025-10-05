@@ -3,6 +3,7 @@
 
 #include "WeaponBase.h"
 #include "StatusBase.h"
+#include "GameManager.h"
 #include "Engine/OverlapResult.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 
@@ -208,7 +209,7 @@ void UWeaponBase::ResetWeapon(WeaponType newType, ACharacterBase* newOwner)
 	Owner = newOwner;
 	collisionParams.AddIgnoredActor(Owner);
 
-	SetBaseStats(newType);
+	GenWeaponParts(Owner->GetWorld());
 	ResetModifiers();
 }
 
@@ -353,6 +354,15 @@ void UWeaponBase::SetOwner(ACharacterBase* newOwner)
 {
 	Owner = newOwner;
 	collisionParams.AddIgnoredActor(Owner);
+}
+
+void UWeaponBase::GenWeaponParts(UWorld* world)
+{
+	UGameManager* gameManager = Cast<UGameManager>(world->GetGameInstance());
+	weaponParts = gameManager->weaponAssembler->AssembleWeapon();
+	isBarrelMag = gameManager->weaponAssembler->barrelMag;
+
+	SetBaseStats(StaticCast<WeaponType>(gameManager->weaponAssembler->fireType));
 }
 
 float UWeaponBase::GetDamage()
