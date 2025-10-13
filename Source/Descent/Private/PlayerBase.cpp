@@ -2,6 +2,7 @@
 
 #include "PlayerBase.h"
 #include "GameManager.h"
+#include "Engine/OverlapResult.h"
 #include <Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 
 APlayerBase::APlayerBase() 
@@ -18,7 +19,7 @@ void APlayerBase::SetStats()
 {
 	UGameManager* gameManager = Cast<UGameManager>(GetGameInstance());
 	//GEngine->AddOnScreenDebugMessage(5, 2, FColor::Red, GetWorld()->GetName());
-	UWorld* world = GetWorld();
+	world = GetWorld();
 	Inventory = gameManager->playerInventory;
 	for (UWeaponBase* weapon : Inventory)
 	{
@@ -108,6 +109,40 @@ void APlayerBase::DamagePlayer(float damage)
 		HUD->HideShieldMat(false);
 		HUD->UpdateShieldMat(shields, maxShields);
 	}
+}
+
+void APlayerBase::MeleeAttack(float pitch)
+{
+	FHitResult outHit;
+	FCollisionQueryParams queryParams;
+	AActor* hitActor;
+	FVector startPos, dir, offsetDir;
+
+	dir = GetActorForwardVector();
+	offsetDir.Z = pitch;
+	startPos = GetActorLocation();
+	queryParams.AddIgnoredActor(this);
+
+	for (float i = -0.5; i < 0.5; i += 0.02)
+	{
+		offsetDir.X = FMath::Clamp(i + dir.X, -1, 1);
+		offsetDir.Y = FMath::Clamp(i + dir.Y, -1, 1);
+		//DrawDebugLine(world, startPos, ((200 * offsetDir) + startPos), FColor::Red, true, -1, 0, 1);
+		if (world->LineTraceSingleByChannel(outHit, startPos, (startPos + (200 * offsetDir)), ECC_Camera, queryParams))
+		{
+			hitActor = outHit.GetActor();
+			if (hitActor != nullptr && IsValid(hitActor))
+			{
+				if (hitActor->ActorHasTag("Enemy") || hitActor->ActorHasTag("Mob"))
+				{
+					Cast<ACharacterBase>(hitActor)->TakeDmg(75, false);
+					DrawDebugLine(world, startPos, ((200 * offsetDir) + startPos), FColor::Red, true, -1, 0, 1);
+					return;
+				}
+			}
+		}
+	}
+	
 }
 
 void APlayerBase::TakeDmg(float damage, bool isStatus)

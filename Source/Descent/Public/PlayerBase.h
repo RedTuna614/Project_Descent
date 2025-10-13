@@ -71,6 +71,8 @@ public:
 		void UpdateState(PlayerStates newState);
 	UFUNCTION(BlueprintCallable, Category = Stats)
 		void DamagePlayer(float damage);
+	UFUNCTION(BlueprintCallable, Category = Combat)
+		void MeleeAttack(float pitch); //This will probably be moved elsewhere
 
 		virtual void TakeDmg(float damage, bool isStatus);
 
@@ -83,5 +85,5 @@ protected:
 		void RegenShields(bool shouldRegen);
 
 private:
-	
+	UWorld* world;
 };

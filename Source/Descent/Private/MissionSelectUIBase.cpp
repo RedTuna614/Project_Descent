@@ -17,7 +17,6 @@ void UMissionSelectUIBase::SetMissions(TArray<UPanelWidget*> missionContainers, 
 {
 	TArray<UWidget*>children;
 	int rank = 0;
-
 	for (int n = 0; n < missionContainers.Num(); n++)
 	{
 		children = missionContainers[n]->GetAllChildren();
@@ -55,7 +54,7 @@ void UMissionSelectUIBase::SelectMisison()
 
 	if (!gameManager->useInputSize)
 	{
-		//gameManager->levelSize = 20 * missionRank[missionIndex];
+		gameManager->levelSize = gameManager->baseLevelSize * gameManager->difficulty;
 		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, FString::SanitizeFloat(gameManager->levelSize), true);
 	}
 

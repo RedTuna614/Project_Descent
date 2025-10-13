@@ -27,7 +27,8 @@ enum SubRoomType : int
 	ShortHall UMETA(DisplayName = "ShortHall"),
 	MidHall UMETA(DisplayName = "MidHall"),
 	LongHall UMETA(DisplayName = "LongHall"),
-	Exit UMETA(DisplayName = "Exit")
+	Exit UMETA(DisplayName = "Exit"),
+	ModTransfer UMETA(DisplayName = "ModTransfer")
 };
 
 UENUM(BlueprintType) //Different Room Sizes

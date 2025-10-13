@@ -42,6 +42,8 @@ public:
 		TEnumAsByte<GunDamageType> dmgType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 		TArray<FWeaponPart> weaponParts;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+		TArray<bool> hasMod;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon) //Max ammo allowed per mag
 		int maxAmmo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon) //Remaining Ammo not loaded in the gun
@@ -57,6 +59,7 @@ public:
 
 	UWorld* World;
 	UClass* explosionClass;
+	TArray<int> modLevel;
 	int numMods;
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)

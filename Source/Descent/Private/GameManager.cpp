@@ -7,5 +7,7 @@
 UGameManager::UGameManager()
 {
 	levelSize = 0;
+	baseLevelSize = levelSize;
+	difficulty = 1;
 	useInputSize = false;
 }

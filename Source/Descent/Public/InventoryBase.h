@@ -22,6 +22,8 @@ public:
 		TArray<UWeaponBase*> playerWeapons;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
 		bool viewShiftProperty;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Mod)
+		bool doneConstructing;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = Inventory)
 		void RemoveUI();

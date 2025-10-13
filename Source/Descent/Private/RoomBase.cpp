@@ -118,6 +118,9 @@ void ARoomBase::SpawnMobs()
 
 	switch (size)
 	{
+	case(Small):
+		enemyNum /= 2;
+		break;
 	case(Med):
 		enemyNum *= 1;
 		break;
@@ -154,12 +157,22 @@ void ARoomBase::SpawnTreasure(AActor* player)
 	params.AddIgnoredComponent(box);
 	spawnParams.Owner = this;
 
-	//Sets the chest's spawn location to 500 units infront of the player when entering the room
-	spawnLoc = (player->GetActorForwardVector() * 500) + player->GetActorLocation();
-	//Forces the chest to face the player when spawned
-	spawnRot = { 0,0,player->GetActorRotation().Yaw * -1 };
+	if (subRoom != ModTransfer)
+	{
+		//Sets the chest's spawn location to 500 units infront of the player when entering the room
+		spawnLoc = (player->GetActorForwardVector() * 500) + player->GetActorLocation();
+		//Forces the chest to face the player when spawned
+		spawnRot = { 0,0,player->GetActorRotation().Yaw * -1 };
+	}
+	else
+	{
+		//Sets the treasure's spawn location to the roomCenter
+		spawnLoc = roomCenter;
+		//Sets the treasure's spawn rotation to the Room's rotation
+		spawnRot = GetActorRotation();
+	}
 
-	world->SpawnActor<ALoot_Chest>(treasure, spawnLoc, spawnRot, spawnParams);
+	world->SpawnActor<AActor>(treasure, spawnLoc, spawnRot, spawnParams);
 }
 
 void ARoomBase::RemoveNeighbor(ARoomBase* neighbor)
@@ -344,7 +357,9 @@ void ARoomBase::DestroyRoom()
 void ARoomBase::DestroyValidator()
 {
 	//box->DestroyComponent();
-	box->SetCollisionResponseToAllChannels(ECR_Overlap);
+	box->SetCollisionResponseToAllChannels(ECR_Ignore);
+	box->SetCollisionResponseToChannel(ECC_Camera, ECR_Overlap);
+	box->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	box->SetCollisionObjectType(ECC_WorldDynamic);
 }
 

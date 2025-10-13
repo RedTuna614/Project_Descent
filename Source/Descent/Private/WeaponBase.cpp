@@ -225,6 +225,9 @@ void UWeaponBase::ResetModifiers()
 	explosive = 0;
 	rage = 0;
 	numMods = 0;
+
+	hasMod.Init(false, 8);
+	modLevel.Init(0, 8);
 }
 
 void UWeaponBase::ResetAmmo()
@@ -320,6 +323,8 @@ void UWeaponBase::SetAccuracy(int newAccuracy)
 void UWeaponBase::SetModifier(int modId)
 {
 	numMods++;
+	hasMod[modId] = true;
+	modLevel[modId]++;
 
 	switch (modId)
 	{
@@ -358,7 +363,8 @@ void UWeaponBase::SetOwner(ACharacterBase* newOwner)
 
 void UWeaponBase::GenWeaponParts(UWorld* world)
 {
-	UGameManager* gameManager = Cast<UGameManager>(world->GetGameInstance());
+	World = world;
+	UGameManager* gameManager = Cast<UGameManager>(World->GetGameInstance());
 	weaponParts = gameManager->weaponAssembler->AssembleWeapon();
 	isBarrelMag = gameManager->weaponAssembler->barrelMag;
 

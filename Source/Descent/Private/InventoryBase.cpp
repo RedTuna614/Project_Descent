@@ -13,9 +13,13 @@ void UInventoryBase::NativeConstruct()
 	Super::NativeConstruct();
 
 	UGameManager* gameManager = Cast<UGameManager>(GetGameInstance());
-	APlayerBase* player = Cast<APlayerBase>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	APlayerBase* player = Cast<APlayerBase>(GetOwningPlayerPawn());
 	playerInventory = player->Inventory;
 	playerWeapons = player->EquippedWeapons;
+
+	doneConstructing = true;
+
+	//GEngine->AddOnScreenDebugMessage(24, 5, FColor::Blue, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 }
 
 void UInventoryBase::SetInvUI(TArray<UTextBlock*> invText, UVerticalBox* invContainer)

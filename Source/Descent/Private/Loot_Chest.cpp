@@ -42,12 +42,12 @@ UWeaponBase* ALoot_Chest::CreateWeapon()
 
 	//weapon->SetBaseStats(StaticCast<WeaponType>(weaponId));
 	weapon->GenWeaponParts(world);
+	weapon->ResetModifiers();
 
 	for (int i = 0; i < numNewMods; i++)
 	{
 		modId = FMath::RandRange(0, 7);
 		weapon->SetModifier(modId);
-		weapon->World = world;
 		weapon->SetOwner(player);
 	}
 	if (weapon->GetModifier(7) != 0)

@@ -38,6 +38,10 @@ public:
 		UWeaponAssembler* weaponAssembler;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		int levelSize;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
+		int baseLevelSize;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
+		int difficulty;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
 		bool useInputSize;
 
