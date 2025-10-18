@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Interactible_Base.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Loot_Chest.generated.h"
 
 /**
@@ -17,8 +18,8 @@ class DESCENT_API ALoot_Chest : public AInteractible_Base
 public:
 	ALoot_Chest();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Loot)
-	UClass* explosive;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+		UNiagaraSystem* expBulletVFX;
 
 	UWeaponBase* newWeapon;
 

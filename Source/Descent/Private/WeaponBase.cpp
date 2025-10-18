@@ -49,12 +49,13 @@ UWeaponBase::UWeaponBase(WeaponType weapon)
 	numMods = 0;
 }
 
-void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
+void UWeaponBase::Shoot(FVector muzzleLoc, FVector endLoc, FVector dir)
 {
 	ACharacterBase* hitCharacter;
 	TArray<FOverlapResult> outOverlaps;
 	FCollisionShape shape = FCollisionShape::MakeSphere(150);
 	FCollisionQueryParams queryParams;
+	FVector spawnLoc;
 
 	if (currentAmmo > 0)
 	{
@@ -66,13 +67,21 @@ void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
 
 		for (int i = 0; i < numProjectiles * multShot; i++)
 		{
+			
+			//FMath::FRandRange((accuracy * -1), accuracy);
 			//GEngine->AddOnScreenDebugMessage(3, 2, FColor::Emerald, dir.ToCompactString());
-			dir.X += FMath::FRandRange((accuracy * -1), accuracy);
-			dir.Y += FMath::FRandRange((accuracy * -1), accuracy);
-			dir.Z += FMath::FRandRange((accuracy * -1), accuracy);
+			dir.X += FMath::Clamp(FMath::FRandRange((accuracy * -1), accuracy), -1, 1);
+			dir.Y += FMath::Clamp(FMath::FRandRange((accuracy * -1), accuracy), -1, 1);
+			dir.Z += FMath::Clamp(FMath::FRandRange((accuracy * -1), accuracy), -1, 1);
 
-			World->LineTraceSingleByChannel(hit, muzzleLoc, ((dir * maxRange) + muzzleLoc), ECC_Camera, collisionParams);
-			DrawDebugLine(World, muzzleLoc, ((dir * maxRange) + muzzleLoc), FColor::Emerald, true, -1, 0, 1);
+			endLoc += ((dir * maxRange));
+
+			World->LineTraceSingleByChannel(hit, muzzleLoc, endLoc, ECC_Camera, collisionParams);
+			//DrawDebugLine(World, muzzleLoc, endLoc, FColor::Emerald, true, -1, 0, 1);
+
+			spawnLoc = hit.Location;
+			//World->SpawnActor<AActor>(hitVFX, spawnLoc, Owner->GetActorRotation());
+			UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, hitVFX, spawnLoc, Owner->GetActorRotation());
 
 			if (hit.GetActor() != nullptr && hit.GetActor()->IsValidLowLevel())
 			{
@@ -92,9 +101,9 @@ void UWeaponBase::Shoot(FVector muzzleLoc, FVector dir)
 
 			if (explosive != 0)
 			{
-				FVector spawnLoc = hit.Location;
 				World->OverlapMultiByChannel(outOverlaps, hit.Location, FQuat::Identity, ECC_Camera, shape);
-				DrawDebugSphere(World, hit.Location, 150, 32, FColor::Red, false, 2);
+				//DrawDebugSphere(World, hit.Location, 150, 8, FColor::Red, false, 2);
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, hitVFX, spawnLoc);
 				for (FOverlapResult& result : outOverlaps)
 				{
 					if (result.GetActor()->IsValidLowLevel() && result.GetActor() != nullptr)
@@ -248,7 +257,7 @@ void UWeaponBase::SetBaseStats(WeaponType newType)
 	case(Shotgun):
 		damage = 5;
 		range = 1500;
-		accuracy = 0.1;
+		accuracy = 0.05;
 		maxAmmo = 8;
 		isFullAuto = false;
 		numProjectiles = 5;
@@ -367,6 +376,7 @@ void UWeaponBase::GenWeaponParts(UWorld* world)
 	UGameManager* gameManager = Cast<UGameManager>(World->GetGameInstance());
 	weaponParts = gameManager->weaponAssembler->AssembleWeapon();
 	isBarrelMag = gameManager->weaponAssembler->barrelMag;
+	hitVFX = gameManager->weaponAssembler->impactVFX;
 
 	SetBaseStats(StaticCast<WeaponType>(gameManager->weaponAssembler->fireType));
 }

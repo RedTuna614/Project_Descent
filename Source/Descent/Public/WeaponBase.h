@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "NiagaraFunctionLibrary.h"
 #include "CharacterBase.h"
 #include "WeaponAssembler.h"
 #include "WeaponBase.generated.h"
@@ -58,12 +59,13 @@ public:
 		bool isBarrelMag;
 
 	UWorld* World;
-	UClass* explosionClass;
+	UNiagaraSystem* explosionVFX;
+	UNiagaraSystem* hitVFX;
 	TArray<int> modLevel;
 	int numMods;
 
 	UFUNCTION(BlueprintCallable, Category = Weapon)
-		void Shoot(FVector muzzleLoc, FVector dir);
+		void Shoot(FVector muzzleLoc, FVector endLoc, FVector dir);
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 		void SetWeaponStats(float newDamage, float newRange, int newAccuracy, bool newFullAuto);
 	UFUNCTION(BlueprintCallable, Category = Weapon)

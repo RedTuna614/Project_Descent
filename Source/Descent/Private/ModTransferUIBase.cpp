@@ -13,6 +13,9 @@ void UModTransferUIBase::NativeConstruct()
 	player = Cast<APlayerBase>(GetOwningPlayerPawn());
 	playerInventory = player->Inventory;
 	playerWeapons = player->EquippedWeapons;
+
+	AddToViewport();
+
 }
 
 void UModTransferUIBase::SwapMods(int newModId)

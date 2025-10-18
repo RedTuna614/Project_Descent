@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+#include "NiagaraFunctionLibrary.h"
 #include "WeaponAssembler.generated.h"
 
 UENUM(BlueprintType) //Different Weapon Types
@@ -48,6 +49,8 @@ public:
 	TArray<UStaticMesh*>stockMeshes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	TArray<UStaticMesh*>magazineMeshes;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	UNiagaraSystem* impactVFX;
 
 	bool barrelMag; //Checks if the magazine should use the barrel(1) or chasis socket(0)
 	int fireType; //Id for which WeaponType the parts use
