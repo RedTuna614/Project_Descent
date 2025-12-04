@@ -87,7 +87,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Map)
 	bool playerInside; 
 
-
+	bool didPopulate; //Check to see if the room has been populated
 
 	UFUNCTION(BlueprintCallable, Category = LevelGen)
 	void RemoveNeighbor(ARoomBase* neighbor); //Removes neighbor from neighbors
@@ -114,7 +114,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	FActorSpawnParameters spawnParams; //Parameters of props/mobs spawned
-	bool didPopulate; //Check to see if the room has been populated
+	
 
 public:
 	// Called every frame

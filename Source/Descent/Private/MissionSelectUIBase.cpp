@@ -54,7 +54,9 @@ void UMissionSelectUIBase::SelectMisison()
 
 	if (!gameManager->useInputSize)
 	{
+		gameManager->difficulty++;
 		gameManager->levelSize = (gameManager->baseLevelSize * gameManager->difficulty) / 2;
+		gameManager->UpdateScore(0, true);
 		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, FString::SanitizeFloat(gameManager->levelSize), true);
 	}
 

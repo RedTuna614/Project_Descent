@@ -34,11 +34,13 @@ void UModTransferUIBase::SwapMods(int newModId)
 		if (!playerWeapons.Contains(targetWpn))
 		{
 			playerWeapons[num] = targetWpn;
+			player->EquippedWeapons[num] = targetWpn;
 			lostWpn = targetWpn;
 		}
 		else
 		{
 			playerWeapons[num] = playerInventory[0];
+			player->EquippedWeapons[num] = playerInventory[0];
 			lostWpn = playerInventory[0];
 		}
 	}

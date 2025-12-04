@@ -103,7 +103,7 @@ void UWeaponBase::Shoot(FVector muzzleLoc, FVector endLoc, FVector dir)
 			{
 				World->OverlapMultiByChannel(outOverlaps, hit.Location, FQuat::Identity, ECC_Camera, shape);
 				//DrawDebugSphere(World, hit.Location, 150, 8, FColor::Red, false, 2);
-				UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, hitVFX, spawnLoc);
+				UNiagaraFunctionLibrary::SpawnSystemAtLocation(World, explosionVFX, spawnLoc);
 				for (FOverlapResult& result : outOverlaps)
 				{
 					if (result.GetActor()->IsValidLowLevel() && result.GetActor() != nullptr)
@@ -373,12 +373,13 @@ void UWeaponBase::SetOwner(ACharacterBase* newOwner)
 void UWeaponBase::GenWeaponParts(UWorld* world)
 {
 	World = world;
-	UGameManager* gameManager = Cast<UGameManager>(World->GetGameInstance());
-	weaponParts = gameManager->weaponAssembler->AssembleWeapon();
-	isBarrelMag = gameManager->weaponAssembler->barrelMag;
-	hitVFX = gameManager->weaponAssembler->impactVFX;
+	UWeaponAssembler* assembly = Cast<UGameManager>(World->GetGameInstance())->weaponAssembler;
+	weaponParts = assembly->AssembleWeapon();
+	isBarrelMag = assembly->barrelMag;
+	hitVFX = assembly->impactVFX;
+	explosionVFX = assembly->explosiveVFX;
 
-	SetBaseStats(StaticCast<WeaponType>(gameManager->weaponAssembler->fireType));
+	SetBaseStats(StaticCast<WeaponType>(assembly->fireType));
 }
 
 float UWeaponBase::GetDamage()

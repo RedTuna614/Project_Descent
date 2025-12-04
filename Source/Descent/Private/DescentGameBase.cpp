@@ -30,7 +30,7 @@ void ADescentGameBase::SetGoal(MissionType mission)
 	switch (mission)
 	{
 	case(Kill):
-		goalNum = 3 * numKillRooms;
+		goalNum = 2 * numKillRooms;
 		break;
 	case(Find):
 		goalNum = numChambers * .5;

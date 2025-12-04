@@ -100,7 +100,8 @@ void APlayerBase::DamagePlayer(float damage)
 		if (health <= 0)
 		{
 			//DisableInput(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-			UGameplayStatics::OpenLevel(GetWorld(), "Main");
+			//UGameplayStatics::OpenLevel(GetWorld(), "Main");
+			HUD->ShowDeathUI();
 		}
 	}
 	else

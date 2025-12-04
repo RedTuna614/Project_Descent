@@ -383,6 +383,7 @@ void ALevelGenerator::SpawnDeadEnds()
 	if (numExits == 0)
 	{
 		roomsSpawned[0]->hasExit = true;
+		roomsSpawned[0]->didPopulate = false;
 		roomsSpawned[0]->populate();
 	}
 }

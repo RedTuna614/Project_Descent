@@ -119,13 +119,14 @@ void ARoomBase::SpawnMobs()
 	switch (size)
 	{
 	case(Small):
-		enemyNum /= 2;
+		enemyNum = FMath::RoundFromZero(enemyNum / 2.0);
 		break;
 	case(Med):
 		enemyNum *= 1;
 		break;
 	case(Large):
 		enemyNum *= 4;
+		break;
 	}
 
 	params.AddIgnoredComponent(box);

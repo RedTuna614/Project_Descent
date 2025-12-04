@@ -36,6 +36,8 @@ public:
 		TArray<UWeaponBase*> playerInventory;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 		UWeaponAssembler* weaponAssembler;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
+		TArray<int>gameScore;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
 		int levelSize;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = LevelGen)
@@ -45,8 +47,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
 		bool useInputSize;
 
-	UFUNCTION(BlueprintImplementableEvent, Category = Game)
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = Game)
 		void ResetGame();
-	UFUNCTION(BlueprintImplementableEvent, Category = Game)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = Game)
 		void ResetLevel();
+	UFUNCTION(BlueprintCallable, Category = Game)
+		void ResetVars();
+	UFUNCTION(BlueprintCallable, Category = Game)
+		void UpdateScore(int score, bool completeLevel);
 };

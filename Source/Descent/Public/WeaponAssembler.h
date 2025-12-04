@@ -51,6 +51,8 @@ public:
 	TArray<UStaticMesh*>magazineMeshes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	UNiagaraSystem* impactVFX;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	UNiagaraSystem* explosiveVFX;
 
 	bool barrelMag; //Checks if the magazine should use the barrel(1) or chasis socket(0)
 	int fireType; //Id for which WeaponType the parts use

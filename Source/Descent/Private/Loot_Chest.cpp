@@ -50,8 +50,6 @@ UWeaponBase* ALoot_Chest::CreateWeapon()
 		weapon->SetModifier(modId);
 		weapon->SetOwner(player);
 	}
-	if (weapon->GetModifier(7) != 0)
-		weapon->explosionVFX = expBulletVFX;
 	//GEngine->AddOnScreenDebugMessage(21, 20, FColor::Emerald, "WeaponMade");
 
 	return weapon;

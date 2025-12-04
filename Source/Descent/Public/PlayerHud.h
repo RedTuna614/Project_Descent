@@ -35,6 +35,8 @@ public:
 	void SetShowInteractText(bool shouldHide, const FString& name);
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = UI)
 	void SetShowObjectiveUI(bool shouldHide);
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = UI)
+	void ShowDeathUI();
 
 
 };

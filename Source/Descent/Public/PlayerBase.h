@@ -73,6 +73,8 @@ public:
 		void DamagePlayer(float damage);
 	UFUNCTION(BlueprintCallable, Category = Combat)
 		void MeleeAttack(float pitch); //This will probably be moved elsewhere
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = Weapon)
+		void SetWeapon();
 
 		virtual void TakeDmg(float damage, bool isStatus);
 
