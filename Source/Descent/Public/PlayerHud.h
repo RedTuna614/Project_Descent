@@ -32,7 +32,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = UI)
 	void HideShieldMat(bool shouldHide);
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = UI)
-	void SetShowInteractText(bool shouldHide, const FString& name);
+	void SetShowInteractText(bool shouldHide, FString name);
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = UI)
 	void SetShowObjectiveUI(bool shouldHide);
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = UI)

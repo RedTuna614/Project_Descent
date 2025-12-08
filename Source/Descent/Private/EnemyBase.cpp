@@ -4,15 +4,18 @@
 #include "EnemyBase.h"
 #include "EnemyWeapon.h"
 #include "CoverBase.h"
+#include "GameManager.h"
 #include <Kismet/KismetSystemLibrary.h>
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
+#include "Engine/OverlapResult.h"
 
 AEnemyBase::AEnemyBase() 
 {
 	state = Wake;
 	weapon = NewObject<UEnemyWeapon>();
 	GetCharacterMovement()->MaxWalkSpeed = movementSpeed;
+	canExplode = true;
 }
 
 void AEnemyBase::BeginPlay()
@@ -128,6 +131,7 @@ FVector AEnemyBase::FindFleeToLoc(UNavigationSystemV1* navSystem, bool &Success)
 
 void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 {
+	UGameManager* gameManager = Cast<UGameManager>(GetGameInstance());
 	if (enemy != newEnemy || enemy == NULL)
 		enemy = newEnemy;
 	if (weapon == nullptr)
@@ -152,9 +156,18 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 			health = 75;
 			break;
 		case(Grunt):
-			movementSpeed = 400;
-			health = 90;
-			attackDelay = .3;
+			if (gameManager->dungeonMods[4])
+			{
+				movementSpeed = 600;
+				health = 70;
+				attackDelay = .15;
+			}
+			else
+			{
+				movementSpeed = 400;
+				health = 90;
+				attackDelay = .3;
+			}
 			break;
 		case(Elite):
 			movementSpeed = 600;
@@ -173,6 +186,12 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 			break;
 	}
 
+	if (gameManager->dungeonMods[0])
+	{
+		maxShields = maxHealth * 0.25;
+		shields = maxShields;
+	}
+
 	weapon->SetEnemyWeaponStats(this);
 
 }
@@ -184,4 +203,88 @@ void AEnemyBase::TakeDmg(float damage, bool isStatus)
 		UpdateEnemyState(Damage);
 	else
 		UpdateEnemyState(Death);
+}
+
+void AEnemyBase::Explode()
+{
+	if (!canExplode)
+		return;
+
+	UWorld* world = GetWorld();
+	AActor* overlapedActor; //Actor overlapped or hit
+	FQuat blastQuat = GetActorQuat(); //Quaternion of actor
+	FVector blastOrigin = GetActorLocation();
+	TArray<FOverlapResult> outOverlaps; //Array of overlapped actors
+	FCollisionShape shape = FCollisionShape::MakeSphere(750); //Shape of collision
+	FCollisionQueryParams collisionParams; //Additional params for Overlap and Sweep
+	collisionParams.AddIgnoredActor(this);
+
+	canExplode = false;
+
+	world->OverlapMultiByChannel(outOverlaps, blastOrigin, blastQuat, ECC_Pawn, shape, collisionParams);
+
+	for (FOverlapResult &overlap : outOverlaps)
+	{
+		overlapedActor = overlap.GetActor();
+		if (IsValid(overlapedActor) && overlapedActor != nullptr)
+		{
+			if (ShouldExpDamage(overlapedActor->GetActorLocation()))
+			{
+				Cast<ACharacterBase>(overlapedActor)->TakeDmg(BlastDmgOffset(overlapedActor), false);
+			}
+		}
+	}
+	
+	Destroy();
+}
+
+bool AEnemyBase::ShouldExpDamage(FVector targetLoc)
+{
+	UWorld* world = GetWorld();
+	FCollisionQueryParams collisionParams;
+	FHitResult outHit;
+	AActor* hitActor;
+	FVector blastOrigin = GetActorLocation();
+	FVector endLoc = targetLoc;
+	float traceOffset = -50;
+
+	blastOrigin.Z += traceOffset;
+	endLoc.Z += traceOffset;
+	collisionParams.AddIgnoredActor(this);
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (world->LineTraceSingleByChannel(outHit, blastOrigin, endLoc, ECC_Camera, collisionParams))
+		{
+			if (IsValid(outHit.GetActor()))
+			{
+				hitActor = outHit.GetActor();
+				if (hitActor->ActorHasTag("Player") || hitActor->ActorHasTag("Enemy") || hitActor->ActorHasTag("Mob"))
+					return true;
+			}
+		}
+
+		blastOrigin.Z += 50;
+		endLoc.Z += 50;
+	}
+
+	return false;
+}
+
+float AEnemyBase::BlastDmgOffset(AActor* hitActor)
+{
+	if (!IsValid(hitActor))
+		return 0;
+
+	FVector targetLoc = hitActor->GetActorLocation();
+	float damage = 150;
+	float offset;
+
+	if (!ShouldExpDamage(targetLoc))
+		return 0;
+
+	offset = 1 - (FVector::Dist(GetActorLocation(), targetLoc) / 750);
+	damage *= offset;
+
+	return damage;
 }

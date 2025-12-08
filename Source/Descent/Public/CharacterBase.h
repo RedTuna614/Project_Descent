@@ -23,6 +23,10 @@ public:
 		float movementSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite = Category = Status)
 		TArray<UClass*>statuses;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat) //Stores current shields
+		float shields;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat) //Needed to ensure shields don't recharge past max
+		float maxShields;
 
 	UFUNCTION(BlueprintCallable, Category = Stats)
 		virtual void TakeDmg(float damage, bool isStatus);

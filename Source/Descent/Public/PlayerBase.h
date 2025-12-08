@@ -50,10 +50,6 @@ public:
 		TArray<UWeaponBase*> EquippedWeapons;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game) 
 		TArray<UWeaponBase*> Inventory;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat) //Stores the player's current shields
-		float shields;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat) //Needed to ensure player's shield don't recharge past max
-		float maxShields;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon) //Index of the weapon being held 
 		int activeWeapon;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)

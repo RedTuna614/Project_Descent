@@ -58,6 +58,7 @@ public:
 		bool inCover;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		float attackDelay;
+	
 
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		AActor* FindCover(bool isFleeing, bool &didFind);
@@ -67,12 +68,19 @@ public:
 		void SetEnemyStats(EnemyType newEnemy);
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = Enemy)
 		void UpdateEnemyState(EnemyState newState);
+	UFUNCTION(BlueprintCallable, Category = Enemy)
+		void Explode();
 
-		void TakeDmg(float damage, bool isStatus);
+	void TakeDmg(float damage, bool isStatus);
+	
 	/*
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		void DamageEnemy(float damage);*/
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	bool ShouldExpDamage(FVector targetLoc);
+	float BlastDmgOffset(AActor* hitActor);
+
+	bool canExplode;
 };
