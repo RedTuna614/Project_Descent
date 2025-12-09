@@ -26,7 +26,7 @@ public:
 		float baseDamage;
 	
 	UFUNCTION(BlueprintCallable, Category = Weapon)
-		void SetBullet();
+		void SetBullet(bool isDecoy);
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 		float CalcDamage(float dist, bool useMaxRange);
 

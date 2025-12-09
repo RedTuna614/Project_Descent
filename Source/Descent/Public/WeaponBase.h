@@ -81,7 +81,7 @@ public:
 	void ResetModifiers();
 	void ResetAmmo();
 	void SetBaseStats(WeaponType newType);
-	void SetDamage(float newDamage);
+	virtual void SetDamage(float newDamage);
 	void SetRange(float newRange);
 	void SetFallOff(float newFallOff);
 	void SetAccuracy(int newAccuracy);

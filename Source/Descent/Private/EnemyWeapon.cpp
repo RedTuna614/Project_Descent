@@ -95,3 +95,8 @@ void UEnemyWeapon::SetShotCount()
 {
 	currentAmmo = FMath::RandRange(1, maxAmmo);
 }
+
+void UEnemyWeapon::SetDamage(float newDamage)
+{
+	damage = newDamage;
+}

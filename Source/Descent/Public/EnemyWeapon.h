@@ -34,6 +34,8 @@ public:
 		float GetDamage();
 	UFUNCTION(BlueprintCallable, Category = Weapon)
 		void SetShotCount();
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+		void SetDamage(float newDamage);
 	
 	AEnemyBase* Enemy;
 

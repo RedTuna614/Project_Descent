@@ -17,19 +17,26 @@ void ABulletBase::BeginPlay()
 	Super::BeginPlay();
 	
 	bulletLoc = GetActorLocation();
-	shooter = Cast<AEnemyBase>(GetOwner());
 
-	SetBullet();
+	SetBullet(GetOwner()->ActorHasTag("Enemy"));
 
 	//GEngine->AddOnScreenDebugMessage(10, 2, FColor::Emerald, "Sheep");
 
 	SetLifeSpan(5);
 }
 
-void ABulletBase::SetBullet()
+void ABulletBase::SetBullet(bool isDecoy)
 {
-	switch (shooter->enemy)
+	if (isDecoy)
 	{
+		baseRange = 650;
+		baseDamage = 5;
+	}
+	else
+	{
+		shooter = Cast<AEnemyBase>(GetOwner());
+		switch (shooter->enemy)
+		{
 		case(Grunt):
 			baseRange = 750;
 			baseDamage = 5;
@@ -40,6 +47,7 @@ void ABulletBase::SetBullet()
 			break;
 		case(Sniper):
 			baseDamage = 25;
+		}
 	}
 }
 
