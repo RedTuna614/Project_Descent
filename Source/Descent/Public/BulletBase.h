@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "EnemyBase.h"
+#include "GameManager.h"
 #include "BulletBase.generated.h"
 
 UCLASS()
@@ -16,6 +17,8 @@ public:
 	// Sets default values for this actor's properties
 	ABulletBase();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
+		UGameManager* gameManager;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 		AEnemyBase* shooter;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)

@@ -21,28 +21,28 @@ void UGameManager::ActivateMod()
 	switch (inactiveMods[modId])
 	{
 		case(0):
-			//Mobs now have shields (Excluding Sniper decoys)
+			//Mobs now have shields (Excluding Sniper decoys)X
 			break;
 		case(1):
-			//All enemy projectiles travel faster
+			//All enemy projectiles travel fasterX
 			break;
 		case(2):
-			//Changes enemy spawn randomness to favor grunts
+			//Changes enemy spawn randomness to favor gruntsX
 			break;
 		case(3):
 			//Exploding enemies leave behind fire that burns the player
 			break;
 		case(4):
-			//Grunts move faster, shoot faster, have less health, charge the player at low health, and explode on death
+			//Grunts move faster, shoot faster, have less health, charge the player at low health, and explode on deathX
 			break;
 		case(5):
-			//Sniper decoys now shoot at, and damage the player (Should never have shields)
+			//Sniper decoys now shoot at, and damage the player (Should never have shields)X
 			break;
 		case(6):
-			//Chargers now teleport closer to the player if they're too far away
+			//Chargers now teleport closer to the player if they're too far awayX
 			break;
 		case(7):
-			//Brute enemies move faster and deal more damage the lower their health gets
+			//Brute enemies move faster and deal more damage the lower their health getsX
 			break;
 		case(8):
 			//Hallways can now spawn with traps (traps should only maim the player not kill)

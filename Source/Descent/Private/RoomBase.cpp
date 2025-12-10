@@ -110,16 +110,20 @@ void ARoomBase::populate_Implementation()
 void ARoomBase::SpawnMobs()
 {
 	UWorld* world = GetWorld();
+	UGameManager* gameManager = Cast<UGameManager>(GetGameInstance());
 	FVector spawnLoc;
 	FCollisionQueryParams params;
 	FHitResult hit;
 	int enemyNum = FMath::RandRange(3, 7);
+	int len;
 	int i = 0;
 
 	switch (size)
 	{
 	case(Small):
 		enemyNum = FMath::RoundFromZero(enemyNum / 2.0);
+		//The room is too small for the bombers, causing them to detonate when spawning
+		enemies.RemoveAt(2); //Prevents bombers from spawning in small chambers
 		break;
 	case(Med):
 		enemyNum *= 1;
@@ -132,6 +136,12 @@ void ARoomBase::SpawnMobs()
 	params.AddIgnoredComponent(box);
 	spawnParams.Owner = this;
 
+	//Check to make sure enemies[0] is grunt in ChamberBaseBp
+	if (gameManager->dungeonMods[2])
+		enemies.Add(enemies[0]);
+
+	len = enemies.Num() - 1;
+
 	while (i != enemyNum)
 	{
 		spawnLoc = UKismetMathLibrary::RandomPointInBoundingBox(roomCenter, boxExtents);
@@ -140,7 +150,7 @@ void ARoomBase::SpawnMobs()
 		{
 			if (hit.GetComponent()->GetName().Contains("Floor"))
 			{
-				world->SpawnActor<AEnemyBase>(enemies[FMath::RandRange(0, enemies.Num() - 1)], spawnLoc, { 0,0,0 }, spawnParams);
+				world->SpawnActor<AEnemyBase>(enemies[FMath::RandRange(0, len)], spawnLoc, { 0,0,0 }, spawnParams);
 				i++;
 			}
 		}

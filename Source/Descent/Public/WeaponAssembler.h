@@ -26,7 +26,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	TEnumAsByte<PartType> part;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
-	UStaticMesh* partMesh;
+	UStaticMesh* partMesh = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	int partIndex;
 

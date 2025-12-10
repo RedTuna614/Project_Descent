@@ -83,4 +83,5 @@ protected:
 	float BlastDmgOffset(AActor* hitActor);
 
 	bool canExplode;
+	bool exploding;
 };

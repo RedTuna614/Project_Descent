@@ -16,6 +16,7 @@ AEnemyBase::AEnemyBase()
 	weapon = NewObject<UEnemyWeapon>();
 	GetCharacterMovement()->MaxWalkSpeed = movementSpeed;
 	canExplode = true;
+	exploding = false;
 }
 
 void AEnemyBase::BeginPlay()
@@ -220,6 +221,7 @@ void AEnemyBase::Explode()
 	collisionParams.AddIgnoredActor(this);
 
 	canExplode = false;
+	exploding = true;
 
 	world->OverlapMultiByChannel(outOverlaps, blastOrigin, blastQuat, ECC_Pawn, shape, collisionParams);
 
@@ -256,11 +258,14 @@ bool AEnemyBase::ShouldExpDamage(FVector targetLoc)
 	{
 		if (world->LineTraceSingleByChannel(outHit, blastOrigin, endLoc, ECC_Camera, collisionParams))
 		{
-			if (IsValid(outHit.GetActor()))
+			if (IsValid(outHit.GetActor()) && outHit.GetActor() != nullptr)
 			{
 				hitActor = outHit.GetActor();
-				if (hitActor->ActorHasTag("Player") || hitActor->ActorHasTag("Enemy") || hitActor->ActorHasTag("Mob"))
+				if (hitActor->ActorHasTag("Player") || hitActor->ActorHasTag("Mob"))
 					return true;
+				if (hitActor->ActorHasTag("Enemy"))
+					if (!Cast<AEnemyBase>(hitActor)->exploding)
+						return true;
 			}
 		}
 
@@ -273,9 +278,6 @@ bool AEnemyBase::ShouldExpDamage(FVector targetLoc)
 
 float AEnemyBase::BlastDmgOffset(AActor* hitActor)
 {
-	if (!IsValid(hitActor))
-		return 0;
-
 	FVector targetLoc = hitActor->GetActorLocation();
 	float damage = 150;
 	float offset;

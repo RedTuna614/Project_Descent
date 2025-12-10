@@ -47,6 +47,7 @@ void UMissionSelectUIBase::SelectMisison()
 {
 	UGameManager* gameManager = Cast<UGameManager>(GetGameInstance());
 	APlayerController* controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	int modChance;
 	gameManager->objective = nextMission;
 	controller->SetInputMode(FInputModeGameOnly());
 	controller->SetShowMouseCursor(false);
@@ -58,6 +59,12 @@ void UMissionSelectUIBase::SelectMisison()
 		gameManager->levelSize = (gameManager->baseLevelSize * gameManager->difficulty) / 2;
 		gameManager->UpdateScore(0, true);
 		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, FString::SanitizeFloat(gameManager->levelSize), true);
+		modChance = FMath::RandRange(0, gameManager->difficulty);
+		if (modChance != gameManager->difficulty)
+		{
+			gameManager->ActivateMod();
+			GEngine->AddOnScreenDebugMessage(99, 10, FColor::Red, "Mod Active", true);
+		}
 	}
 
 	UGameplayStatics::OpenLevel(GetWorld(), "LevelGenTest");
