@@ -54,6 +54,8 @@ public:
 		ACharacterBase* Player;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		UEnemyWeapon* weapon;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
+		UClass* napalm;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Enemy)
 		bool inCover;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)

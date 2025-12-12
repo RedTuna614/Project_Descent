@@ -17,7 +17,7 @@ void ABulletBase::BeginPlay()
 	
 	bulletLoc = GetActorLocation();
 
-	SetBullet(GetOwner()->ActorHasTag("Enemy"));
+	SetBullet(!GetOwner()->ActorHasTag("Enemy"));
 
 	//GEngine->AddOnScreenDebugMessage(10, 2, FColor::Emerald, "Sheep");
 

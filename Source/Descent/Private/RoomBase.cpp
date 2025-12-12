@@ -114,6 +114,7 @@ void ARoomBase::SpawnMobs()
 	FVector spawnLoc;
 	FCollisionQueryParams params;
 	FHitResult hit;
+	FVector spawnBox = boxExtents;
 	int enemyNum = FMath::RandRange(3, 7);
 	int len;
 	int i = 0;
@@ -124,12 +125,18 @@ void ARoomBase::SpawnMobs()
 		enemyNum = FMath::RoundFromZero(enemyNum / 2.0);
 		//The room is too small for the bombers, causing them to detonate when spawning
 		enemies.RemoveAt(2); //Prevents bombers from spawning in small chambers
+		spawnBox.X = boxExtents.X - 500;
+		spawnBox.Y = boxExtents.Y - 500;
 		break;
 	case(Med):
 		enemyNum *= 1;
+		spawnBox.X = boxExtents.X - 900;
+		spawnBox.Y = boxExtents.Y - 900;
 		break;
 	case(Large):
 		enemyNum *= 4;
+		spawnBox.X = boxExtents.X - 900;
+		spawnBox.Y = boxExtents.Y - 900;
 		break;
 	}
 
@@ -144,7 +151,7 @@ void ARoomBase::SpawnMobs()
 
 	while (i != enemyNum)
 	{
-		spawnLoc = UKismetMathLibrary::RandomPointInBoundingBox(roomCenter, boxExtents);
+		spawnLoc = UKismetMathLibrary::RandomPointInBoundingBox(roomCenter, spawnBox);
 		world->LineTraceSingleByChannel(hit, spawnLoc, { spawnLoc.X, spawnLoc.Y, spawnLoc.Z - 1500 }, ECC_WorldStatic, params);
 		if (hit.GetActor() != nullptr)
 		{

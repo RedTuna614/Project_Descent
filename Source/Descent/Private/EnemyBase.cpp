@@ -232,11 +232,16 @@ void AEnemyBase::Explode()
 		{
 			if (ShouldExpDamage(overlapedActor->GetActorLocation()))
 			{
-				Cast<ACharacterBase>(overlapedActor)->TakeDmg(BlastDmgOffset(overlapedActor), false);
+				//Some actors become null when they get here (This is bad)
+				if(overlapedActor != nullptr)
+					Cast<ACharacterBase>(overlapedActor)->TakeDmg(BlastDmgOffset(overlapedActor), false);
 			}
 		}
 	}
 	
+	if (Cast<UGameManager>(GetGameInstance())->dungeonMods[3])
+		world->SpawnActor<AActor>(napalm, blastOrigin, GetActorRotation());
+
 	Destroy();
 }
 
