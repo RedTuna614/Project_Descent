@@ -12,13 +12,16 @@ UGameManager::UGameManager()
 	useInputSize = false;
 	gameScore.Init(0, 2);
 	activeMods = 0;
+	modActivated = false;
 }
 
 void UGameManager::ActivateMod()
 {
 	int modId = FMath::RandRange(0, inactiveMods.Num() - 1);
-	dungeonMods[inactiveMods[modId]] = true;
-	switch (inactiveMods[modId])
+	activeMods = inactiveMods[modId];
+	dungeonMods[activeMods] = true;
+	modActivated = true;
+	switch (activeMods)
 	{
 		case(0):
 			//Mobs now have shields (Excluding Sniper decoys)X
@@ -61,7 +64,6 @@ void UGameManager::ActivateMod()
 			break;
 	}
 	inactiveMods.RemoveAt(modId);
-	activeMods++;
 }
 
 void UGameManager::ResetVars()
@@ -90,4 +92,10 @@ void UGameManager::UpdateScore(int score, bool completeLevel)
 		gameScore[1]++;
 		gameScore[0] *= gameScore[1];
 	}
+}
+
+bool UGameManager::DidActivateMod(int& modId)
+{
+	modId = activeMods;
+	return modActivated;
 }

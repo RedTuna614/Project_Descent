@@ -91,6 +91,7 @@ public:
 
 	TArray<int>inactiveMods;
 	int activeMods;
+	bool modActivated;
 
 	void ActivateMod();
 
@@ -102,4 +103,6 @@ public:
 		void ResetVars();
 	UFUNCTION(BlueprintCallable, Category = Game)
 		void UpdateScore(int score, bool completeLevel);
+	UFUNCTION(BlueprintCallable, Category = Game)
+		bool DidActivateMod(int& modId);
 };

@@ -68,7 +68,10 @@ void ARoomBase::populate_Implementation()
 
 		if (hasExit)
 		{
-			spawnLoc = { roomCenter.X, roomCenter.Y, roomCenter.Z - 470 };
+			if(room==Start)
+				spawnLoc = { roomCenter.X, roomCenter.Y, roomCenter.Z - 250 };
+			else
+				spawnLoc = { roomCenter.X, roomCenter.Y, roomCenter.Z - 470 };
 			world->SpawnActor<AInteractible_Base>(exitRoom, spawnLoc, { 0,0,0 }, spawnParams);
 		}
 
