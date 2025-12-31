@@ -33,7 +33,7 @@ void UGameManager::ActivateMod()
 			//Changes enemy spawn randomness to favor gruntsX
 			break;
 		case(3):
-			//Exploding enemies leave behind fire that burns the player
+			//Exploding enemies leave behind fire that burns the playerX
 			break;
 		case(4):
 			//Grunts move faster, shoot faster, have less health, charge the player at low health, and explode on deathX
@@ -51,16 +51,16 @@ void UGameManager::ActivateMod()
 			//Hallways can now spawn with traps (traps should only maim the player not kill)
 			break;
 		case(9):
-			//Crafter enemy can now spawn in rooms
+			//Engineer enemy can now spawn in roomsX
 			break;
 		case(10):
-			//Rocket enemy can now spawn in rooms
+			//Rocket enemy can now spawn in rooms	X
 			break;
 		case(11):
-			//Engineer enemy can now spawn in rooms
+			//Crafter enemy can now spawn in rooms
 			break;
 		case(12):
-			//Lootchest's now contain only one weapon
+			//Lootchest's now contain one less weaponX
 			break;
 	}
 	inactiveMods.RemoveAt(modId);
@@ -77,6 +77,7 @@ void UGameManager::ResetVars()
 	activeMods = 0;
 	inactiveMods.SetNum(13);
 	dungeonMods.Init(false, 13);
+	modActivated = false;
 	for (int i = 0; i < inactiveMods.Num(); i++)
 	{
 		dungeonMods[i] = false;

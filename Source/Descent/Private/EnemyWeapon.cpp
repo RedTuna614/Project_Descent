@@ -3,6 +3,7 @@
 
 #include "EnemyWeapon.h"
 #include "EnemyBase.h"
+#include "GameManager.h"
 
 UEnemyWeapon::UEnemyWeapon() {}
 
@@ -28,8 +29,16 @@ void UEnemyWeapon::SetEnemyWeaponStats(AEnemyBase* owner)
 			break;
 		case Grunt:
 			//Melee Damage
-			shotDelay = .5;
-			damage = 1;
+			if (Cast<UGameManager>(owner->GetGameInstance())->dungeonMods[4])
+			{
+				shotDelay = .25;
+				damage = 2;
+			}
+			else
+			{
+				shotDelay = .5;
+				damage = 1;
+			}
 			meleeDelay = 2;
 			maxAmmo = 3;
 			break;

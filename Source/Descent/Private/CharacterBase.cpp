@@ -45,6 +45,14 @@ float ACharacterBase::GetHealthPercent()
 	return health / maxHealth;
 }
 
+void ACharacterBase::ApplyStatusEffect(UClass* statusClass, int strength)
+{
+	UStatusBase* status =
+		Cast<UStatusBase>(AddComponentByClass(statusClass, false, GetActorTransform(), false));
+
+	status->StatusEffect(strength, this);
+}
+
 void ACharacterBase::ApplyStatusEffect(int statusType, int strength)
 {
 	UStatusBase* status =

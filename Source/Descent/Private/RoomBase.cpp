@@ -148,7 +148,20 @@ void ARoomBase::SpawnMobs()
 
 	//Check to make sure enemies[0] is grunt in ChamberBaseBp
 	if (gameManager->dungeonMods[2])
-		enemies.Add(enemies[0]);
+	{
+		enemies.Add(gameManager->extraEnemies[3]);
+		//enemies.Add(enemies[0]); causes error Assertion failed: Addr < GetData() || Addr >= (GetData() + ArrayMax)
+		//Attempting to use a container element which already comes from the container being modified
+	}
+	if (gameManager->dungeonMods[9])
+		enemies.Add(gameManager->extraEnemies[0]);
+	if (size != Small)
+	{
+		if (gameManager->dungeonMods[10])
+			enemies.Add(gameManager->extraEnemies[1]);
+		if (gameManager->dungeonMods[11])
+			enemies.Add(gameManager->extraEnemies[2]);
+	}
 
 	len = enemies.Num() - 1;
 

@@ -18,7 +18,6 @@ UENUM(BlueprintType) //Different Player ingame Classes: Detetermines stats, star
 enum PlayerClasses : int
 {
 	Scout UMETA(DisplayName = "Scout"),
-	Engineer UMETA(DisplayName = "Engineer"),
 	Arcist UMETA(DisplayName = "Arcist")
 };
 

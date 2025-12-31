@@ -60,6 +60,7 @@ void UMissionSelectUIBase::SelectMisison()
 		gameManager->UpdateScore(0, true);
 		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, FString::SanitizeFloat(gameManager->levelSize), true);
 		modChance = FMath::RandRange(0, gameManager->difficulty);
+		gameManager->modActivated = false;
 		if (modChance != gameManager->difficulty)
 		{
 			gameManager->ActivateMod();

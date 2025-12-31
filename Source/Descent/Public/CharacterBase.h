@@ -32,6 +32,8 @@ public:
 		virtual void TakeDmg(float damage, bool isStatus);
 	UFUNCTION(BlueprintCallable, Category = Stats)
 		float GetHealthPercent();
+	UFUNCTION(BlueprintCallable, Category = Status)
+		void ApplyStatusEffect(UClass* statusClass, int strength);
 
 		void ApplyStatusEffect(int statusType, int strength);
 

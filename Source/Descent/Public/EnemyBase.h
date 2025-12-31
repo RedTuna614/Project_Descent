@@ -18,7 +18,8 @@ enum EnemyType : int
 	Grunt UMETA(DisplayName = "Grunt"),
 	Elite UMETA(DisplayName = "Elite"),
 	Sniper UMETA(DisplayName = "Sniper"),
-	Brute UMETA(DisplayName = "Brute")
+	Brute UMETA(DisplayName = "Brute"),
+	Engineer UMETA(DisplayName = "Engineer")
 };
 
 UENUM(BlueprintType)
@@ -72,6 +73,8 @@ public:
 		void UpdateEnemyState(EnemyState newState);
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		void Explode();
+	UFUNCTION(BlueprintCallable, Category = Enemy)
+		FVector FindMortarMoveLoc(FVector &normal);
 
 	void TakeDmg(float damage, bool isStatus);
 	
@@ -81,7 +84,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	bool ShouldExpDamage(FVector targetLoc);
+	bool ShouldExpDamage(AActor* target, FCollisionQueryParams &colParams);
 	float BlastDmgOffset(AActor* hitActor);
 
 	bool canExplode;

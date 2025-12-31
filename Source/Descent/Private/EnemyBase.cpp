@@ -25,7 +25,7 @@ void AEnemyBase::BeginPlay()
 
 	Player = Cast<ACharacterBase>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	SetEnemyStats(enemy);
-	UpdateEnemyState(Idle);
+	//UpdateEnemyState(Idle);
 }
 
 AActor* AEnemyBase::FindCover(bool isFleeing, bool &didFind)
@@ -185,6 +185,10 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 			health = 200;
 			attackDelay = .5;
 			break;
+		case(Engineer):
+			movementSpeed = 700;
+			health = 50;
+			break;
 	}
 
 	if (gameManager->dungeonMods[0])
@@ -199,11 +203,27 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 
 void AEnemyBase::TakeDmg(float damage, bool isStatus)
 {
+	if (shields != 0)
+	{
+		if (damage > shields)
+		{
+			damage -= shields;
+			shields = 0;
+		}
+		else
+		{
+			shields -= damage;
+			damage = 0;
+		}
+	}
 	health -= damage;
 	if(health >= 0 && !isStatus)
 		UpdateEnemyState(Damage);
 	else
+	{
+		Cast<UGameManager>(GetGameInstance())->UpdateScore(100, false);
 		UpdateEnemyState(Death);
+	}
 }
 
 void AEnemyBase::Explode()
@@ -228,14 +248,11 @@ void AEnemyBase::Explode()
 	for (FOverlapResult &overlap : outOverlaps)
 	{
 		overlapedActor = overlap.GetActor();
-		if (IsValid(overlapedActor) && overlapedActor != nullptr)
+		if (ShouldExpDamage(overlapedActor, collisionParams))
 		{
-			if (ShouldExpDamage(overlapedActor->GetActorLocation()))
-			{
-				//Some actors become null when they get here (This is bad)
-				if(overlapedActor != nullptr)
-					Cast<ACharacterBase>(overlapedActor)->TakeDmg(BlastDmgOffset(overlapedActor), false);
-			}
+			//Some actors become null when they get here (This is bad)
+			if (overlapedActor != nullptr && overlapedActor->IsValidLowLevel())
+				Cast<ACharacterBase>(overlapedActor)->TakeDmg(BlastDmgOffset(overlapedActor), false);
 		}
 	}
 	
@@ -245,37 +262,41 @@ void AEnemyBase::Explode()
 	Destroy();
 }
 
-bool AEnemyBase::ShouldExpDamage(FVector targetLoc)
+bool AEnemyBase::ShouldExpDamage(AActor* target, FCollisionQueryParams &colParams)
 {
 	UWorld* world = GetWorld();
-	FCollisionQueryParams collisionParams;
 	FHitResult outHit;
-	AActor* hitActor;
 	FVector blastOrigin = GetActorLocation();
-	FVector endLoc = targetLoc;
+	FVector endLoc;
 	float traceOffset = -50;
 
-	blastOrigin.Z += traceOffset;
-	endLoc.Z += traceOffset;
-	collisionParams.AddIgnoredActor(this);
-
-	for (int i = 0; i < 3; i++)
+	if (IsValid(target) && target != nullptr)
 	{
-		if (world->LineTraceSingleByChannel(outHit, blastOrigin, endLoc, ECC_Camera, collisionParams))
-		{
-			if (IsValid(outHit.GetActor()) && outHit.GetActor() != nullptr)
-			{
-				hitActor = outHit.GetActor();
-				if (hitActor->ActorHasTag("Player") || hitActor->ActorHasTag("Mob"))
-					return true;
-				if (hitActor->ActorHasTag("Enemy"))
-					if (!Cast<AEnemyBase>(hitActor)->exploding)
-						return true;
-			}
-		}
+		endLoc = target->GetActorLocation();
+		blastOrigin.Z += traceOffset;
+		endLoc.Z += traceOffset;
 
-		blastOrigin.Z += 50;
-		endLoc.Z += 50;
+		for (int i = 0; i < 3; i++)
+		{
+			if (world->LineTraceSingleByChannel(outHit, blastOrigin, endLoc, ECC_Camera, colParams))
+			{
+				if (outHit.GetActor() == target)
+				{
+					colParams.AddIgnoredActor(target);
+					if (target->ActorHasTag("Enemy"))
+					{
+						if (!Cast<AEnemyBase>(target)->exploding && Cast<AEnemyBase>(target)->state != Death)
+							return true;
+
+						return false;
+					}
+					return (target->ActorHasTag("Player") || target->ActorHasTag("Mob"));
+				}
+			}
+
+			blastOrigin.Z += 50;
+			endLoc.Z += 50;
+		}
 	}
 
 	return false;
@@ -287,11 +308,29 @@ float AEnemyBase::BlastDmgOffset(AActor* hitActor)
 	float damage = 150;
 	float offset;
 
-	if (!ShouldExpDamage(targetLoc))
-		return 0;
-
 	offset = 1 - (FVector::Dist(GetActorLocation(), targetLoc) / 750);
 	damage *= offset;
 
 	return damage;
+}
+
+FVector AEnemyBase::FindMortarMoveLoc(FVector &normal)
+{
+	FVector upVec = GetActorUpVector();
+	FVector actorLoc = GetActorLocation();
+	FCollisionQueryParams colParams;
+	FHitResult outHit;
+	FVector target;
+
+	colParams.AddIgnoredActor(this);
+
+	upVec.X += FMath::Clamp(FMath::FRandRange(-0.5, 0.5), -1, 1);
+	upVec.Y += FMath::Clamp(FMath::FRandRange(-0.5, 0.5), -1, 1);
+	upVec.Z += FMath::Clamp(FMath::FRandRange(-0.5, 0.5), -1, 1);
+
+	GetWorld()->LineTraceSingleByChannel(outHit, actorLoc, ((upVec * 15000) + actorLoc), ECC_WorldStatic, colParams);
+	target = outHit.Location;
+	normal = outHit.ImpactNormal;
+
+	return target;
 }

@@ -77,6 +77,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 		UWeaponAssembler* weaponAssembler;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
+		TArray<UClass*>extraEnemies;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
 		TArray<int>gameScore;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
 		TArray<bool>dungeonMods;
