@@ -12,7 +12,17 @@ ADescentGameBase::ADescentGameBase()
 
 void ADescentGameBase::BeginPlay()
 {
+	UGameManager* gameManager = Cast<UGameManager>(GetGameInstance());
+	if (gameManager->debugMod && gameManager->activeMods == 0)
+	{
+		for (int& debug : gameManager->modsToDebug)
+		{
+			gameManager->inactiveMods.Remove(debug);
+			gameManager->dungeonMods[debug] = true;
+		}
 
+		gameManager->activeMods = gameManager->modsToDebug.Num();
+	}
 }
 
 void ADescentGameBase::ProgressGoal()

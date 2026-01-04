@@ -19,7 +19,8 @@ enum EnemyType : int
 	Elite UMETA(DisplayName = "Elite"),
 	Sniper UMETA(DisplayName = "Sniper"),
 	Brute UMETA(DisplayName = "Brute"),
-	Engineer UMETA(DisplayName = "Engineer")
+	Engineer UMETA(DisplayName = "Engineer"),
+	Crafter UMETA(DisplayName = "Crafter")
 };
 
 UENUM(BlueprintType)
@@ -74,7 +75,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		void Explode();
 	UFUNCTION(BlueprintCallable, Category = Enemy)
-		FVector FindMortarMoveLoc(FVector &normal);
+		FVector FindMortarMoveLoc(FVector origin, FVector &normal);
 
 	void TakeDmg(float damage, bool isStatus);
 	

@@ -89,26 +89,29 @@ void APlayerBase::DamagePlayer(float damage)
 	UpdateState(Damaged);
 	RegenShields(false);
 
-	if (shields <= 0)
+	if (!Cast<UGameManager>(GetGameInstance())->canPlayerDie)
 	{
-		health -= damage;
-		HUD->HideDamageMat(false);
-		HUD->HideShieldMat(true);
-		HUD->UpdateDamageMat(health, maxHealth);
-		GEngine->AddOnScreenDebugMessage(10, 20, FColor::Emerald, FString::SanitizeFloat(health));
-
-		if (health <= 0)
+		if (shields <= 0)
 		{
-			//DisableInput(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-			//UGameplayStatics::OpenLevel(GetWorld(), "Main");
-			HUD->ShowDeathUI();
+			health -= damage;
+			HUD->HideDamageMat(false);
+			HUD->HideShieldMat(true);
+			HUD->UpdateDamageMat(health, maxHealth);
+			GEngine->AddOnScreenDebugMessage(10, 20, FColor::Emerald, FString::SanitizeFloat(health));
+
+			if (health <= 0)
+			{
+				//DisableInput(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+				//UGameplayStatics::OpenLevel(GetWorld(), "Main");
+				HUD->ShowDeathUI();
+			}
 		}
-	}
-	else
-	{
-		shields -= damage;
-		HUD->HideShieldMat(false);
-		HUD->UpdateShieldMat(shields, maxShields);
+		else
+		{
+			shields -= damage;
+			HUD->HideShieldMat(false);
+			HUD->UpdateShieldMat(shields, maxShields);
+		}
 	}
 }
 
@@ -148,5 +151,6 @@ void APlayerBase::MeleeAttack(float pitch)
 
 void APlayerBase::TakeDmg(float damage, bool isStatus)
 {
+	
 	DamagePlayer(damage);
 }

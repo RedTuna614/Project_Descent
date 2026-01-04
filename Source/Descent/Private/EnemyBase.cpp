@@ -189,6 +189,10 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 			movementSpeed = 700;
 			health = 50;
 			break;
+		case(Crafter):
+			movementSpeed = 1000;
+			health = 70;
+			break;
 	}
 
 	if (gameManager->dungeonMods[0])
@@ -314,23 +318,48 @@ float AEnemyBase::BlastDmgOffset(AActor* hitActor)
 	return damage;
 }
 
-FVector AEnemyBase::FindMortarMoveLoc(FVector &normal)
+FVector AEnemyBase::FindMortarMoveLoc(FVector origin, FVector &normal)
 {
 	FVector upVec = GetActorUpVector();
 	FVector actorLoc = GetActorLocation();
+	FVector dir;
 	FCollisionQueryParams colParams;
 	FHitResult outHit;
 	FVector target;
 
 	colParams.AddIgnoredActor(this);
+	colParams.AddIgnoredActor(Player);
 
-	upVec.X += FMath::Clamp(FMath::FRandRange(-0.5, 0.5), -1, 1);
-	upVec.Y += FMath::Clamp(FMath::FRandRange(-0.5, 0.5), -1, 1);
-	upVec.Z += FMath::Clamp(FMath::FRandRange(-0.5, 0.5), -1, 1);
+	int dirMod = FMath::RandRange(0, 3);
 
-	GetWorld()->LineTraceSingleByChannel(outHit, actorLoc, ((upVec * 15000) + actorLoc), ECC_WorldStatic, colParams);
+	switch(dirMod)
+	{
+		case(0):
+			dir = GetActorRightVector();
+			break;
+		case(1):
+			dir = GetActorForwardVector();
+			break;
+		case(2):
+			dir = GetActorRightVector() * -1;
+			break;
+		case(3):
+			dir = GetActorForwardVector() * -1;
+			break;
+	}
+
+	dir.X += FMath::Clamp(FMath::FRandRange(-0.5, 0.5), -1, 1);
+	dir.Y += FMath::Clamp(FMath::FRandRange(-0.5, 0.5), -1, 1);
+	dir.Z += FMath::Clamp(FMath::FRandRange(-0.5, 0.5), -1, 1);
+
+	upVec += dir;
+
+	GetWorld()->LineTraceSingleByChannel(outHit, origin, ((upVec * 15000) + origin), ECC_WorldStatic, colParams);
+	//DrawDebugLine(GetWorld(), origin, ((upVec * 15000) + origin), FColor::Red, true);
+	//DrawDebugPoint(GetWorld(), outHit.Location, 15, FColor::Green, true);
 	target = outHit.Location;
 	normal = outHit.ImpactNormal;
+	normal = outHit.Normal;
 
 	return target;
 }

@@ -90,6 +90,12 @@ public:
 		int difficulty;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
 		bool useInputSize;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+		bool debugMod;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+		TArray<int>modsToDebug;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+		bool canPlayerDie;
 
 	TArray<int>inactiveMods;
 	int activeMods;

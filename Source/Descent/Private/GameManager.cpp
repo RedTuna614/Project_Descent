@@ -13,6 +13,8 @@ UGameManager::UGameManager()
 	gameScore.Init(0, 2);
 	activeMods = 0;
 	modActivated = false;
+	inactiveMods.SetNum(13);
+	dungeonMods.Init(false, 13);
 }
 
 void UGameManager::ActivateMod()
