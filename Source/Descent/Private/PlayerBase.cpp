@@ -52,12 +52,14 @@ void APlayerBase::SetStats()
 		EquippedWeapons[i]->ResetAmmo();
 	}
 
-	shields = 200;
-	health = 150;
 	movementSpeed = 600;
-	maxHealth = health;
+	shields = 200;
 	maxShields = shields;
-	
+	maxHealth = 150;
+	if (gameManager->dungeonMods[13])
+		health = gameManager->playerHealth;
+	else
+		health = maxHealth;
 }
 
 void APlayerBase::UpdateState(PlayerStates newState)

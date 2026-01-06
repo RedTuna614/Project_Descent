@@ -137,6 +137,7 @@ void ALevelGenerator::CreateSpawnRoom()
 	toSpawn.Add(spawnRoom);
 	currentLevelSize++;
 	spawnRoom->playerInside = true;
+	spawnRoom->hasExit = true;
 	GenLevel();
 }
 
@@ -355,7 +356,7 @@ void ALevelGenerator::SpawnDeadEnds()
 				}
 			}
 		}
-			
+
 		if (Room->room != Start)
 		{
 			for (int i = 1; i < Room->neighbors.Num(); i++)
@@ -376,14 +377,6 @@ void ALevelGenerator::SpawnDeadEnds()
 
 	gameMode->roomsSpawned = roomsSpawned;
 
-	if(gameManager->objective == Kill || gameManager->objective == Find)
+	if (gameManager->objective == Kill || gameManager->objective == Find)
 		gameMode->SetGoal(gameManager->objective);
-
-	//Allows the SpawnRoom to function as an exit room if none spawned
-	if (numExits == 0)
-	{
-		roomsSpawned[0]->hasExit = true;
-		roomsSpawned[0]->didPopulate = false;
-		roomsSpawned[0]->populate();
-	}
 }

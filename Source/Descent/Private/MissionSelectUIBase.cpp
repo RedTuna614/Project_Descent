@@ -6,6 +6,7 @@
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "CharacterBase.h"
 
 void UMissionSelectUIBase::NativeConstruct()
 {
@@ -66,6 +67,11 @@ void UMissionSelectUIBase::SelectMisison()
 			gameManager->ActivateMod();
 			GEngine->AddOnScreenDebugMessage(99, 10, FColor::Red, "Mod Active", true);
 		}
+	}
+
+	if (gameManager->dungeonMods[13])
+	{
+		gameManager->playerHealth = Cast<ACharacterBase>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))->health;
 	}
 
 	UGameplayStatics::OpenLevel(GetWorld(), "LevelGenTest");

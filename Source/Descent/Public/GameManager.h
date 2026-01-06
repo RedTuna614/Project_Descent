@@ -100,6 +100,7 @@ public:
 	TArray<int>inactiveMods;
 	int activeMods;
 	bool modActivated;
+	float playerHealth;
 
 	void ActivateMod();
 
