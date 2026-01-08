@@ -21,7 +21,7 @@ public:
 		float health;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Stats)
 		float movementSpeed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite = Category = Status)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 		TArray<UClass*>statuses;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat) //Stores current shields
 		float shields;

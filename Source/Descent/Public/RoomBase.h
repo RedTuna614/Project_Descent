@@ -61,6 +61,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
 	UPrimitiveComponent* box; //Internal box collider in the room (Helps with overlap testing by making the room not hollow)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
+	TArray<UPrimitiveComponent*> intrlColliders; //Will Replace box, allowing for non-cubic rooms
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
+	TArray<UPrimitiveComponent*> spawnAreas; //Set area for enemies to spawn in the room
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
 	FVector boxExtents; //Scaled extents of box, and the extents used when checking for room overlap
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Room)
 	FVector roomCenter; //Center World Coordinate of the room

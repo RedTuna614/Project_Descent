@@ -117,8 +117,11 @@ void ARoomBase::SpawnMobs()
 	FVector spawnLoc;
 	FCollisionQueryParams params;
 	FHitResult hit;
-	FVector spawnBox = boxExtents;
+	FVector spawnBox;
+	FVector spawnOrigin;
 	int enemyNum = FMath::RandRange(3, 7);
+	int areaIndex;
+	int areaLen = spawnAreas.Num() - 1;
 	int len;
 	int i = 0;
 
@@ -128,18 +131,12 @@ void ARoomBase::SpawnMobs()
 		enemyNum = FMath::RoundFromZero(enemyNum / 2.0);
 		//The room is too small for the bombers, causing them to detonate when spawning
 		enemies.RemoveAt(2); //Prevents bombers from spawning in small chambers
-		spawnBox.X = boxExtents.X - 500;
-		spawnBox.Y = boxExtents.Y - 500;
 		break;
 	case(Med):
 		enemyNum *= 1;
-		spawnBox.X = boxExtents.X - 900;
-		spawnBox.Y = boxExtents.Y - 900;
 		break;
 	case(Large):
 		enemyNum *= 4;
-		spawnBox.X = boxExtents.X - 900;
-		spawnBox.Y = boxExtents.Y - 900;
 		break;
 	}
 
@@ -167,7 +164,10 @@ void ARoomBase::SpawnMobs()
 
 	while (i != enemyNum)
 	{
-		spawnLoc = UKismetMathLibrary::RandomPointInBoundingBox(roomCenter, spawnBox);
+		areaIndex = FMath::RandRange(0, areaLen);
+		spawnOrigin = spawnAreas[areaIndex]->GetComponentLocation();
+		spawnBox = spawnAreas[areaIndex]->GetCollisionShape().GetBox();
+		spawnLoc = UKismetMathLibrary::RandomPointInBoundingBox(spawnOrigin, spawnBox);
 		world->LineTraceSingleByChannel(hit, spawnLoc, { spawnLoc.X, spawnLoc.Y, spawnLoc.Z - 1500 }, ECC_WorldStatic, params);
 		if (hit.GetActor() != nullptr)
 		{
@@ -237,7 +237,8 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 	AActor* overlapedActor; //Actor overlapped or hit
 	FQuat roomQuat = GetActorQuat(); //Quaternion of this room
 	TArray<FOverlapResult> outOverlaps; //Array of overlapped actors
-	FCollisionShape shape = FCollisionShape::MakeBox(boxExtents); //Shape of collision
+	TArray<FHitResult>hits;
+	FCollisionShape shape; //Shape of collision
 	FCollisionQueryParams collisionParams; //Additional params for Overlap and Sweep
 	collisionParams.AddIgnoredActor(this); //While testing I'm not sure if this actually works in 5.4
 	collisionParams.AddIgnoredActor(spawner);
@@ -264,45 +265,18 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 	}
 
 	//Checks if another room overlaps this one
-	world->OverlapMultiByChannel(outOverlaps, roomCenter, roomQuat, ECC_WorldStatic, shape, collisionParams);
-	if (!outOverlaps.IsEmpty())
+	for (UPrimitiveComponent* col : intrlColliders)
 	{
-		for (FOverlapResult& overlap : outOverlaps)
+		shape = col->GetCollisionShape();
+		world->OverlapMultiByChannel(outOverlaps, roomCenter, roomQuat, ECC_WorldStatic, shape, collisionParams);
+		if (!outOverlaps.IsEmpty())
 		{
-			overlapedActor = overlap.GetActor();
-			if (IsValid(overlapedActor))
+			for (FOverlapResult& overlap : outOverlaps)
 			{
-				if (overlapedActor->ActorHasTag("Room"))
+				overlapedActor = overlap.GetActor();
+				if (IsValid(overlapedActor))
 				{
-					//The below if was added, as it seemed the AddIgnoredActor wasn't working while testing
-					if (overlapedActor != spawner && overlapedActor != this)
-					{
-						if (!Cast<ARoomBase>(overlapedActor)->isSpawning && !Cast<ARoomBase>(overlapedActor)->beingDestroyed)
-						{
-							//GEngine->AddOnScreenDebugMessage(0, 10, FColor::Red, overlapedActor->GetActorNameOrLabel(), false);
-							//DrawDebugBox(world, roomCenter, boxExtents, roomQuat, FColor::Red, false, 10);
-							DestroyRoom();
-							return false;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	TArray<FHitResult>hits;
-	world->SweepMultiByChannel(hits, roomCenter, shape.GetBox(), roomQuat, ECC_Visibility, shape);
-
-	if (!hits.IsEmpty())
-	{
-		for (FHitResult& hit : hits)
-		{
-			overlapedActor = hit.GetActor();
-			if (IsValid(overlapedActor))
-			{
-				if (overlapedActor->ActorHasTag("Room"))
-				{
-					if (Cast<ARoomBase>(overlapedActor)->room != Start)
+					if (overlapedActor->ActorHasTag("Room"))
 					{
 						//The below if was added, as it seemed the AddIgnoredActor wasn't working while testing
 						if (overlapedActor != spawner && overlapedActor != this)
@@ -319,6 +293,36 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 				}
 			}
 		}
+
+		world->SweepMultiByChannel(hits, roomCenter, shape.GetBox(), roomQuat, ECC_Visibility, shape);
+		if (!hits.IsEmpty())
+		{
+			for (FHitResult& hit : hits)
+			{
+				overlapedActor = hit.GetActor();
+				if (IsValid(overlapedActor))
+				{
+					if (overlapedActor->ActorHasTag("Room"))
+					{
+						if (Cast<ARoomBase>(overlapedActor)->room != Start)
+						{
+							//The below if was added, as it seemed the AddIgnoredActor wasn't working while testing
+							if (overlapedActor != spawner && overlapedActor != this)
+							{
+								if (!Cast<ARoomBase>(overlapedActor)->isSpawning && !Cast<ARoomBase>(overlapedActor)->beingDestroyed)
+								{
+									//GEngine->AddOnScreenDebugMessage(0, 10, FColor::Red, overlapedActor->GetActorNameOrLabel(), false);
+									//DrawDebugBox(world, roomCenter, boxExtents, roomQuat, FColor::Red, false, 10);
+									DestroyRoom();
+									return false;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
 	}
 
 	//DrawDebugBox(world, roomCenter, boxExtents, roomQuat, FColor::Green, false, 10);
@@ -391,10 +395,20 @@ void ARoomBase::DestroyRoom()
 void ARoomBase::DestroyValidator()
 {
 	//box->DestroyComponent();
+	/*
 	box->SetCollisionResponseToAllChannels(ECR_Ignore);
 	box->SetCollisionResponseToChannel(ECC_Camera, ECR_Overlap);
 	box->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	box->SetCollisionObjectType(ECC_WorldDynamic);
+	*/
+
+	for (UPrimitiveComponent* col : intrlColliders)
+	{
+		col->SetCollisionResponseToAllChannels(ECR_Ignore);
+		col->SetCollisionResponseToChannel(ECC_Camera, ECR_Overlap);
+		col->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+		col->SetCollisionObjectType(ECC_WorldDynamic);
+	}
 }
 
 void ARoomBase::DestroyIsland()
