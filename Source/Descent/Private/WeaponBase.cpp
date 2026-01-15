@@ -213,6 +213,21 @@ FString UWeaponBase::ToString(bool isModifer)
 	return newString;
 }
 
+FString UWeaponBase::GetWeaponName()
+{
+	switch (gunType)
+	{
+		case(Pistol):
+			return "Pistol";
+		case(Shotgun):
+			return "Shotgun";
+		case(AssaultRifle):
+			return "AssaultRifle";
+	}
+
+	return "Error";
+}
+
 void UWeaponBase::ResetWeapon(WeaponType newType, ACharacterBase* newOwner)
 {
 	Owner = newOwner;

@@ -22,12 +22,12 @@ void UInventoryBase::NativeConstruct()
 	//GEngine->AddOnScreenDebugMessage(24, 5, FColor::Blue, "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 }
 
-void UInventoryBase::SetInvUI(TArray<UTextBlock*> invText, UVerticalBox* invContainer)
+void UInventoryBase::SetInvUI(TArray<UUserButton*> buttons, UVerticalBox* invContainer)
 {
 	if (playerInventory.IsEmpty())
 	{
-		for (UTextBlock* text : invText)
-			text->SetText(FText::FromString("--------------"));
+		for (UUserButton* richButton : buttons)
+			richButton->SetText(FText::FromString("--------------"));
 		invContainer->SetRenderOpacity(35);
 		invContainer->SetIsEnabled(false);
 		GEngine->AddOnScreenDebugMessage(24, 5, FColor::Blue, "Empty Inventory");
@@ -61,13 +61,13 @@ void UInventoryBase::SetInvUI(TArray<UTextBlock*> invText, UVerticalBox* invCont
 				name = "Revolver";
 				break;
 			}
-			invText[i]->SetText(FText::FromString(name));
+			buttons[i]->SetText(FText::FromString(name));
 		}
-		if (len != invText.Num())
+		if (len != buttons.Num())
 		{
-			for (i = invText.Num() - 1; i >= len; i--)
+			for (i = buttons.Num() - 1; i >= len; i--)
 			{
-				invText[i]->SetText(FText::FromString("--------------"));
+				buttons[i]->SetText(FText::FromString("--------------"));
 				invSlot[i]->SetIsEnabled(false);
 				invSlot[i]->SetRenderOpacity(35);
 			}
@@ -75,7 +75,7 @@ void UInventoryBase::SetInvUI(TArray<UTextBlock*> invText, UVerticalBox* invCont
 	}
 }
 
-void UInventoryBase::SetWeaponUI(TArray<UTextBlock*> gunText)
+void UInventoryBase::SetWeaponUI(TArray<UUserButton*> gunText)
 {
 	FString name;
 	for (int i = 0; i < playerWeapons.Num(); i++)

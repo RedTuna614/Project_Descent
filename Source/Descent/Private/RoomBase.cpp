@@ -191,19 +191,20 @@ void ARoomBase::SpawnTreasure(AActor* player)
 	params.AddIgnoredComponent(box);
 	spawnParams.Owner = this;
 
-	if (subRoom != ModTransfer)
-	{
-		//Sets the chest's spawn location to 500 units infront of the player when entering the room
-		spawnLoc = (player->GetActorForwardVector() * 500) + player->GetActorLocation();
-		//Forces the chest to face the player when spawned
-		spawnRot = { 0,0,player->GetActorRotation().Yaw * -1 };
-	}
-	else
+	if (subRoom == Special)
 	{
 		//Sets the treasure's spawn location to the roomCenter
 		spawnLoc = roomCenter;
 		//Sets the treasure's spawn rotation to the Room's rotation
 		spawnRot = GetActorRotation();
+	}
+	else
+	{
+		//Sets the chest's spawn location to 500 units infront of the player when entering the room
+		spawnLoc = (player->GetActorForwardVector() * 500) + player->GetActorLocation();
+		//Forces the chest to face the player when spawned
+		spawnRot = { 0,0,player->GetActorRotation().Yaw * -1 };
+
 	}
 
 	world->SpawnActor<AActor>(treasure, spawnLoc, spawnRot, spawnParams);
@@ -268,6 +269,7 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 	for (UPrimitiveComponent* col : intrlColliders)
 	{
 		shape = col->GetCollisionShape();
+		roomQuat = col->GetComponentQuat();
 		world->OverlapMultiByChannel(outOverlaps, roomCenter, roomQuat, ECC_WorldStatic, shape, collisionParams);
 		if (!outOverlaps.IsEmpty())
 		{
@@ -293,7 +295,7 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 				}
 			}
 		}
-
+		
 		world->SweepMultiByChannel(hits, roomCenter, shape.GetBox(), roomQuat, ECC_Visibility, shape);
 		if (!hits.IsEmpty())
 		{

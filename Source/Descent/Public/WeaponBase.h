@@ -76,6 +76,8 @@ public:
 		TArray<float>GetModifiers();
 	UFUNCTION(BlueprintCallable, Category = Weapon) //Returns a weapon's Stats or Modifiers as a String
 		FString ToString(bool isModifier);
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+		FString GetWeaponName();
 
 	void ResetWeapon(WeaponType newType, ACharacterBase* newOwner);
 	void ResetModifiers();

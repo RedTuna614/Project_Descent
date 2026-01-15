@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/CanvasPanel.h"
 #include "PlayerHud.generated.h"
 
 /**
@@ -18,6 +19,8 @@ public:
 
 	//UPlayerHud();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = UI, meta=(BindWidget))
+	UCanvasPanel* canvas;
 	UPROPERTY(BlueprintReadWrite, Category = UI)
 	UMaterialInstanceDynamic* damageMat;
 	UPROPERTY(BlueprintReadWrite, Category = UI)
@@ -37,6 +40,5 @@ public:
 	void SetShowObjectiveUI(bool shouldHide);
 	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = UI)
 	void ShowDeathUI();
-
 
 };

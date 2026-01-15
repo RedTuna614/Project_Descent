@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "GameManager.h"
+#include "UserButton.h"
 #include "InventoryBase.generated.h"
 
 /**
@@ -28,9 +29,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = Inventory)
 		void RemoveUI();
 	UFUNCTION(BlueprintCallable, Category = Inventory)
-		void SetInvUI(TArray<UTextBlock*> invText, UVerticalBox* invContainer);
+		void SetInvUI(TArray<UUserButton*> button, UVerticalBox* invContainer);
 	UFUNCTION(BlueprintCallable, Category = Inventory)
-		void SetWeaponUI(TArray<UTextBlock*> gunText);
+		void SetWeaponUI(TArray<UUserButton*> gunText);
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		bool SwapWeapons(UWeaponBase* invWeapon, UWeaponBase* equipWeapon);
 	UFUNCTION(BlueprintCallable, Category = Inventory)
