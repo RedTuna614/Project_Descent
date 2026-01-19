@@ -233,6 +233,13 @@ void ARoomBase::ChangeMapColor(bool inMap)
 	}
 }
 
+void ARoomBase::SetMaterial(UStaticMeshComponent* mesh, FName paramName, float value)
+{
+	UMaterialInstanceDynamic* mat; //= mesh->GetMaterial(0);
+	mat = mesh->CreateDynamicMaterialInstance(0, mesh->GetMaterial(0));
+	mat->SetScalarParameterValue(paramName, value);
+}
+
 bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 {
 	AActor* overlapedActor; //Actor overlapped or hit

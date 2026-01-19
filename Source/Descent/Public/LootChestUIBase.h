@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Loot_Chest.h"
+#include "UserButton.h"
 #include "LootChestUIBase.generated.h"
 
 /**
@@ -27,9 +28,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = Loot)
 		void ReplaceWeapon(int newIndex, int oldIndex, bool isInInventory);
 	UFUNCTION(BlueprintCallable, Category = Loot)
-		void SetWeaponChoices(TArray<UTextBlock*> wpnText);
+		void SetWeaponChoices(TArray<UUserButton*> wpnText);
+	UFUNCTION(BlueprintCallable, Category = Loot)
+		int GetHoveredWeaponIndex();
 
 protected:
 
 	virtual void NativeConstruct() override;
+
+	TArray<UUserButton*> buttons;
 };

@@ -41,8 +41,9 @@ void ULootChestUIBase::ReplaceWeapon(int newIndex, int oldIndex, bool isInInvent
 	RemoveFromParent();
 }
 
-void ULootChestUIBase::SetWeaponChoices(TArray<UTextBlock*> wpnText)
+void ULootChestUIBase::SetWeaponChoices(TArray<UUserButton*> wpnText)
 {
+	buttons = wpnText;
 	int len = wpnText.Num();
 	FString name;
 
@@ -66,4 +67,15 @@ void ULootChestUIBase::SetWeaponChoices(TArray<UTextBlock*> wpnText)
 		}
 		wpnText[i]->SetText(FText::FromString(name));
 	}
+}
+
+int ULootChestUIBase::GetHoveredWeaponIndex()
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (buttons[i]->IsHovered())
+			return i;
+	}
+
+	return -1;
 }

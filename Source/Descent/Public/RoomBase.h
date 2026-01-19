@@ -103,6 +103,8 @@ public:
 	void SpawnTreasure(AActor* player);
 	UFUNCTION(BlueprintCallable, Category = Room)
 	void ChangeMapColor(bool inMap); //Changes color of the room the player is in when opening the map
+	UFUNCTION(BlueprintCallable, Category = Room)
+	void SetMaterial(UStaticMeshComponent* mesh, FName paramName, float value);
 
 	bool IsValidRoom(UWorld* world, ARoomBase* spawner); //Checks if the room overlaps another room
 	bool CanSpawnNeighbor(UWorld* world);

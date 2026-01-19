@@ -28,6 +28,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = Inventory)
 		void RemoveUI();
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = ToolTip)
+		void GetToolTip_UI();
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		void SetInvUI(TArray<UUserButton*> button, UVerticalBox* invContainer);
 	UFUNCTION(BlueprintCallable, Category = Inventory)
