@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "CharacterBase.h"
 #include "NavigationSystem.h"
+#include "ArmorMesh_Manager.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
 #include "EnemyBase.generated.h"
 
 class UEnemyWeapon;
@@ -52,6 +54,10 @@ public:
 		TEnumAsByte<EnemyState> state;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = State)
 		TEnumAsByte<EnemyState> lastState;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ISM)
+		TArray<UHierarchicalInstancedStaticMeshComponent*> ISMs;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = ISM)
+		AArmorMesh_Manager* ISM_Manager;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)
 		ACharacterBase* Player;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
@@ -62,7 +68,8 @@ public:
 		bool inCover;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat)
 		float attackDelay;
-	
+
+		
 
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		AActor* FindCover(bool isFleeing, bool &didFind);
@@ -90,4 +97,5 @@ protected:
 
 	bool canExplode;
 	bool exploding;
+	float armorHealth;
 };

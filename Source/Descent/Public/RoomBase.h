@@ -105,6 +105,8 @@ public:
 	void ChangeMapColor(bool inMap); //Changes color of the room the player is in when opening the map
 	UFUNCTION(BlueprintCallable, Category = Room)
 	void SetMaterial(UStaticMeshComponent* mesh, FName paramName, float value);
+	UFUNCTION(BlueprintCallable, Category = Nav)
+	void SetAllowNavigation(bool isAllowed);
 
 	bool IsValidRoom(UWorld* world, ARoomBase* spawner); //Checks if the room overlaps another room
 	bool CanSpawnNeighbor(UWorld* world);

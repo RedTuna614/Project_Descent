@@ -112,6 +112,8 @@ bool UInventoryBase::SwapWeapons(UWeaponBase* invWeapon, UWeaponBase* equipWeapo
 	GEngine->AddOnScreenDebugMessage(14, 5, FColor::Red, FString::SanitizeFloat(index));
 	player->EquippedWeapons[index] = invWeapon;
 
+	DeactivateButton();
+
 	return isActiveWeapon;
 }
 
@@ -144,4 +146,22 @@ int UInventoryBase::GetHoveredWeaponIndex(UVerticalBox* wpnContainer, UVerticalB
 	}
 
 	return -1;
+}
+
+void UInventoryBase::SetActiveButton(UUserButton* newButton)
+{
+	if (activeButton != nullptr)
+		activeButton->Select_UnselectButton();
+
+	activeButton = newButton;
+	activeButton->Select_UnselectButton();
+}
+
+void UInventoryBase::DeactivateButton()
+{
+	if (activeButton != nullptr)
+	{
+		activeButton->Select_UnselectButton();
+		activeButton = nullptr;
+	}
 }

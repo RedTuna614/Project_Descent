@@ -125,6 +125,8 @@ void ARoomBase::SpawnMobs()
 	int len;
 	int i = 0;
 
+	SetAllowNavigation(false);
+
 	switch (size)
 	{
 	case(Small):
@@ -238,6 +240,14 @@ void ARoomBase::SetMaterial(UStaticMeshComponent* mesh, FName paramName, float v
 	UMaterialInstanceDynamic* mat; //= mesh->GetMaterial(0);
 	mat = mesh->CreateDynamicMaterialInstance(0, mesh->GetMaterial(0));
 	mat->SetScalarParameterValue(paramName, value);
+}
+
+void ARoomBase::SetAllowNavigation(bool isAllowed)
+{
+	for (UPrimitiveComponent* col : intrlColliders)
+	{
+		col->SetCanEverAffectNavigation(isAllowed);
+	}
 }
 
 bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)

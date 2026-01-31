@@ -40,10 +40,15 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void UpdateText();
-
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateStyle();
+	
 	void SetText(FText newText);
+	void Select_UnselectButton();
 
 protected:
 
 	virtual void NativeConstruct() override;
+
+	bool isSelected;
 };

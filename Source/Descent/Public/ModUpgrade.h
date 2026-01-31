@@ -18,5 +18,5 @@ class DESCENT_API UModUpgrade : public UInventoryBase
 public:
 
 	UFUNCTION(BlueprintCallable, Category = Mod)
-		UWeaponBase* ModifyWeapon(int index, bool isEquipped, bool isUpgrade);
+		UWeaponBase* ModifyWeapon(UWeaponBase* weapon, bool isUpgrade);
 };

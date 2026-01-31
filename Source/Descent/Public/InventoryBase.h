@@ -38,8 +38,13 @@ public:
 		bool SwapWeapons(UWeaponBase* invWeapon, UWeaponBase* equipWeapon);
 	UFUNCTION(BlueprintCallable, Category = Inventory)
 		int GetHoveredWeaponIndex(UVerticalBox* wpnContainer, UVerticalBox* invContainer, bool &inInventory);
+	UFUNCTION(BlueprintCallable, Category = Button)
+		void SetActiveButton(UUserButton* newButton);
+	UFUNCTION(BlueprintCallable, Category = Button)
+		void DeactivateButton();
 
 protected:
-
 	virtual void NativeConstruct() override;
+
+	UUserButton* activeButton;
 };

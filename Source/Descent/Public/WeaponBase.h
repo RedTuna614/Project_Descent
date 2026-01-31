@@ -105,7 +105,7 @@ protected:
 
 	int numProjectiles; //Number of projects fired in single shot
 
-	float const maxRange = 5000;
+	float const maxRange = 15000;
 
 	ACharacterBase* Owner;
 	FCollisionQueryParams collisionParams;

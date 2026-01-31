@@ -66,7 +66,9 @@ void UGameManager::ActivateMod()
 			//Lootchest's now contain one less weaponX
 			break;
 		case(13):
-			//Player Health no longer resets between levels
+			//Player Health no longer resets between levels X
+		case(14):
+			//Player Ammo no longer resets between levels X
 			break;
 	}
 	inactiveMods.RemoveAt(modId);
@@ -81,8 +83,8 @@ void UGameManager::ResetVars()
 	gameScore.Empty();
 	gameScore.Init(0, 2);
 	activeMods = 0;
-	inactiveMods.SetNum(14);
-	dungeonMods.Init(false, 14);
+	inactiveMods.SetNum(15);
+	dungeonMods.Init(false, 15);
 	modActivated = false;
 	playerHealth = 0;
 	for (int i = 0; i < inactiveMods.Num(); i++)

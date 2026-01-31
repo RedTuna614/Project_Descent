@@ -9,6 +9,7 @@
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
 #include "Engine/OverlapResult.h"
+#include "Components/HierarchicalInstancedStaticMeshComponent.h"
 
 AEnemyBase::AEnemyBase() 
 {
@@ -17,6 +18,7 @@ AEnemyBase::AEnemyBase()
 	GetCharacterMovement()->MaxWalkSpeed = movementSpeed;
 	canExplode = true;
 	exploding = false;
+	armorHealth = 0;
 }
 
 void AEnemyBase::BeginPlay()
@@ -201,12 +203,17 @@ void AEnemyBase::SetEnemyStats(EnemyType newEnemy)
 		shields = maxShields;
 	}
 
+	maxHealth = health;
+	armorHealth = maxHealth - (maxHealth * 0.05);
+
 	weapon->SetEnemyWeaponStats(this);
 
 }
 
 void AEnemyBase::TakeDmg(float damage, bool isStatus)
 {
+	FTransform instTransform;
+	int meshId, index;
 	if (shields != 0)
 	{
 		if (damage > shields)
@@ -221,8 +228,21 @@ void AEnemyBase::TakeDmg(float damage, bool isStatus)
 		}
 	}
 	health -= damage;
-	if(health >= 0 && !isStatus)
+	if (health > 0 && !isStatus)
+	{
 		UpdateEnemyState(Damage);
+		if (health < armorHealth && !ISMs.IsEmpty())
+		{
+			armorHealth -= (maxHealth * 0.05);
+			index = FMath::RandRange(0, ISMs.Num() - 1);
+			meshId = FMath::RandRange(0, ISMs[index]->GetNumInstances() - 1);
+			ISMs[index]->GetInstanceTransform(meshId, instTransform, true);
+			ISM_Manager->SpawnInstance(ISMs[index]->GetStaticMesh(), instTransform);
+			ISMs[index]->RemoveInstance(meshId);
+			if (ISMs[index]->GetInstanceCount() == 0)
+				ISMs.RemoveAt(index);
+		}
+	}
 	else
 	{
 		Cast<UGameManager>(GetGameInstance())->UpdateScore(100, false);
@@ -309,11 +329,15 @@ bool AEnemyBase::ShouldExpDamage(AActor* target, FCollisionQueryParams &colParam
 float AEnemyBase::BlastDmgOffset(AActor* hitActor)
 {
 	FVector targetLoc = hitActor->GetActorLocation();
+	float dist = FVector::Dist(GetActorLocation(), targetLoc);
+	float minFalloff = 500;
 	float damage = 150;
-	float offset;
+	//float offset = 1;
 
-	offset = 1 - (FVector::Dist(GetActorLocation(), targetLoc) / 750);
-	damage *= offset;
+	if (dist > 250)
+		damage *= (1 - ((dist - 250) / minFalloff));
+
+	//damage *= offset;
 
 	return damage;
 }

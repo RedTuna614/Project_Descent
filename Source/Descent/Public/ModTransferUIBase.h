@@ -35,9 +35,15 @@ public:
 		void SwapMods(int newModId);
 	UFUNCTION(BlueprintCallable)
 		void SetModSelect(UWeaponBase* weapon, TArray<UTextBlock*> modText);
+	UFUNCTION(BlueprintCallable, Category = Button)
+		void SetLActiveButton(UUserButton* newButton);
+	UFUNCTION(BlueprintCallable, Category = Button)
+		void ResetActiveButton();
 
 protected:
 
 	virtual void NativeConstruct() override;
+
+	UUserButton* LActiveButton;
 
 };

@@ -87,3 +87,19 @@ void UModTransferUIBase::SetModSelect(UWeaponBase* weapon, TArray<UTextBlock*> m
 	}
 
 }
+
+void UModTransferUIBase::SetLActiveButton(UUserButton* newButton)
+{
+	if (LActiveButton != nullptr)
+		LActiveButton->Select_UnselectButton();
+	LActiveButton = newButton;
+	LActiveButton->Select_UnselectButton();
+}
+
+void UModTransferUIBase::ResetActiveButton()
+{
+	activeButton->Select_UnselectButton();
+	activeButton = nullptr;
+	LActiveButton->Select_UnselectButton();
+	LActiveButton = nullptr;
+}

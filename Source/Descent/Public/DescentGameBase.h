@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "GameManager.h"
 #include "RoomBase.h"
+#include "ArmorMesh_Manager.h"
 #include "DescentGameBase.generated.h"
 
 /**
@@ -31,6 +32,8 @@ public:
 	TArray<ARoomBase*>ExitRooms;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
 	TArray<ARoomBase*>roomsSpawned;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Game)
+	AArmorMesh_Manager* armorISM_Manager;
 
 	UFUNCTION(BlueprintCallable, Category = Game)
 	void ProgressGoal();

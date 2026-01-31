@@ -4,16 +4,13 @@
 #include "ModUpgrade.h"
 #include "PlayerBase.h"
 
-UWeaponBase* UModUpgrade::ModifyWeapon(int index, bool isEquipped, bool isUpgrade)
+UWeaponBase* UModUpgrade::ModifyWeapon(UWeaponBase* weapon, bool isUpgrade)
 {
 	TArray<int>modAvail;
-	UWeaponBase* weapon;
-	if (isEquipped)
-		weapon = playerWeapons[index];
-	else
-		weapon = playerInventory[index];
+	int index;
+	int len = weapon->hasMod.Num();
 
-	for (int i = 0; i < weapon->hasMod.Num(); i++)
+	for (int i = 0; i < len; i++)
 	{
 		if (weapon->hasMod[i] == isUpgrade)
 			modAvail.Add(i);

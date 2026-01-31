@@ -21,10 +21,22 @@ void APlayerBase::SetStats()
 	//GEngine->AddOnScreenDebugMessage(5, 2, FColor::Red, GetWorld()->GetName());
 	world = GetWorld();
 	Inventory = gameManager->playerInventory;
-	for (UWeaponBase* weapon : Inventory)
+	if (gameManager->dungeonMods[14])
 	{
-		weapon->World = world;
-		weapon->SetOwner(this);
+		for (UWeaponBase* weapon : Inventory)
+		{
+			weapon->World = world;
+			weapon->SetOwner(this);
+		}
+	}
+	else
+	{
+		for (UWeaponBase* weapon : Inventory)
+		{
+			weapon->World = world;
+			weapon->SetOwner(this);
+			weapon->ResetAmmo();
+		}
 	}
 
 	if (gameManager->playerWeapons.IsEmpty())
@@ -45,11 +57,22 @@ void APlayerBase::SetStats()
 	else
 		EquippedWeapons = gameManager->playerWeapons;
 
-	for (int i = 0; i < EquippedWeapons.Num(); i++)
+	if (gameManager->dungeonMods[14])
 	{
-		EquippedWeapons[i]->World = world;
-		EquippedWeapons[i]->SetOwner(this);
-		EquippedWeapons[i]->ResetAmmo();
+		for (UWeaponBase* weapon : EquippedWeapons)
+		{
+			weapon->World = world;
+			weapon->SetOwner(this);
+		}
+	}
+	else
+	{
+		for (UWeaponBase* weapon : EquippedWeapons)
+		{
+			weapon->World = world;
+			weapon->SetOwner(this);
+			weapon->ResetAmmo();
+		}
 	}
 
 	movementSpeed = 600;
@@ -153,6 +176,5 @@ void APlayerBase::MeleeAttack(float pitch)
 
 void APlayerBase::TakeDmg(float damage, bool isStatus)
 {
-	
 	DamagePlayer(damage);
 }
