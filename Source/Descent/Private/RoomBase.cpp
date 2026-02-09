@@ -214,6 +214,11 @@ void ARoomBase::SpawnTreasure(AActor* player)
 
 void ARoomBase::RemoveNeighbor(ARoomBase* neighbor)
 {
+	int index = neighbors.Find(neighbor);
+	if (index != -1)
+		neighbors[index] = nullptr;
+
+	/*
 	for (int i = 0; i < neighbors.Num(); i++)
 	{
 		if (neighbors[i] == neighbor)
@@ -222,6 +227,7 @@ void ARoomBase::RemoveNeighbor(ARoomBase* neighbor)
 			break;
 		}
 	}
+	*/
 }
 
 void ARoomBase::ChangeMapColor(bool inMap)

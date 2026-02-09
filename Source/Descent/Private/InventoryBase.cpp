@@ -24,6 +24,10 @@ void UInventoryBase::NativeConstruct()
 
 void UInventoryBase::SetInvUI(TArray<UUserButton*> buttons, UVerticalBox* invContainer)
 {
+	APlayerBase* player = Cast<APlayerBase>(GetOwningPlayerPawn());
+	playerInventory = player->Inventory;
+	playerWeapons = player->EquippedWeapons;
+
 	if (playerInventory.IsEmpty())
 	{
 		for (UUserButton* richButton : buttons)

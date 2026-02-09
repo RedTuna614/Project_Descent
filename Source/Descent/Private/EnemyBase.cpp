@@ -5,6 +5,7 @@
 #include "EnemyWeapon.h"
 #include "CoverBase.h"
 #include "GameManager.h"
+#include "DescentGameBase.h"
 #include <Kismet/KismetSystemLibrary.h>
 #include <Kismet/GameplayStatics.h>
 #include <GameFramework/CharacterMovementComponent.h>
@@ -245,7 +246,14 @@ void AEnemyBase::TakeDmg(float damage, bool isStatus)
 	}
 	else
 	{
-		Cast<UGameManager>(GetGameInstance())->UpdateScore(100, false);
+		UGameManager* gameManager = Cast<UGameManager>(GetGameInstance());
+		gameManager->UpdateScore(100, false);
+		/*
+		if (gameManager->objective == Kill)
+		{
+			Cast<ADescentGameBase>(UGameplayStatics::GetGameMode(GetWorld()))->ProgressGoal();
+		}
+		*/
 		UpdateEnemyState(Death);
 	}
 }
