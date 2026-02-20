@@ -22,6 +22,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Button)
 		TArray<UWidget*> modSelectBtns;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Weapon)
+		TArray<UTextBlock*> lModVals;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Weapon)
+		TArray<UTextBlock*> rModVals;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Reference)
 		APlayerBase* player;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
@@ -31,10 +35,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Reference, meta = (ExposeOnSpawn = "true"))
 		AActor* Owner;
 
+
 	UFUNCTION(BlueprintCallable, Category = Weapon)
-		void SwapMods(int newModId);
+		void SwapMods();
 	UFUNCTION(BlueprintCallable)
-		void SetModSelect(UWeaponBase* weapon, TArray<UTextBlock*> modText);
+		void SetModSelect();
 	UFUNCTION(BlueprintCallable, Category = Button)
 		void SetLActiveButton(UUserButton* newButton);
 	UFUNCTION(BlueprintCallable, Category = Button)

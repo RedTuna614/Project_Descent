@@ -15,7 +15,8 @@ enum WeaponType : int
 	Pistol UMETA(DisplayName = "Pistol"),
 	Revolver UMETA(DisplayName = "Revolver"),
 	Shotgun UMETA(DisplayName = "Shotgun"),
-	AssaultRifle UMETA(DisplayName = "Assault Rifle")
+	AssaultRifle UMETA(DisplayName = "Assault Rifle"),
+	Rifle UMETA(DisplayName = "Rifle")
 	
 };
 

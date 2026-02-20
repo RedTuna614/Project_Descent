@@ -22,7 +22,7 @@ TArray<FWeaponPart> UWeaponAssembler::AssembleWeapon()
 	{
 		weapon.Add(MakePart(Stock, index, stockMeshes[index]));
 		//Update MaxRange as more weaponTypes are added
-		fireType = FMath::RandRange(2, 3);
+		fireType = FMath::RandRange(2, 4);
 	}
 	else
 	{

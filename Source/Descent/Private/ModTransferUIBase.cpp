@@ -18,14 +18,21 @@ void UModTransferUIBase::NativeConstruct()
 
 }
 
-void UModTransferUIBase::SwapMods(int newModId)
+void UModTransferUIBase::SwapMods()
 {
 	UGameManager* gameManager = Cast<UGameManager>(GetGameInstance());
-	int num = lostWpn->modLevel[newModId];
+	int num = 0;
+	int modId = 0;
 
-	for (int i = 0; i < num; i++)
+	for (bool mod : lostWpn->hasMod)
 	{
-		targetWpn->SetModifier(newModId);
+		if (mod)
+		{
+			num = lostWpn->modLevel[modId];
+			for (int i = 0; i < num; i++)
+				targetWpn->SetModifier(modId);
+		}
+		modId++;
 	}
 
 	//Ensures the player always has two EquippedWeapons
@@ -48,44 +55,33 @@ void UModTransferUIBase::SwapMods(int newModId)
 	player->Inventory.Remove(lostWpn);
 }
 
-void UModTransferUIBase::SetModSelect(UWeaponBase* weapon, TArray<UTextBlock*> modText)
+void UModTransferUIBase::SetModSelect()
 {
-	TArray<float>modVals;
-	int len = modText.Num();
+	TArray<int>modVals;
+	int len = lModVals.Num();
+	modVals.Init(0, len);
 
-	if (weapon != nullptr)
+	if (lostWpn != nullptr)
 	{
-		modVals = weapon->GetModifiers();
-		//Sets the text for the mod values in the UI
+		modVals = lostWpn->modLevel;
+		for (int i = 0; i < len; i++)
+			lModVals[i]->SetText(FText::AsNumber(modVals[i]));
+	}
+	else
+		for (UTextBlock* text : lModVals)
+			text->SetText(FText::AsNumber(000));
+	if (targetWpn != nullptr)
+	{
+		int n = 0;
 		for (int i = 0; i < len; i++)
 		{
-			modText[i]->GetParent()->SetIsEnabled(weapon->hasMod[i]);
-
-			if (weapon->hasMod[i])
-				modText[i]->SetText(FText::FromString(FString::SanitizeFloat(modVals[i])));
-			else
-				modText[i]->SetText(FText::FromString("0.0"));
+			modVals[i] += targetWpn->modLevel[i];
+			rModVals[i]->SetText(FText::AsNumber(modVals[i]));
 		}
 	}
 	else
-	{
-		for (UTextBlock* text : modText)
-		{
-			text->SetText(FText::FromString("0.0"));
-			text->GetParent()->SetIsEnabled(false);
-		}
-	}
-
-	if (lostWpn == nullptr || targetWpn == nullptr)
-		for (UWidget* btn : modSelectBtns)
-			btn->SetIsEnabled(false);
-	else
-	{
-		len = modSelectBtns.Num();
-		for (int i = 0; i < len; i++)
-			modSelectBtns[i]->SetIsEnabled(lostWpn->hasMod[i]);
-	}
-
+		for (UTextBlock* text : rModVals)
+			text->SetText(FText::AsNumber(000));
 }
 
 void UModTransferUIBase::SetLActiveButton(UUserButton* newButton)

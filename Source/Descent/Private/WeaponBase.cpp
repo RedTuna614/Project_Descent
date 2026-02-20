@@ -186,28 +186,51 @@ TArray<float> UWeaponBase::GetModifiers()
 
 FString UWeaponBase::ToString(bool isModifer)
 {
-	FString newString;
+	FString newString = "\n";
+	TArray<FString> modStrings;
 
 	if (isModifer)
 	{
-		newString =
-			"LuckyMag: " + FString::SanitizeFloat(luckyMag) + "\n" +
-			"LuckyRnd: " + FString::SanitizeFloat(luckyRnd) + "\n" +
-			"DmgMult: " + FString::SanitizeFloat(dmgMult) + "\n" +
-			"MultiShot: " + FString::SanitizeFloat(multShot) + "\n" +
-			"Shock: " + FString::SanitizeFloat(shock) + "\n" +
-			"Freeze: " + FString::SanitizeFloat(freeze) + "\n" +
-			"Rage: " + FString::SanitizeFloat(rage) + "\n" +
-			"Explosive: " + FString::SanitizeFloat(explosive);
+		modStrings.Add("LuckyMag: ");
+		modStrings.Add("LuckyRnd: ");
+		modStrings.Add("DmgMult: ");
+		modStrings.Add("MultiShot: ");
+		modStrings.Add("Shock: ");
+		modStrings.Add("Freeze: ");
+		modStrings.Add("Rage: ");
+		modStrings.Add("Explosive: ");
+
+		if (numMods != 0)
+		{
+			int len = hasMod.Num();
+			/*
+			newString =
+				"LuckyMag: " + FString::SanitizeFloat(luckyMag) + "\n" +
+				"LuckyRnd: " + FString::SanitizeFloat(luckyRnd) + "\n" +
+				"DmgMult: " + FString::SanitizeFloat(dmgMult) + "\n" +
+				"MultiShot: " + FString::SanitizeFloat(multShot) + "\n" +
+				"Shock: " + FString::SanitizeFloat(shock) + "\n" +
+				"Freeze: " + FString::SanitizeFloat(freeze) + "\n" +
+				"Rage: " + FString::SanitizeFloat(rage) + "\n" +
+				"Explosive: " + FString::SanitizeFloat(explosive);
+			*/
+			for (int i = 0; i < len; i++)
+			{
+				if (hasMod[i])
+					newString += modStrings[i] + FString::SanitizeFloat(modLevel[i]) + "\n";
+			}
+		}
+		else
+			newString += "No Mods \n";
 	}
 	else
 	{
-		newString =
+		newString +=
 			"Damage: " + FString::SanitizeFloat(damage) + "\n" +
 			"Range: " + FString::SanitizeFloat(range) + "\n" +
 			"Falloff: " + FString::SanitizeFloat(dmgFallOff) + "\n" +
 			"Accuracy: " + FString::SanitizeFloat(accuracy) + "\n" +
-			"Ammo: " + FString::SanitizeFloat(currentAmmo + reserveAmmo);
+			"Ammo: " + FString::SanitizeFloat(currentAmmo + reserveAmmo) + "\n";
 	}
 
 	return newString;
@@ -223,6 +246,8 @@ FString UWeaponBase::GetWeaponName()
 			return "Shotgun";
 		case(AssaultRifle):
 			return "AssaultRifle";
+		case(Rifle):
+			return "Rifle";
 	}
 
 	return "Error";
@@ -313,6 +338,15 @@ void UWeaponBase::SetBaseStats(WeaponType newType)
 		//GEngine->AddOnScreenDebugMessage(3, 20, FColor::Emerald, "Revolver");
 		//Set Starting Stats
 		break;
+	case(Rifle):
+		damage = 20;
+		range = 1500;
+		accuracy = 0.015;
+		maxAmmo = 16;
+		isFullAuto = false;
+		numProjectiles = 1;
+		shotDelay = (4.0 / 15.0);
+		break;
 	}
 	dmgFallOff = maxRange - range;
 	currentAmmo = maxAmmo;
@@ -359,7 +393,7 @@ void UWeaponBase::SetModifier(int modId)
 			luckyMag += 2;
 			break;
 		case(2):
-			dmgMult += 0.05;
+			dmgMult += 0.2;
 			break;
 		case(3):
 			multShot += 2;
@@ -374,7 +408,7 @@ void UWeaponBase::SetModifier(int modId)
 			rage += 5;
 			break;
 		case(7):
-			explosive = 25;
+			explosive += 5;
 			break;
 	}
 }

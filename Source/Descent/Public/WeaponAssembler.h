@@ -62,6 +62,7 @@ public:
 	* 1 - Revolver
 	* 2 - Shotgun
 	* 3 - AssaultRifle
+	* 4 - Rifle
 	*/
 
 	TArray<FWeaponPart> AssembleWeapon();
