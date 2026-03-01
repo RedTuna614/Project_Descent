@@ -8,6 +8,7 @@
 #include "PlayerHud.h"
 #include "RoomBase.h"
 #include "InventoryBase.h"
+#include "UserButton.h"
 #include "PlayerBase.generated.h"
 
 /**
@@ -61,6 +62,8 @@ public:
 		ARoomBase* inRoom;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Inventory)
 		UInventoryBase* inventoryUI;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
+		UUserButton* hoveredButton;
 
 	UFUNCTION(BlueprintCallable, Category = State)
 		void UpdateState(PlayerStates newState);
@@ -70,6 +73,8 @@ public:
 		void MeleeAttack(float pitch); //This will probably be moved elsewhere
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = Weapon)
 		void SetWeapon();
+	UFUNCTION(BlueprintCallable, Category = "Utility")
+		void SimulateLeftMouseButtonClick(bool bButtonDown);
 
 		virtual void TakeDmg(float damage, bool isStatus);
 

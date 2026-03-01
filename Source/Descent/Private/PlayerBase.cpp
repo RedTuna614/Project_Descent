@@ -178,3 +178,27 @@ void APlayerBase::TakeDmg(float damage, bool isStatus)
 {
 	DamagePlayer(damage);
 }
+
+void APlayerBase::SimulateLeftMouseButtonClick(bool bButtonDown)
+{
+	FSlateApplication& SlateApp = FSlateApplication::Get();
+	FPointerEvent MouseEvent(
+		0,
+		SlateApp.CursorPointerIndex,
+		SlateApp.GetCursorPos(),
+		SlateApp.GetLastCursorPos(),
+		SlateApp.GetPressedMouseButtons(),
+		EKeys::LeftMouseButton,
+		0,
+		SlateApp.GetPlatformApplication()->GetModifierKeys()
+	);
+
+	if (bButtonDown)
+	{
+		SlateApp.ProcessMouseButtonDownEvent(nullptr, MouseEvent);
+	}
+	else
+	{
+		SlateApp.ProcessMouseButtonUpEvent(MouseEvent);
+	}
+}

@@ -50,6 +50,7 @@ void ULootChestUIBase::SetWeaponChoices(TArray<UUserButton*> wpnText)
 	for (int i = 0; i < len; i++)
 	{
 		weaponChoices.Add(Owner->CreateWeapon());
+		/*
 		switch (weaponChoices[i]->gunType)
 		{
 		case(Shotgun):
@@ -65,7 +66,9 @@ void ULootChestUIBase::SetWeaponChoices(TArray<UUserButton*> wpnText)
 			name = "Revolver";
 			break;
 		}
-		wpnText[i]->SetText(FText::FromString(name));
+		*/
+		wpnText[i]->SetText(FText::FromString(weaponChoices[i]->GetWeaponName()));
+		//wpnText[i]->SetText(FText::FromString(name));
 	}
 }
 

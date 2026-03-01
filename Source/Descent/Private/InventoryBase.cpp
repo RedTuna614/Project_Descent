@@ -50,6 +50,7 @@ void UInventoryBase::SetInvUI(TArray<UUserButton*> buttons, UVerticalBox* invCon
 		{
 			invSlot[i]->SetIsEnabled(true);
 			invSlot[i]->SetRenderOpacity(100);
+			/*
 			switch (playerInventory[i]->gunType)
 			{
 			case(Shotgun):
@@ -65,6 +66,8 @@ void UInventoryBase::SetInvUI(TArray<UUserButton*> buttons, UVerticalBox* invCon
 				name = "Revolver";
 				break;
 			}
+			*/
+			name = playerInventory[i]->GetWeaponName();
 			buttons[i]->SetText(FText::FromString(name));
 		}
 		if (len != buttons.Num())
@@ -84,6 +87,7 @@ void UInventoryBase::SetWeaponUI(TArray<UUserButton*> gunText)
 	FString name;
 	for (int i = 0; i < playerWeapons.Num(); i++)
 	{
+		/*
 		switch (playerWeapons[i]->gunType)
 		{
 		case(Shotgun):
@@ -99,7 +103,9 @@ void UInventoryBase::SetWeaponUI(TArray<UUserButton*> gunText)
 			name = "Revolver";
 			break;
 		}
-		gunText[i]->SetText(FText::FromString(name));
+		*/
+		gunText[i]->SetText(FText::FromString(playerWeapons[i]->GetWeaponName()));
+		//gunText[i]->SetText(FText::FromString(name));
 	}
 }
 

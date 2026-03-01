@@ -22,6 +22,8 @@ public:
 		bool playerOverlapped;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Interaction)
 		UPrimitiveComponent* collider;
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite, Category = Interaction)
+		FText interactText;
 
 	UFUNCTION(BlueprintCallable, Category = Interaction)
 		virtual void BeginOverlap(UPrimitiveComponent* OverlappedComponent,

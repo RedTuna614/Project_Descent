@@ -293,7 +293,7 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 	{
 		shape = col->GetCollisionShape();
 		roomQuat = col->GetComponentQuat();
-		world->OverlapMultiByChannel(outOverlaps, roomCenter, roomQuat, ECC_WorldStatic, shape, collisionParams);
+		world->OverlapMultiByChannel(outOverlaps, col->GetComponentLocation(), roomQuat, ECC_WorldStatic, shape, collisionParams);
 		if (!outOverlaps.IsEmpty())
 		{
 			for (FOverlapResult& overlap : outOverlaps)
@@ -319,7 +319,7 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 			}
 		}
 		
-		world->SweepMultiByChannel(hits, roomCenter, shape.GetBox(), roomQuat, ECC_Visibility, shape);
+		world->SweepMultiByChannel(hits, col->GetComponentLocation(), shape.GetBox(), roomQuat, ECC_Visibility, shape);
 		if (!hits.IsEmpty())
 		{
 			for (FHitResult& hit : hits)
@@ -351,6 +351,15 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 	}
 
 	//DrawDebugBox(world, roomCenter, boxExtents, roomQuat, FColor::Green, false, 10);
+	//Draws Colliders that where tested for debug of successful rooms
+	/*
+	for (UPrimitiveComponent* col : intrlColliders)
+	{
+		boxExtents = col->GetCollisionShape().GetExtent();
+		roomQuat = col->GetComponentQuat();
+		DrawDebugBox(world, col->GetComponentLocation(), boxExtents, roomQuat, FColor::Green, true);
+	}
+	*/
 	//At this point the room is valid and has finished spawning
 	isSpawning = false;
 	return true;
