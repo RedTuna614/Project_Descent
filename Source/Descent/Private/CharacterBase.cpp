@@ -55,8 +55,14 @@ void ACharacterBase::ApplyStatusEffect(UClass* statusClass, int strength)
 
 void ACharacterBase::ApplyStatusEffect(int statusType, int strength)
 {
+	/*
 	UStatusBase* status =
 		Cast<UStatusBase>(AddComponentByClass(statuses[statusType], false, GetActorTransform(), false));
-
+	
+	status->Owner = this;
 	status->StatusEffect(strength, this);
+	*/
+
+	statusEffects[statusType]->AddStatus(strength);
+
 }

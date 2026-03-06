@@ -45,59 +45,11 @@ void ALevelGenerator::ValidateLevel(bool sizeChange)
 {
 	genIteration++;
 
-	//Array of ARoomBase to be removed from the level
-	TArray<ARoomBase*> toRemove;
-
-	//Checks if ARoomBase can be reached and adds it toRemove if it can't
-	for (ARoomBase* Room : roomsSpawned)
-	{
-		if (Room->neighbors.IsEmpty())
-		{
-			toRemove.Add(Room);
-		}
-		else if (Room->neighbors[0] == nullptr && Room->room != Start)
-		{
-			//neighbors[0] is the ARoomBase that caused Room to spawn
-			//If neighbors[0] is null than the Room can't be reached
-			toRemove.Add(Room);
-			for (ARoomBase* neighbor : Room->neighbors)
-			{
-				if (neighbor != nullptr)
-				{
-					neighbor->RemoveNeighbor(Room);
-				}
-			}
-		}
-	}
-
-	//Removes invalid rooms from the level and decreases the currentLevelSize
-	for (ARoomBase* Room : toRemove)
-	{
-		RemoveRoom(Room);
-	}
-	
-	//Removes Multiple Goal Rooms
-	if (spawnedGoalRoom)
-	{
-		int spawnedGoals = 0;
-		for (ARoomBase* Room : roomsSpawned)
-		{
-			if (Room->room == GoalRoom)
-			{
-				spawnedGoals++;
-				if (spawnedGoals != 1)
-				{
-					Room->Destroy();
-					roomsSpawned.Remove(Room);
-				}
-			}
-		}
-	}
 	currentLevelSize = roomsSpawned.Num();
 	//Complete's the ARoomBase gen cycle and starts the level popluation cycle
 	if (currentLevelSize >= levelGenSize)
 	{
-		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, "Success", false);
+		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, FString::FromInt(genIteration), false);
 		SpawnDeadEnds();
 		return;
 	}
@@ -166,6 +118,7 @@ void ALevelGenerator::GenLevel()
 	bool isGoalAttempt = false; //Checks if the generator is trying to spawn the goalRoom
 	int index = 0; //Index of currRoom's doorTransforms
 
+
 	while (currentLevelSize < levelGenSize)
 	{
 		didSpawn = false;
@@ -187,6 +140,7 @@ void ALevelGenerator::GenLevel()
 					{
 						// 0  will be changed later once goalRooms and missionTypes are made
 						newRoom = world->SpawnActor<ARoomBase>(goalRooms[0], transform, spawnParams);
+						newRoom->subRoom = Special;
 						isGoalAttempt = true;
 					}
 					else
@@ -377,6 +331,6 @@ void ALevelGenerator::SpawnDeadEnds()
 
 	gameMode->roomsSpawned = roomsSpawned;
 
-	if (gameManager->objective == Kill || gameManager->objective == Find)
-		gameMode->SetGoal(gameManager->objective);
+	//if (gameManager->objective == Kill || gameManager->objective == Find)
+	gameMode->SetGoal(gameManager->objective);
 }

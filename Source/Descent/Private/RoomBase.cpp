@@ -168,12 +168,12 @@ void ARoomBase::SpawnMobs()
 	{
 		areaIndex = FMath::RandRange(0, areaLen);
 		spawnOrigin = spawnAreas[areaIndex]->GetComponentLocation();
-		spawnBox = spawnAreas[areaIndex]->GetCollisionShape().GetBox();
+		spawnBox = spawnAreas[areaIndex]->GetCollisionShape().GetExtent();
 		spawnLoc = UKismetMathLibrary::RandomPointInBoundingBox(spawnOrigin, spawnBox);
 		world->LineTraceSingleByChannel(hit, spawnLoc, { spawnLoc.X, spawnLoc.Y, spawnLoc.Z - 1500 }, ECC_WorldStatic, params);
 		if (hit.GetActor() != nullptr)
 		{
-			if (hit.GetComponent()->GetName().Contains("Floor"))
+			if (hit.GetComponent()->GetName().Contains("Floor") && hit.GetComponent()->GetOwner() == this)
 			{
 				world->SpawnActor<AEnemyBase>(enemies[FMath::RandRange(0, len)], spawnLoc, { 0,0,0 }, spawnParams);
 				i++;
@@ -271,23 +271,6 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 	* one that caused it to be spawned, because if it is, it's by an extremely small amount that is ignorable
 	*/
 
-	//Checks if the room spawning this one still exists, Start can't be deleted so it can be ignored
-	//Due to the change in z level this realy can't be checked with stairs
-	if (room != Stair && spawner->room != Stair && spawner->room != Start)
-	{
-		FHitResult outHit;
-		world->LineTraceSingleByChannel(outHit, roomCenter, spawner->roomCenter, ECC_WorldStatic, collisionParams);
-		overlapedActor = outHit.GetActor();
-		if (IsValid(overlapedActor))
-		{
-			if (overlapedActor != this && overlapedActor != spawner)
-			{
-				DestroyRoom();
-				return false;
-			}
-		}
-	}
-
 	//Checks if another room overlaps this one
 	for (UPrimitiveComponent* col : intrlColliders)
 	{
@@ -309,7 +292,7 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 							if (!Cast<ARoomBase>(overlapedActor)->isSpawning && !Cast<ARoomBase>(overlapedActor)->beingDestroyed)
 							{
 								//GEngine->AddOnScreenDebugMessage(0, 10, FColor::Red, overlapedActor->GetActorNameOrLabel(), false);
-								//DrawDebugBox(world, roomCenter, boxExtents, roomQuat, FColor::Red, false, 10);
+								//DrawDebugBox(world, col->GetComponentLocation(), shape.GetExtent(), roomQuat, FColor::Cyan, true);
 								DestroyRoom();
 								return false;
 							}
@@ -337,7 +320,7 @@ bool ARoomBase::IsValidRoom(UWorld* world, ARoomBase* spawner)
 								if (!Cast<ARoomBase>(overlapedActor)->isSpawning && !Cast<ARoomBase>(overlapedActor)->beingDestroyed)
 								{
 									//GEngine->AddOnScreenDebugMessage(0, 10, FColor::Red, overlapedActor->GetActorNameOrLabel(), false);
-									//DrawDebugBox(world, roomCenter, boxExtents, roomQuat, FColor::Red, false, 10);
+									//DrawDebugBox(world, col->GetComponentLocation(), shape.GetExtent(), roomQuat, FColor::Red, true);
 									DestroyRoom();
 									return false;
 								}

@@ -86,6 +86,7 @@ public:
 
 	void TakeDmg(float damage, bool isStatus);
 	
+	virtual void ApplyStatusEffect(int statusType, int strength);
 	/*
 	UFUNCTION(BlueprintCallable, Category = Enemy)
 		void DamageEnemy(float damage);*/

@@ -4,6 +4,7 @@
 #include "EnemyBase.h"
 #include "EnemyWeapon.h"
 #include "CoverBase.h"
+#include "StatusBase.h"
 #include "GameManager.h"
 #include "DescentGameBase.h"
 #include <Kismet/KismetSystemLibrary.h>
@@ -255,6 +256,23 @@ void AEnemyBase::TakeDmg(float damage, bool isStatus)
 		}
 		*/
 		UpdateEnemyState(Death);
+	}
+}
+
+void AEnemyBase::ApplyStatusEffect(int statusType, int strength)
+{
+	statusEffects[statusType]->AddStatus(strength);
+
+	if (overlayMat !=  nullptr && IsValid(overlayMat))
+	{
+		switch (statusType)
+		{
+		case(0):
+			overlayMat->SetScalarParameterValue("isActive", 1);
+			break;
+		case(1):
+			overlayMat->SetScalarParameterValue("isFrozen", 1);
+		}
 	}
 }
 

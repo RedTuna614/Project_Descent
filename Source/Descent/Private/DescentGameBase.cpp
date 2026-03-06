@@ -45,6 +45,9 @@ void ADescentGameBase::SetGoal(MissionType mission)
 	case(Find):
 		goalNum = numChambers * .5;
 		break;
+	case(Waves):
+		goalNum = 4;
+		break;
 	}
 }
 

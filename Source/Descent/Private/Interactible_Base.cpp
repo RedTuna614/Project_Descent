@@ -11,6 +11,7 @@ AInteractible_Base::AInteractible_Base()
 	PrimaryActorTick.bCanEverTick = true;
 
 	playerOverlapped = false;
+	interactText = FText::FromString("Press [E] To Interact");
 }
 
 // Called when the game starts or when spawned
@@ -43,7 +44,7 @@ void AInteractible_Base::BeginOverlap(UPrimitiveComponent* OverlappedComponent,
 	if (OtherActor->ActorHasTag("Player"))
 	{
 		playerOverlapped = true;
-		player->HUD->SetShowInteractText(false, GetName());
+		player->HUD->SetShowInteractText(interactText);
 	}
 		
 }
@@ -54,7 +55,7 @@ void AInteractible_Base::EndOverlap(UPrimitiveComponent* OverlappedComponent,
 	if (OtherActor->ActorHasTag("Player"))
 	{
 		playerOverlapped = false;
-		player->HUD->SetShowInteractText(true, GetName());
+		player->HUD->SetShowInteractText(FText::GetEmpty());
 	}
 		
 }

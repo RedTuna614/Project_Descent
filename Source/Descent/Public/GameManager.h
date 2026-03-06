@@ -16,7 +16,8 @@ UENUM(BlueprintType) //Different Room Types
 enum MissionType : int
 {
 	Kill UMETA(DisplayName = "Exterminate"),
-	Find UMETA(DisplayName = "Explore")
+	Find UMETA(DisplayName = "Explore"),
+	Waves UMETA(DisplayName = "Collect Data")
 };
 
 USTRUCT(Blueprintable, BlueprintType)

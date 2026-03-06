@@ -19,3 +19,12 @@ void UStatusBase::BeginPlay()
 	// ...
 	
 }
+
+void UStatusBase::AddStatus_Implementation(int strength)
+{
+	stacks.Add(duration);
+	stackNum++;
+
+	if (stackNum == 1)
+		StatusEffect(strength, Cast<ACharacterBase>(Owner));
+}

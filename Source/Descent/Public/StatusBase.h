@@ -16,11 +16,19 @@ public:
 	// Sets default values for this component's properties
 	UStatusBase();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Status)
+		ACharacter* Owner;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Duration)
+		TArray<int> stacks;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Duration)
+		int stackNum;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Duration)
 		int duration;
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category = Status)
 		void StatusEffect(int strength, ACharacterBase* attachedTo);
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = Status)
+		void AddStatus(int strength);
 
 protected:
 	// Called when the game starts

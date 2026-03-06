@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "StatusBase.h"
 #include "CharacterBase.generated.h"
 
 UCLASS()
@@ -23,6 +24,10 @@ public:
 		float movementSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
 		TArray<UClass*>statuses;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Status)
+		TArray<UStatusBase*> statusEffects;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Status)
+		UMaterialInstanceDynamic* overlayMat;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat) //Stores current shields
 		float shields;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Combat) //Needed to ensure shields don't recharge past max
@@ -32,10 +37,12 @@ public:
 		virtual void TakeDmg(float damage, bool isStatus);
 	UFUNCTION(BlueprintCallable, Category = Stats)
 		float GetHealthPercent();
+	UFUNCTION(BlueprintCallable, BlueprintImplementableEvent, Category = Status)
+		void RemoveStatus(UActorComponent* status);
 	UFUNCTION(BlueprintCallable, Category = Status)
 		void ApplyStatusEffect(UClass* statusClass, int strength);
 
-		void ApplyStatusEffect(int statusType, int strength);
+		virtual void ApplyStatusEffect(int statusType, int strength);
 
 protected:
 	// Called when the game starts or when spawned
