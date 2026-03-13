@@ -6,6 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "WeaponBase.h"
 #include "WeaponAssembler.h"
+//#include "Internationalization/StringTableCore.h"
+//#include "Internationalization/StringTable.h"
 #include "GameManager.generated.h"
 
 /**
@@ -77,6 +79,10 @@ public:
 		TArray<UWeaponBase*> playerInventory;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 		UWeaponAssembler* weaponAssembler;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+		TArray<int> availableNames;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+		UStringTable* weaponNames;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)
 		TArray<UClass*>extraEnemies;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Game)

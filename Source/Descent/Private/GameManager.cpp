@@ -3,6 +3,9 @@
 
 #include "GameManager.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
+#include "Internationalization/StringTableCore.h"
+#include "Internationalization/StringTable.h"
+
 
 UGameManager::UGameManager()
 {
@@ -60,7 +63,7 @@ void UGameManager::ActivateMod()
 			//Rocket enemy can now spawn in rooms	X
 			break;
 		case(11):
-			//Crafter enemy can now spawn in rooms
+			//Crafter enemy can now spawn in rooms X
 			break;
 		case(12):
 			//Lootchest's now contain one less weaponX
@@ -87,6 +90,11 @@ void UGameManager::ResetVars()
 	dungeonMods.Init(false, 15);
 	modActivated = false;
 	playerHealth = 0;
+	availableNames.Init(0, weaponAssembler->weaponNames.Num());
+	for (int i = 0; i < availableNames.Num(); i++)
+	{
+		availableNames[i] = i;
+	}
 	for (int i = 0; i < inactiveMods.Num(); i++)
 	{
 		dungeonMods[i] = false;

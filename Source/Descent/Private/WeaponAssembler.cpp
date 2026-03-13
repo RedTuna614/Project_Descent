@@ -87,3 +87,8 @@ FWeaponPart UWeaponAssembler::MakePart(PartType newPart, int index)
 
 	return weaponPart;
 }
+
+FString UWeaponAssembler::GetWeaponName(int index)
+{
+	return weaponNames[index];
+}

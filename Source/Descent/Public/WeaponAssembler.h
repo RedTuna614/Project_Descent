@@ -50,6 +50,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	TArray<UStaticMesh*>magazineMeshes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
+	TArray<FString> weaponNames;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	UNiagaraSystem* impactVFX;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	UNiagaraSystem* explosiveVFX;
@@ -68,5 +70,6 @@ public:
 	TArray<FWeaponPart> AssembleWeapon();
 	FWeaponPart MakePart(PartType newPart, int index, UStaticMesh* mesh);
 	FWeaponPart MakePart(PartType newPart, int index);
+	FString GetWeaponName(int index);
 
 };

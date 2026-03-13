@@ -55,7 +55,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = State)
 		TEnumAsByte<EnemyState> lastState;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ISM)
-		TArray<UHierarchicalInstancedStaticMeshComponent*> ISMs;
+		TArray<UInstancedStaticMeshComponent*> ISMs;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = ISM)
 		AArmorMesh_Manager* ISM_Manager;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Player)

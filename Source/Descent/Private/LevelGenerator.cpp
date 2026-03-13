@@ -2,6 +2,7 @@
 
 
 #include "LevelGenerator.h"
+#include <exception>
 #include "DescentGameBase.h"
 #include "PlayerBase.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
@@ -72,9 +73,11 @@ void ALevelGenerator::ValidateLevel(bool sizeChange)
 	//Should only be true if no new rooms can be spawned
 	if (toSpawn.IsEmpty())
 	{
-		//Temporary fix that sends the player back to HUB world
+		//Reloads the levelGen scene/level causing the gen process to restart
 		GEngine->AddOnScreenDebugMessage(15, 10, FColor::Cyan, "Fail", false);
-		gameManager->ResetLevel();
+		UGameplayStatics::OpenLevel(GetWorld(), "LevelGenTest");
+		//SpawnDeadEnds();
+		return;
 	}
 
 	GenLevel();
@@ -111,13 +114,13 @@ void ALevelGenerator::RemoveRoom(ARoomBase* room)
 void ALevelGenerator::GenLevel()
 {
 	ARoomBase* newRoom;
+	TArray<ARoomBase*> toRemove;
 	TArray<ARoomBase*> needNeighbors;
 	int spawnIndex; //Index of the Chamber, Hall, or Stair being spawned
 	bool didSpawn = false; //Checks if a room was spawned during the gen cycle
 	bool didReplace = false; //Checks if ARoomBase was replaced with Stairs
 	bool isGoalAttempt = false; //Checks if the generator is trying to spawn the goalRoom
 	int index = 0; //Index of currRoom's doorTransforms
-
 
 	while (currentLevelSize < levelGenSize)
 	{
@@ -128,7 +131,7 @@ void ALevelGenerator::GenLevel()
 			didReplace = false;
 			index = 0;
 
-			if (currRoom->room == Start || (currRoom->neighbors[0] != nullptr && IsValid(currRoom)))
+			if (currRoom->room == Start || (currRoom->neighbors[0] != nullptr && IsValid(currRoom) && !currRoom->beingDestroyed))
 			{
 				for (const FTransform& transform : currRoom->doorTransforms)
 				{
@@ -201,25 +204,34 @@ void ALevelGenerator::GenLevel()
 						break;
 					case(0):
 						//The newRoom is completly Invalid and was Destroyed
-						RemoveRoom(newRoom);
+						//RemoveRoom(newRoom);
+						newRoom->beingDestroyed = true;
+						toRemove.Add(newRoom);
 						break;
 					}
 					if (didReplace)
 					{
 						for (int i = 1; i < currRoom->neighbors.Num(); i++)
 						{
-							if(currRoom->neighbors[i] != nullptr)
-								RemoveRoom(currRoom->neighbors[i]);
+							if (currRoom->neighbors[i] != nullptr)
+							{
+								toRemove.Add(currRoom->neighbors[i]);
+								currRoom->neighbors[i]->beingDestroyed = true;
+							}
+							//RemoveRoom(currRoom->neighbors[i]);
 						}
-						RemoveRoom(currRoom);
+						currRoom->beingDestroyed = true;
+						toRemove.Add(currRoom);
+						//RemoveRoom(currRoom);
 						break;
 					}
 				}
-
+				/*
 				if (!didReplace)
 				{
 					toSpawn.Remove(currRoom);
 				}
+				*/
 			}
 			else
 			{
@@ -230,10 +242,15 @@ void ALevelGenerator::GenLevel()
 				else
 				{
 					currRoom->neighbors[0]->RemoveNeighbor(currRoom);
-					RemoveRoom(currRoom);
+					toRemove.Add(currRoom);
+					currRoom->beingDestroyed = true;
+					//RemoveRoom(currRoom);
 				}
 			}
 		}
+		for (ARoomBase* remove : toRemove)
+			RemoveRoom(remove);
+		toRemove.Empty();
 		toSpawn = needNeighbors;
 		needNeighbors.Empty();
 		currentLevelSize = roomsSpawned.Num();
@@ -244,7 +261,19 @@ void ALevelGenerator::GenLevel()
 			return;
 		}
 	}
-
+	/*  Put the loop back in here if this nonsense decides to stop working
+	* The pray the machines spirits actually display the error message
+	try 
+	{
+		
+	}
+	catch (...)
+	{
+		GEngine->AddOnScreenDebugMessage(79, 10, FColor::Cyan, "Overflow", false);
+		SpawnDeadEnds();
+		return;
+	}
+	*/
 	for (ARoomBase* Room : needNeighbors)
 	{
 		toSpawn.Add(Room);

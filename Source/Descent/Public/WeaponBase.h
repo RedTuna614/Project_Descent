@@ -99,6 +99,7 @@ public:
 	float GetModifier(int modId);
 
 protected: 
+	FString name;
 	float damage; //Weapons Based Damage
 	float range; //Distance until damage falloff
 	float dmgFallOff; //Rate the damage fallsoff

@@ -18,6 +18,7 @@ UWeaponBase::UWeaponBase()
 	explosive = 0;
 	rage = 0;
 	numMods = 0;
+	name = "";
 }
 
 UWeaponBase::UWeaponBase(ACharacterBase* newOwner)
@@ -33,6 +34,7 @@ UWeaponBase::UWeaponBase(ACharacterBase* newOwner)
 	explosive = 0;
 	rage = 0;
 	numMods = 0;
+	name = "";
 }
 
 UWeaponBase::UWeaponBase(WeaponType weapon)
@@ -47,6 +49,7 @@ UWeaponBase::UWeaponBase(WeaponType weapon)
 	explosive = 0;
 	rage = 0;
 	numMods = 0;
+	name = "";
 }
 
 void UWeaponBase::Shoot(FVector muzzleLoc, FVector endLoc, FVector dir)
@@ -89,10 +92,15 @@ void UWeaponBase::Shoot(FVector muzzleLoc, FVector endLoc, FVector dir)
 				{
 					hitCharacter = Cast<ACharacterBase>(hit.GetActor());
 					//GEngine->AddOnScreenDebugMessage(3, 2, FColor::Emerald, World->GetName());
-					if (shock != 0)
-						hitCharacter->ApplyStatusEffect(0, shock);
-					if (freeze != 0)
-						hitCharacter->ApplyStatusEffect(1, freeze);
+
+					//Decoy's can't be affected by statuses
+					if (!hitCharacter->ActorHasTag("Decoy"))
+					{
+						if (shock != 0)
+							hitCharacter->ApplyStatusEffect(0, shock);
+						if (freeze != 0)
+							hitCharacter->ApplyStatusEffect(1, freeze);
+					}
 
 					damageDealt = CalculateDamage(FVector::Dist(hit.Location, muzzleLoc));
 					hitCharacter->TakeDmg(damageDealt, false);
@@ -231,6 +239,22 @@ FString UWeaponBase::ToString(bool isModifer)
 			"Falloff: " + FString::SanitizeFloat(dmgFallOff) + "\n" +
 			"Accuracy: " + FString::SanitizeFloat(accuracy) + "\n" +
 			"Ammo: " + FString::SanitizeFloat(currentAmmo + reserveAmmo) + "\n";
+
+		switch (gunType)
+		{
+		case(Pistol):
+			newString += "Pistol\n";
+			break;
+		case(Shotgun):
+			newString += "Shotgun\n";
+			break;
+		case(AssaultRifle):
+			newString += "AssaultRifle\n";
+			break;
+		case(Rifle):
+			newString += "Rifle\n";
+			break;
+		}
 	}
 
 	return newString;
@@ -238,6 +262,8 @@ FString UWeaponBase::ToString(bool isModifer)
 
 FString UWeaponBase::GetWeaponName()
 {
+	return name;
+	/*
 	switch (gunType)
 	{
 		case(Pistol):
@@ -251,6 +277,7 @@ FString UWeaponBase::GetWeaponName()
 	}
 
 	return "Error";
+	*/
 }
 
 void UWeaponBase::ResetWeapon(WeaponType newType, ACharacterBase* newOwner)
@@ -422,11 +449,18 @@ void UWeaponBase::SetOwner(ACharacterBase* newOwner)
 void UWeaponBase::GenWeaponParts(UWorld* world)
 {
 	World = world;
+	//UGameManager* gameManager = ;
 	UWeaponAssembler* assembly = Cast<UGameManager>(World->GetGameInstance())->weaponAssembler;
 	weaponParts = assembly->AssembleWeapon();
 	isBarrelMag = assembly->barrelMag;
 	hitVFX = assembly->impactVFX;
 	explosionVFX = assembly->explosiveVFX;
+	//int index = FMath::RandRange(0, gameManager->availableNames.Num() - 1);
+	//name = assembly->GetWeaponName(gameManager->availableNames[index]);
+	//gameManager->availableNames.RemoveAt(index);
+	int index = FMath::RandRange(0, assembly->weaponNames.Num() - 1);
+	name = assembly->GetWeaponName(index);
+	assembly->weaponNames.RemoveAt(index);
 
 	SetBaseStats(StaticCast<WeaponType>(assembly->fireType));
 }
@@ -450,8 +484,8 @@ float UWeaponBase::CalculateDamage(float dist)
 
 	if (FMath::RandRange(0, 100) < luckyRnd)
 		finalDamage *= 2; 
-
-	return finalDamage * dmgMult;
+	
+	return FMath::CeilToFloat(finalDamage * dmgMult);
 }
 
 float UWeaponBase::GetModifier(int modId)
